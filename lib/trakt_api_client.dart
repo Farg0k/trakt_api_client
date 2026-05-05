@@ -15,5 +15,7 @@ export 'src/models/trakt_airs.dart';
 export 'src/models/trakt_person.dart';
 export 'src/models/trakt_season.dart';
 export 'src/models/trakt_episode.dart';
+export 'src/models/trakt_auth_models.dart';
 export 'src/api/movies_api.dart';
 export 'src/api/shows_api.dart';
+export 'src/api/authentication_api.dart';
