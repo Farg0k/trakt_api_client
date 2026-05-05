@@ -9,9 +9,12 @@ void main() async {
 
   try {
     print('Fetching trending movies...');
-    final trending = await client.movies.getTrending(limit: 5);
+    final response = await client.movies.getTrending(limit: 5);
     
-    for (var movie in trending) {
+    print('Page: ${response.pagination?.currentPage} / ${response.pagination?.pageCount}');
+    print('Total items: ${response.pagination?.itemCount}');
+
+    for (var movie in response.data) {
       print('Movie: ${movie.title} (${movie.year})');
     }
   } catch (e) {

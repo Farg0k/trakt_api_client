@@ -26,7 +26,11 @@ class TraktApiClient {
     shows = ShowsApi(this);
   }
 
-  Future<dynamic> get(String path, {Map<String, String>? queryParams}) async {
+  Future<T> get<T>(
+    String path, {
+    Map<String, String>? queryParams,
+    required T Function(dynamic body, Map<String, String> headers) mapper,
+  }) async {
     final uri = Uri.parse('${config.baseUrl}$path').replace(
       queryParameters: queryParams,
     );
@@ -36,10 +40,14 @@ class TraktApiClient {
       headers: config.headers,
     );
 
-    return _handleResponse(response);
+    return _handleResponse(response, mapper);
   }
 
-  Future<dynamic> post(String path, {dynamic body}) async {
+  Future<T> post<T>(
+    String path, {
+    dynamic body,
+    required T Function(dynamic body, Map<String, String> headers) mapper,
+  }) async {
     final uri = Uri.parse('${config.baseUrl}$path');
 
     final response = await _client.post(
@@ -48,15 +56,18 @@ class TraktApiClient {
       body: body != null ? jsonEncode(body) : null,
     );
 
-    return _handleResponse(response);
+    return _handleResponse(response, mapper);
   }
 
-  dynamic _handleResponse(http.Response response) {
+  T _handleResponse<T>(
+    http.Response response,
+    T Function(dynamic body, Map<String, String> headers) mapper,
+  ) {
     _updateRateLimit(response.headers);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      if (response.body.isEmpty) return null;
-      return jsonDecode(response.body);
+      final dynamic body = response.body.isEmpty ? null : jsonDecode(response.body);
+      return mapper(body, response.headers);
     }
 
     final String message;

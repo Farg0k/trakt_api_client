@@ -1,4 +1,5 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_list_response.dart';
 import '../models/trakt_movie.dart';
 
 class MoviesApi {
@@ -6,34 +7,40 @@ class MoviesApi {
 
   MoviesApi(this._client);
 
-  Future<List<TraktMovie>> getTrending({
+  Future<TraktListResponse<TraktMovie>> getTrending({
     int page = 1,
     int limit = 10,
     String extended = 'metadata',
   }) async {
-    final response = await _client.get(
+    return _client.get(
       '/movies/trending',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended,
       },
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((item) =>
+                TraktMovie.fromJson(item['movie'] as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
     );
-
-    return (response as List)
-        .map((item) => TraktMovie.fromJson(item['movie'] as Map<String, dynamic>))
-        .toList();
   }
 
   Future<TraktMovie> getDetails(
     String id, {
     String extended = 'full',
   }) async {
-    final response = await _client.get(
+    return _client.get(
       '/movies/$id',
       queryParams: {'extended': extended},
+      mapper: (body, headers) =>
+          TraktMovie.fromJson(body as Map<String, dynamic>),
     );
-
-    return TraktMovie.fromJson(response as Map<String, dynamic>);
   }
 }
