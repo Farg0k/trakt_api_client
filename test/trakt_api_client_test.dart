@@ -45,4 +45,20 @@ void main() {
       expect(config.headers['trakt-api-version'], '3');
     });
   });
+
+  group('TraktRateLimit', () {
+    test('should parse headers correctly', () {
+      final headers = {
+        'X-Ratelimit-Limit': '1000',
+        'X-Ratelimit-Remaining': '999',
+        'X-Ratelimit-Reset': '1442171122',
+        'Retry-After': '30',
+      };
+      final rateLimit = TraktRateLimit.fromHeaders(headers);
+      expect(rateLimit.limit, 1000);
+      expect(rateLimit.remaining, 999);
+      expect(rateLimit.reset, DateTime.fromMillisecondsSinceEpoch(1442171122 * 1000));
+      expect(rateLimit.retryAfter?.inSeconds, 30);
+    });
+  });
 }

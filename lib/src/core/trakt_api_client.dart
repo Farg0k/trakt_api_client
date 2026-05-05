@@ -4,10 +4,15 @@ import '../api/movies_api.dart';
 import '../api/shows_api.dart';
 import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
+import 'trakt_rate_limit.dart';
 
 class TraktApiClient {
   final TraktApiClientConfig config;
   final http.Client _client;
+  final void Function(TraktRateLimit)? onRateLimitChanged;
+
+  TraktRateLimit? _lastRateLimit;
+  TraktRateLimit? get lastRateLimit => _lastRateLimit;
 
   late final MoviesApi movies;
   late final ShowsApi shows;
@@ -15,6 +20,7 @@ class TraktApiClient {
   TraktApiClient({
     required this.config,
     http.Client? client,
+    this.onRateLimitChanged,
   }) : _client = client ?? http.Client() {
     movies = MoviesApi(this);
     shows = ShowsApi(this);
@@ -46,6 +52,8 @@ class TraktApiClient {
   }
 
   dynamic _handleResponse(http.Response response) {
+    _updateRateLimit(response.headers);
+
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
@@ -70,6 +78,9 @@ class TraktApiClient {
         break;
       case 409:
         message = 'Conflict - resource already created';
+        break;
+      case 410:
+        message = 'Account Deactivated - have the user contact support';
         break;
       case 412:
         message = 'Precondition Failed - use application/json';
@@ -104,7 +115,15 @@ class TraktApiClient {
       message,
       statusCode: response.statusCode,
       responseBody: response.body,
+      rateLimit: _lastRateLimit,
     );
+  }
+
+  void _updateRateLimit(Map<String, String> headers) {
+    if (headers.containsKey('X-Ratelimit-Limit')) {
+      _lastRateLimit = TraktRateLimit.fromHeaders(headers);
+      onRateLimitChanged?.call(_lastRateLimit!);
+    }
   }
 
   void close() {
