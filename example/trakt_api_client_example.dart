@@ -63,6 +63,25 @@ void main() async {
       for (var movie in response.data) {
         print(' - ${movie.title} (${movie.year}) [Rating: ${movie.rating}]');
       }
+
+      // 3. Personalized Calendars (Authenticated)
+      print('\nStep 3: Fetching Your Show Calendar...');
+      final myShows = await client.calendars.getMyShows(
+        days: 7,
+        extended: TraktExtendedInfo.full,
+      );
+
+      print('Upcoming episodes in your calendar:');
+      for (var entry in myShows) {
+        print(' - ${entry.firstAired?.toLocal()}: ${entry.show.title} - S${entry.episode.season}E${entry.episode.number} "${entry.episode.title}"');
+      }
+    } else {
+      // If not authenticated, we can still fetch public calendars
+      print('\nStep 2 (Public): Fetching Global Movie Premieres...');
+      final premieres = await client.calendars.getAllMovies(days: 3);
+      for (var entry in premieres) {
+        print(' - ${entry.released}: ${entry.movie.title}');
+      }
     }
 
   } catch (e) {
