@@ -1,14 +1,19 @@
 class TraktApiException implements Exception {
   final String message;
   final int? statusCode;
+  final String? responseBody;
 
-  TraktApiException(this.message, [this.statusCode]);
+  TraktApiException(this.message, {this.statusCode, this.responseBody});
 
   @override
   String toString() {
+    final buffer = StringBuffer('TraktApiException: $message');
     if (statusCode != null) {
-      return 'TraktApiException: $message (Status Code: $statusCode)';
+      buffer.write(' (Status Code: $statusCode)');
     }
-    return 'TraktApiException: $message';
+    if (responseBody != null && responseBody!.isNotEmpty) {
+      buffer.write('\nResponse Body: $responseBody');
+    }
+    return buffer.toString();
   }
 }

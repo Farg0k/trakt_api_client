@@ -49,12 +49,62 @@ class TraktApiClient {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
-    } else {
-      throw TraktApiException(
-        'Request failed with status: ${response.statusCode}',
-        response.statusCode,
-      );
     }
+
+    final String message;
+    switch (response.statusCode) {
+      case 400:
+        message = 'Bad Request - request couldn\'t be parsed';
+        break;
+      case 401:
+        message = 'Unauthorized - OAuth must be provided';
+        break;
+      case 403:
+        message = 'Forbidden - invalid API key or unapproved app';
+        break;
+      case 404:
+        message = 'Not Found - method exists, but no record found';
+        break;
+      case 405:
+        message = 'Method Not Found - method doesn\'t exist';
+        break;
+      case 409:
+        message = 'Conflict - resource already created';
+        break;
+      case 412:
+        message = 'Precondition Failed - use application/json';
+        break;
+      case 420:
+        message = 'Account Limit Exceeded - list count, item count, etc';
+        break;
+      case 422:
+        message = 'Unprocessable Entity - validation errors';
+        break;
+      case 423:
+        message = 'Locked User Account - have the user contact support';
+        break;
+      case 426:
+        message = 'VIP Only - user must upgrade to VIP';
+        break;
+      case 429:
+        message = 'Rate Limit Exceeded';
+        break;
+      case 500:
+        message = 'Server Error';
+        break;
+      case 503:
+      case 504:
+        message = 'Service Unavailable - server overloaded (try again later)';
+        break;
+      default:
+        message = 'Request failed with status: ${response.statusCode}';
+    }
+
+    throw TraktApiException(
+      message,
+      statusCode: response.statusCode,
+      responseBody: response.body,
+    );
   }
 
   void close() {
