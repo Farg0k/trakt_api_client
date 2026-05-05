@@ -91,13 +91,16 @@ class TraktApiClient {
         message = 'Method Not Found - method doesn\'t exist';
         break;
       case 409:
-        message = 'Conflict - resource already created';
+        message = 'Conflict - resource already created or already approved';
         break;
       case 410:
-        message = 'Account Deactivated - have the user contact support';
+        message = 'Account Deactivated or Token Expired - restart the process';
         break;
       case 412:
         message = 'Precondition Failed - use application/json';
+        break;
+      case 418:
+        message = 'Denied - user explicitly denied this code';
         break;
       case 420:
         message = 'Account Limit Exceeded - list count, item count, etc';
