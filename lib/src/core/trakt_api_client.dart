@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../api/authentication_api.dart';
 import '../api/calendars_api.dart';
+import '../api/certifications_api.dart';
 import '../api/checkin_api.dart';
 import '../api/comments_api.dart';
 import '../api/movies_api.dart';
@@ -26,6 +27,7 @@ class TraktApiClient {
   late final CalendarsApi calendars;
   late final CheckinApi checkin;
   late final CommentsApi comments;
+  late final CertificationsApi certifications;
 
   TraktApiClient({
     required this.config,
@@ -39,6 +41,7 @@ class TraktApiClient {
     calendars = CalendarsApi(this);
     checkin = CheckinApi(this);
     comments = CommentsApi(this);
+    certifications = CertificationsApi(this);
   }
 
   Future<T> get<T>(
