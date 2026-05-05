@@ -2,6 +2,7 @@ class TraktApiClientConfig {
   final String clientId;
   final String? clientSecret;
   final String? accessToken;
+  final String? refreshToken;
   final bool useStaging;
   final String? userAgent;
   final Map<String, String>? customHeaders;
@@ -10,6 +11,7 @@ class TraktApiClientConfig {
     required this.clientId,
     this.clientSecret,
     this.accessToken,
+    this.refreshToken,
     this.useStaging = false,
     this.userAgent,
     this.customHeaders,
@@ -39,5 +41,20 @@ class TraktApiClientConfig {
     }
 
     return headers;
+  }
+
+  TraktApiClientConfig copyWith({
+    String? accessToken,
+    String? refreshToken,
+  }) {
+    return TraktApiClientConfig(
+      clientId: clientId,
+      clientSecret: clientSecret,
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+      useStaging: useStaging,
+      userAgent: userAgent,
+      customHeaders: customHeaders,
+    );
   }
 }

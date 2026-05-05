@@ -12,6 +12,10 @@ void main() async {
     onRateLimitChanged: (limit) {
       print('Rate Limit Updated: ${limit.remaining} remaining');
     },
+    onTokenRefreshed: (token) {
+      print('Token refreshed automatically!');
+      // Here you would save token.accessToken and token.refreshToken to permanent storage
+    },
   );
 
   try {

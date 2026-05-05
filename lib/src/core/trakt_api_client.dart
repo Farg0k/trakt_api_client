@@ -4,14 +4,16 @@ import '../api/authentication_api.dart';
 import '../api/calendars_api.dart';
 import '../api/movies_api.dart';
 import '../api/shows_api.dart';
+import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
 import 'trakt_rate_limit.dart';
 
 class TraktApiClient {
-  final TraktApiClientConfig config;
+  TraktApiClientConfig config;
   final http.Client _client;
   final void Function(TraktRateLimit)? onRateLimitChanged;
+  final void Function(TraktOAuthToken)? onTokenRefreshed;
 
   TraktRateLimit? _lastRateLimit;
   TraktRateLimit? get lastRateLimit => _lastRateLimit;
@@ -25,6 +27,7 @@ class TraktApiClient {
     required this.config,
     http.Client? client,
     this.onRateLimitChanged,
+    this.onTokenRefreshed,
   }) : _client = client ?? http.Client() {
     auth = AuthenticationApi(this);
     movies = MoviesApi(this);
@@ -37,16 +40,13 @@ class TraktApiClient {
     Map<String, String>? queryParams,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
-    final uri = Uri.parse('${config.baseUrl}$path').replace(
-      queryParameters: queryParams,
+    return _performRequest(
+      () => _client.get(
+        Uri.parse('${config.baseUrl}$path').replace(queryParameters: queryParams),
+        headers: config.headers,
+      ),
+      mapper,
     );
-
-    final response = await _client.get(
-      uri,
-      headers: config.headers,
-    );
-
-    return _handleResponse(response, mapper);
   }
 
   Future<T> post<T>(
@@ -54,15 +54,48 @@ class TraktApiClient {
     dynamic body,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
-    final uri = Uri.parse('${config.baseUrl}$path');
-
-    final response = await _client.post(
-      uri,
-      headers: config.headers,
-      body: body != null ? jsonEncode(body) : null,
+    return _performRequest(
+      () => _client.post(
+        Uri.parse('${config.baseUrl}$path'),
+        headers: config.headers,
+        body: body != null ? jsonEncode(body) : null,
+      ),
+      mapper,
     );
+  }
 
-    return _handleResponse(response, mapper);
+  Future<T> _performRequest<T>(
+    Future<http.Response> Function() request,
+    T Function(dynamic body, Map<String, String> headers) mapper,
+  ) async {
+    var response = await request();
+
+    try {
+      return _handleResponse(response, mapper);
+    } catch (e) {
+      if (e is TraktApiException &&
+          e.statusCode == 401 &&
+          config.refreshToken != null &&
+          config.clientSecret != null) {
+        // Attempt to refresh token
+        try {
+          final newToken = await auth.refreshToken(config.refreshToken!);
+          config = config.copyWith(
+            accessToken: newToken.accessToken,
+            refreshToken: newToken.refreshToken,
+          );
+          onTokenRefreshed?.call(newToken);
+
+          // Retry the request with new token
+          response = await request();
+          return _handleResponse(response, mapper);
+        } catch (refreshError) {
+          // If refresh fails, throw original 401
+          throw e;
+        }
+      }
+      rethrow;
+    }
   }
 
   T _handleResponse<T>(
@@ -72,7 +105,8 @@ class TraktApiClient {
     _updateRateLimit(response.headers);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final dynamic body = response.body.isEmpty ? null : jsonDecode(response.body);
+      final dynamic body =
+          response.body.isEmpty ? null : jsonDecode(response.body);
       return mapper(body, response.headers);
     }
 
