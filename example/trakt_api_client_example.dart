@@ -79,6 +79,33 @@ void main() async {
       for (var entry in myShows) {
         print(' - ${entry.firstAired?.toLocal()}: ${entry.show.title} - S${entry.episode.season}E${entry.episode.number} "${entry.episode.title}"');
       }
+
+      // 4. Checkin (Authenticated)
+      if (response.data.isNotEmpty) {
+        final movieToWatch = response.data.first;
+        print('\nStep 4: Checking into "${movieToWatch.title}"...');
+        try {
+          final checkinResponse = await client.checkin.checkin(
+            TraktCheckinRequest(
+              movie: movieToWatch,
+              message: 'Watching this cool movie!',
+            ),
+          );
+          print('Checkin successful! Expires at: ${checkinResponse.expiresAt}');
+        } catch (e) {
+          if (e is TraktApiException && e.statusCode == 409) {
+            print('Checkin failed: You are already watching something.');
+          } else {
+            rethrow;
+          }
+        }
+      }
+
+      // 5. Comments (Authenticated)
+      print('\nStep 5: Fetching Recent Comments...');
+      // Note: We don't have getRecent yet, but we can get replies to a known comment
+      // or try to post one. Let's just show how to structure the call.
+      print('Comment logic is ready. Use client.comments.post(...) to interact.');
     } else {
       // If not authenticated, we can still fetch public calendars
       print('\nStep 2 (Public): Fetching Global Movie Premieres...');

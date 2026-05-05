@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../api/authentication_api.dart';
 import '../api/calendars_api.dart';
+import '../api/checkin_api.dart';
+import '../api/comments_api.dart';
 import '../api/movies_api.dart';
 import '../api/shows_api.dart';
 import '../models/trakt_auth_models.dart';
@@ -22,6 +24,8 @@ class TraktApiClient {
   late final MoviesApi movies;
   late final ShowsApi shows;
   late final CalendarsApi calendars;
+  late final CheckinApi checkin;
+  late final CommentsApi comments;
 
   TraktApiClient({
     required this.config,
@@ -33,6 +37,8 @@ class TraktApiClient {
     movies = MoviesApi(this);
     shows = ShowsApi(this);
     calendars = CalendarsApi(this);
+    checkin = CheckinApi(this);
+    comments = CommentsApi(this);
   }
 
   Future<T> get<T>(
@@ -59,6 +65,34 @@ class TraktApiClient {
         Uri.parse('${config.baseUrl}$path'),
         headers: config.headers,
         body: body != null ? jsonEncode(body) : null,
+      ),
+      mapper,
+    );
+  }
+
+  Future<T> put<T>(
+    String path, {
+    dynamic body,
+    required T Function(dynamic body, Map<String, String> headers) mapper,
+  }) async {
+    return _performRequest(
+      () => _client.put(
+        Uri.parse('${config.baseUrl}$path'),
+        headers: config.headers,
+        body: body != null ? jsonEncode(body) : null,
+      ),
+      mapper,
+    );
+  }
+
+  Future<T> delete<T>(
+    String path, {
+    required T Function(dynamic body, Map<String, String> headers) mapper,
+  }) async {
+    return _performRequest(
+      () => _client.delete(
+        Uri.parse('${config.baseUrl}$path'),
+        headers: config.headers,
       ),
       mapper,
     );
