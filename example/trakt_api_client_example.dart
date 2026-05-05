@@ -9,13 +9,19 @@ void main() async {
 
   try {
     print('Fetching trending movies...');
-    final response = await client.movies.getTrending(limit: 5);
+    final response = await client.movies.getTrending(
+      limit: 5,
+      extended: TraktExtendedInfo.full,
+    );
     
     print('Page: ${response.pagination?.currentPage} / ${response.pagination?.pageCount}');
     print('Total items: ${response.pagination?.itemCount}');
 
     for (var movie in response.data) {
       print('Movie: ${movie.title} (${movie.year})');
+      print('Genres: ${movie.genres?.join(', ')}');
+      print('Overview: ${movie.overview}');
+      print('---');
     }
   } catch (e) {
     print('Error: $e');

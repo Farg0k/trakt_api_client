@@ -1,4 +1,5 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../models/trakt_movie.dart';
 
@@ -10,7 +11,7 @@ class MoviesApi {
   Future<TraktListResponse<TraktMovie>> getTrending({
     int page = 1,
     int limit = 10,
-    String extended = 'metadata',
+    String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
       '/movies/trending',
@@ -34,7 +35,7 @@ class MoviesApi {
 
   Future<TraktMovie> getDetails(
     String id, {
-    String extended = 'full',
+    String extended = TraktExtendedInfo.full,
   }) async {
     return _client.get(
       '/movies/$id',
