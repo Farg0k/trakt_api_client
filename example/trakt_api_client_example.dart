@@ -86,13 +86,13 @@ void main() async {
         final movieToWatch = response.data.first.movie;
         print('\nStep 4: Checking into "${movieToWatch.title}"...');
         try {
-          final checkinResponse = await client.checkin.checkin(
+          final checkingResponse = await client.checkin.checkin(
             TraktCheckinRequest(
               movie: movieToWatch,
               message: 'Watching this cool movie!',
             ),
           );
-          print('Checkin successful! Expires at: ${checkinResponse.expiresAt}');
+          print('Checkin successful! Expires at: ${checkingResponse.expiresAt}');
         } catch (e) {
           if (e is TraktApiException && e.statusCode == 409) {
             print('Checkin failed: You are already watching something.');
