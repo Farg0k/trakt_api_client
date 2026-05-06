@@ -19,6 +19,7 @@ import '../api/scrobble_api.dart';
 import '../api/search_api.dart';
 import '../api/seasons_api.dart';
 import '../api/shows_api.dart';
+import '../api/sync_api.dart';
 import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
@@ -52,6 +53,7 @@ class TraktApiClient {
   late final RecommendationsApi recommendations;
   late final ScrobbleApi scrobble;
   late final SearchApi search;
+  late final SyncApi sync;
 
   TraktApiClient({
     required this.config,
@@ -78,6 +80,7 @@ class TraktApiClient {
     recommendations = RecommendationsApi(this);
     scrobble = ScrobbleApi(this);
     search = SearchApi(this);
+    sync = SyncApi(this);
   }
 
   Future<T> get<T>(
