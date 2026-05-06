@@ -1,6 +1,9 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_media_type.dart';
+import '../core/trakt_report_reason.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_movie.dart';
@@ -119,7 +122,7 @@ class CommentsApi {
     );
   }
 
-  /// Remove a like from a comment.
+  /// Remove a like from a list.
   Future<void> unlike(int id) async {
     await _client.delete(
       '/comments/$id/like',
@@ -127,10 +130,23 @@ class CommentsApi {
     );
   }
 
+  /// Report a comment for inappropriate content.
+  Future<void> report(int id,
+      {required TraktReportReason reason, String? notes}) async {
+    await _client.post(
+      '/comments/$id/report',
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
+      mapper: (body, headers) => null,
+    );
+  }
+
   /// Get trending comments.
   Future<TraktListResponse<TraktComment>> getTrending({
-    String? commentType,
-    String? type,
+    TraktCommentType commentType = TraktCommentType.all,
+    TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
@@ -141,8 +157,8 @@ class CommentsApi {
 
   /// Get recent comments.
   Future<TraktListResponse<TraktComment>> getRecent({
-    String? commentType,
-    String? type,
+    TraktCommentType commentType = TraktCommentType.all,
+    TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
@@ -153,8 +169,8 @@ class CommentsApi {
 
   /// Get recently updated comments.
   Future<TraktListResponse<TraktComment>> getUpdates({
-    String? commentType,
-    String? type,
+    TraktCommentType commentType = TraktCommentType.all,
+    TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
@@ -197,8 +213,8 @@ class CommentsApi {
 
   Future<TraktListResponse<TraktComment>> _getCommentList(
     String path,
-    String? commentType,
-    String? type,
+    TraktCommentType commentType,
+    TraktMediaType type,
     int page,
     int limit,
     String extended,
@@ -207,9 +223,9 @@ class CommentsApi {
       'page': page.toString(),
       'limit': limit.toString(),
       'extended': extended,
+      'comment_type': commentType.value,
+      'type': type.value,
     };
-    if (commentType != null) queryParams['comment_type'] = commentType;
-    if (type != null) queryParams['type'] = type;
 
     return _client.get(
       path,

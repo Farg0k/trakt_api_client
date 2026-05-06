@@ -1,11 +1,14 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_media_type.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_list_item.dart';
 import '../models/trakt_movie.dart';
+import '../models/trakt_note.dart';
 import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
 import '../models/trakt_user.dart';
@@ -67,7 +70,7 @@ class UsersApi {
   /// Get hidden items.
   Future<TraktListResponse<TraktSearchResult>> getHiddenItems(
     String section, {
-    String? type,
+    TraktMediaType? type,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
@@ -77,7 +80,7 @@ class UsersApi {
       'limit': limit.toString(),
       'extended': extended,
     };
-    if (type != null) queryParams['type'] = type;
+    if (type != null) queryParams['type'] = type.value;
 
     return _client.get(
       '/users/hidden/$section',
@@ -144,7 +147,7 @@ class UsersApi {
     );
   }
 
-  // --- PROFILE ---
+  // --- PROFILE & SOCIAL ---
 
   /// Get a user's profile.
   Future<TraktUser> getProfile(String username, {String extended = TraktExtendedInfo.metadata}) async {
@@ -171,11 +174,49 @@ class UsersApi {
     );
   }
 
+  /// Get user's comments.
+  Future<TraktListResponse<TraktComment>> getComments(
+    String username, {
+    TraktCommentType commentType = TraktCommentType.all,
+    TraktMediaType type = TraktMediaType.all,
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _client.get(
+      '/users/$username/comments/${commentType.value}/${type.value}',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+        'extended': extended,
+      },
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((e) => TraktComment.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  /// Get user's notes.
+  Future<List<TraktNote>> getNotes(String username, {TraktMediaType? type}) async {
+    return _client.get(
+      '/users/$username/notes${type != null ? '/${type.value}' : ''}',
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktNote.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   // --- COLLECTION, HISTORY, WATCHED, FAVORITES ---
 
-  Future<List<dynamic>> getCollection(String username, {required String type, String extended = TraktExtendedInfo.metadata}) async {
+  Future<List<dynamic>> getCollection(String username, {required TraktMediaType type, String extended = TraktExtendedInfo.metadata}) async {
     return _client.get(
-      '/users/$username/collection/$type',
+      '/users/$username/collection/${type.value}',
       queryParams: {'extended': extended},
       mapper: (body, headers) => body as List,
     );
@@ -183,7 +224,7 @@ class UsersApi {
 
   Future<TraktListResponse<TraktSyncHistory>> getHistory(
     String username, {
-    String? type,
+    TraktMediaType? type,
     int? id,
     int page = 1,
     int limit = 10,
@@ -191,7 +232,7 @@ class UsersApi {
   }) async {
     var path = '/users/$username/history';
     if (type != null) {
-      path += '/$type';
+      path += '/${type.value}';
       if (id != null) path += '/$id';
     }
 
@@ -214,9 +255,9 @@ class UsersApi {
     );
   }
 
-  Future<List<dynamic>> getWatched(String username, {required String type, String extended = TraktExtendedInfo.metadata}) async {
+  Future<List<dynamic>> getWatched(String username, {required TraktMediaType type, String extended = TraktExtendedInfo.metadata}) async {
     return _client.get(
-      '/users/$username/watched/$type',
+      '/users/$username/watched/${type.value}',
       queryParams: {'extended': extended},
       mapper: (body, headers) => body as List,
     );
@@ -224,14 +265,14 @@ class UsersApi {
 
   Future<TraktListResponse<TraktSearchResult>> getWatchlist(
     String username, {
-    String? type,
+    TraktMediaType? type,
     String sort = 'rank',
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/users/$username/watchlist${type != null ? '/$type' : ''}/$sort',
+      '/users/$username/watchlist${type != null ? '/${type.value}' : ''}/$sort',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -251,14 +292,14 @@ class UsersApi {
 
   Future<TraktListResponse<TraktSearchResult>> getFavorites(
     String username, {
-    String? type,
+    TraktMediaType? type,
     String sort = 'rank',
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/users/$username/favorites${type != null ? '/$type' : ''}/$sort',
+      '/users/$username/favorites${type != null ? '/${type.value}' : ''}/$sort',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -306,11 +347,11 @@ class UsersApi {
   Future<List<TraktListItem>> getListItems(
     String username,
     String listId, {
-    String? type,
+    TraktMediaType? type,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     final queryParams = <String, String>{'extended': extended};
-    if (type != null) queryParams['type'] = type;
+    if (type != null) queryParams['type'] = type.value;
 
     return _client.get(
       '/users/$username/lists/$listId/items',

@@ -1,6 +1,7 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_media_type.dart';
 import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
 
@@ -21,11 +22,11 @@ class SyncApi {
 
   /// Get playback progress for movies and episodes.
   Future<List<TraktSyncPlayback>> getPlaybackProgress({
-    String? type,
+    TraktMediaType? type,
     int? limit,
   }) async {
     final queryParams = <String, String>{};
-    if (type != null) queryParams['type'] = type;
+    if (type != null) queryParams['type'] = type.value;
     if (limit != null) queryParams['limit'] = limit.toString();
 
     return _client.get(
@@ -57,11 +58,11 @@ class SyncApi {
 
   /// Get the user's collection.
   Future<List<dynamic>> getCollection({
-    required String type,
+    required TraktMediaType type,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/sync/collection/$type',
+      '/sync/collection/${type.value}',
       queryParams: {'extended': extended},
       mapper: (body, headers) => body as List,
     );
@@ -89,11 +90,11 @@ class SyncApi {
 
   /// Get the user's watched items.
   Future<List<dynamic>> getWatched({
-    required String type,
+    required TraktMediaType type,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/sync/watched/$type',
+      '/sync/watched/${type.value}',
       queryParams: {'extended': extended},
       mapper: (body, headers) => body as List,
     );
@@ -103,7 +104,7 @@ class SyncApi {
 
   /// Get the user's watch history.
   Future<TraktListResponse<TraktSyncHistory>> getHistory({
-    String? type,
+    TraktMediaType? type,
     int? id,
     DateTime? startAt,
     DateTime? endAt,
@@ -113,7 +114,7 @@ class SyncApi {
   }) async {
     var path = '/sync/history';
     if (type != null) {
-      path += '/$type';
+      path += '/${type.value}';
       if (id != null) path += '/$id';
     }
 
@@ -122,8 +123,8 @@ class SyncApi {
       'limit': limit.toString(),
       'extended': extended,
     };
-    if (startAt != null) queryParams['start_at'] = startAt.toIso8601String();
-    if (endAt != null) queryParams['end_at'] = endAt.toIso8601String();
+    if (startAt != null) queryParams['start_at'] = startAt.toUtc().toIso8601String();
+    if (endAt != null) queryParams['end_at'] = endAt.toUtc().toIso8601String();
 
     return _client.get(
       path,
@@ -162,11 +163,11 @@ class SyncApi {
 
   /// Get the user's ratings.
   Future<List<TraktSyncRating>> getRatings({
-    required String type,
+    required TraktMediaType type,
     int? rating,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    var path = '/sync/ratings/$type';
+    var path = '/sync/ratings/${type.value}';
     if (rating != null) path += '/$rating';
 
     return _client.get(
@@ -200,13 +201,13 @@ class SyncApi {
 
   /// Get the user's watchlist.
   Future<TraktListResponse<TraktSearchResult>> getWatchlist({
-    String? type,
+    TraktMediaType? type,
     String sort = 'rank',
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final path = '/sync/watchlist${type != null ? '/$type' : ''}/$sort';
+    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}/$sort';
 
     return _client.get(
       path,
@@ -258,12 +259,12 @@ class SyncApi {
 
   /// Get the user's hidden recommendations.
   Future<TraktListResponse<TraktSearchResult>> getRecommendations({
-    String? type,
+    TraktMediaType? type,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final path = '/sync/recommendations${type != null ? '/$type' : ''}';
+    final path = '/sync/recommendations${type != null ? '/${type.value}' : ''}';
 
     return _client.get(
       path,

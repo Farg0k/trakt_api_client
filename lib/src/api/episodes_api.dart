@@ -1,6 +1,7 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_report_reason.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -254,13 +255,13 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    required String reason,
+    required TraktReportReason reason,
     String? notes,
   }) async {
     await _client.post(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/report',
       body: {
-        'reason': reason,
+        'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
       mapper: (body, headers) => null,
