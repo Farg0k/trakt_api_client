@@ -7,6 +7,7 @@ import '../api/checkin_api.dart';
 import '../api/comments_api.dart';
 import '../api/countries_api.dart';
 import '../api/genres_api.dart';
+import '../api/languages_api.dart';
 import '../api/movies_api.dart';
 import '../api/shows_api.dart';
 import '../models/trakt_auth_models.dart';
@@ -32,6 +33,7 @@ class TraktApiClient {
   late final CertificationsApi certifications;
   late final CountriesApi countries;
   late final GenresApi genres;
+  late final LanguagesApi languages;
 
   TraktApiClient({
     required this.config,
@@ -48,6 +50,7 @@ class TraktApiClient {
     certifications = CertificationsApi(this);
     countries = CountriesApi(this);
     genres = GenresApi(this);
+    languages = LanguagesApi(this);
   }
 
   Future<T> get<T>(
