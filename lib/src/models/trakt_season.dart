@@ -1,3 +1,4 @@
+import 'trakt_episode.dart';
 import 'trakt_ids.dart';
 
 class TraktSeason {
@@ -11,6 +12,7 @@ class TraktSeason {
   final String? overview;
   final DateTime? firstAired;
   final String? network;
+  final List<TraktEpisode>? episodes;
 
   const TraktSeason({
     this.number,
@@ -23,6 +25,7 @@ class TraktSeason {
     this.overview,
     this.firstAired,
     this.network,
+    this.episodes,
   });
 
   factory TraktSeason.fromJson(Map<String, dynamic> json) {
@@ -41,6 +44,9 @@ class TraktSeason {
           ? DateTime.tryParse(json['first_aired'] as String)
           : null,
       network: json['network'] as String?,
+      episodes: (json['episodes'] as List?)
+          ?.map((e) => TraktEpisode.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -56,6 +62,7 @@ class TraktSeason {
       'overview': overview,
       'first_aired': firstAired?.toIso8601String(),
       'network': network,
+      if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
     };
   }
 }

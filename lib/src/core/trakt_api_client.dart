@@ -16,6 +16,7 @@ import '../api/people_api.dart';
 import '../api/recommendations_api.dart';
 import '../api/scrobble_api.dart';
 import '../api/search_api.dart';
+import '../api/seasons_api.dart';
 import '../api/shows_api.dart';
 import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
@@ -34,6 +35,7 @@ class TraktApiClient {
   late final AuthenticationApi auth;
   late final MoviesApi movies;
   late final ShowsApi shows;
+  late final SeasonsApi seasons;
   late final CalendarsApi calendars;
   late final CheckinApi checkin;
   late final CommentsApi comments;
@@ -58,6 +60,7 @@ class TraktApiClient {
     auth = AuthenticationApi(this);
     movies = MoviesApi(this);
     shows = ShowsApi(this);
+    seasons = SeasonsApi(this);
     calendars = CalendarsApi(this);
     checkin = CheckinApi(this);
     comments = CommentsApi(this);

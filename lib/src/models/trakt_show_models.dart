@@ -1,5 +1,6 @@
-import 'trakt_episode.dart';
 import 'trakt_show.dart';
+import 'trakt_season.dart';
+import 'trakt_episode.dart';
 
 class TraktShowUpdate {
   final DateTime updatedAt;
@@ -13,6 +14,46 @@ class TraktShowUpdate {
   factory TraktShowUpdate.fromJson(Map<String, dynamic> json) {
     return TraktShowUpdate(
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
+    );
+  }
+}
+
+class TraktSeasonUpdate {
+  final DateTime updatedAt;
+  final TraktSeason season;
+  final TraktShow show;
+
+  const TraktSeasonUpdate({
+    required this.updatedAt,
+    required this.season,
+    required this.show,
+  });
+
+  factory TraktSeasonUpdate.fromJson(Map<String, dynamic> json) {
+    return TraktSeasonUpdate(
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      season: TraktSeason.fromJson(json['season'] as Map<String, dynamic>),
+      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
+    );
+  }
+}
+
+class TraktDeletedSeason {
+  final DateTime deletedAt;
+  final TraktSeason season;
+  final TraktShow show;
+
+  const TraktDeletedSeason({
+    required this.deletedAt,
+    required this.season,
+    required this.show,
+  });
+
+  factory TraktDeletedSeason.fromJson(Map<String, dynamic> json) {
+    return TraktDeletedSeason(
+      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      season: TraktSeason.fromJson(json['season'] as Map<String, dynamic>),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
   }
