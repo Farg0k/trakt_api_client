@@ -154,7 +154,7 @@ class MoviesApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/movies/updates/$dateStr',
       queryParams: {
@@ -181,7 +181,7 @@ class MoviesApi {
     int page = 1,
     int limit = 10,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/movies/updates/id/$dateStr',
       queryParams: {
@@ -205,7 +205,7 @@ class MoviesApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/movies/updates/deleted/$dateStr',
       queryParams: {

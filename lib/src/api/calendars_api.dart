@@ -119,14 +119,11 @@ class CalendarsApi {
   String _buildPath(String basePath, DateTime? startDate, int days) {
     var path = basePath;
     if (startDate != null) {
-      final dateStr = startDate.toIso8601String().split('T')[0];
+      final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
       path += '/$dateStr';
       path += '/$days';
     } else if (days != 7) {
-      // If no start date but custom days, we still need a date placeholder or just the days?
-      // Trakt docs say: /calendars/all/movies/{start_date}/{days}
-      // If we omit start_date, it defaults to today. But the path structure is fixed.
-      final today = DateTime.now().toIso8601String().split('T')[0];
+      final today = DateTime.now().toUtc().toIso8601String().split('T')[0];
       path += '/$today/$days';
     }
     return path;

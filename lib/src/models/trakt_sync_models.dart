@@ -48,10 +48,10 @@ class TraktSyncMovie {
   Map<String, dynamic> toJson() {
     return {
       'ids': movie.ids?.toJson(),
-      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
     };
   }
 }
@@ -76,10 +76,10 @@ class TraktSyncShow {
   Map<String, dynamic> toJson() {
     return {
       'ids': show.ids?.toJson(),
-      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
       if (seasons != null) 'seasons': seasons!.map((e) => e.toJson()).toList(),
     };
   }
@@ -105,10 +105,10 @@ class TraktSyncSeason {
   Map<String, dynamic> toJson() {
     return {
       'number': number,
-      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
       if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
     };
   }
@@ -132,10 +132,10 @@ class TraktSyncEpisode {
   Map<String, dynamic> toJson() {
     return {
       'number': number,
-      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
     };
   }
 }

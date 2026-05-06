@@ -142,7 +142,7 @@ class ShowsApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/shows/updates/$dateStr',
       queryParams: {
@@ -169,7 +169,7 @@ class ShowsApi {
     int page = 1,
     int limit = 10,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/shows/updates/id/$dateStr',
       queryParams: {
@@ -193,7 +193,7 @@ class ShowsApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/shows/updates/deleted/$dateStr',
       queryParams: {

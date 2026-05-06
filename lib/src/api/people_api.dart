@@ -82,7 +82,7 @@ class PeopleApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/people/updates/$dateStr',
       queryParams: {
@@ -109,7 +109,7 @@ class PeopleApi {
     int page = 1,
     int limit = 10,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/people/updates/id/$dateStr',
       queryParams: {
@@ -133,7 +133,7 @@ class PeopleApi {
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
-    final dateStr = startDate.toIso8601String().split('T')[0];
+    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
       '/people/updates/deleted/$dateStr',
       queryParams: {
