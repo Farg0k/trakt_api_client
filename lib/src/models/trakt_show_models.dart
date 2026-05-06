@@ -1,6 +1,4 @@
 import 'trakt_episode.dart';
-import 'trakt_ids.dart';
-import 'trakt_season.dart';
 import 'trakt_show.dart';
 
 class TraktShowUpdate {

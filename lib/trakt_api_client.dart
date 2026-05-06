@@ -47,3 +47,4 @@ export 'src/api/lists_api.dart';
 export 'src/api/networks_api.dart';
 export 'src/api/notes_api.dart';
 export 'src/api/people_api.dart';
+export 'src/api/recommendations_api.dart';
