@@ -1,20 +1,27 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
+import '../core/trakt_list_response.dart';
 import '../models/trakt_comment.dart';
+import '../models/trakt_episode.dart';
 import '../models/trakt_movie.dart';
 import '../models/trakt_show.dart';
-import '../models/trakt_episode.dart';
+import '../models/trakt_season.dart';
+import '../models/trakt_list.dart';
+import '../models/trakt_user.dart';
 
 class CommentsApi {
   final TraktApiClient _client;
 
   CommentsApi(this._client);
 
-  /// Post a new comment to a movie, show, or episode.
+  /// Post a new comment to a movie, show, season, episode, or list.
   Future<TraktComment> post({
     required String comment,
     TraktMovie? movie,
     TraktShow? show,
+    TraktSeason? season,
     TraktEpisode? episode,
+    TraktList? list,
     bool spoiler = false,
   }) async {
     return _client.post(
@@ -24,7 +31,9 @@ class CommentsApi {
         'spoiler': spoiler,
         if (movie != null) 'movie': {'ids': movie.ids?.toJson()},
         if (show != null) 'show': {'ids': show.ids?.toJson()},
+        if (season != null) 'season': {'ids': season.ids?.toJson()},
         if (episode != null) 'episode': {'ids': episode.ids?.toJson()},
+        if (list != null) 'list': {'ids': list.ids?.toJson()},
       },
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
@@ -41,10 +50,8 @@ class CommentsApi {
   }
 
   /// Update an existing comment.
-  Future<TraktComment> update(int id, {required String comment, bool spoiler = false}) async {
-    // We need a PUT method in the client, but let's assume we use post or add put
-    // For now I'll use a generic request method if I add it, or just use post if it supports PUT via headers
-    // Actually Trakt uses PUT for updates. I should add PUT to TraktApiClient.
+  Future<TraktComment> update(int id,
+      {required String comment, bool spoiler = false}) async {
     return _client.put(
       '/comments/$id',
       body: {'comment': comment, 'spoiler': spoiler},
@@ -58,6 +65,49 @@ class CommentsApi {
     await _client.delete(
       '/comments/$id',
       mapper: (body, headers) => null,
+    );
+  }
+
+  /// Get replies for a comment.
+  Future<List<TraktComment>> getReplies(int id) async {
+    return _client.get(
+      '/comments/$id/replies',
+      mapper: (body, headers) => (body as List)
+          .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  /// Post a reply to a comment.
+  Future<TraktComment> postReply(int id,
+      {required String comment, bool spoiler = false}) async {
+    return _client.post(
+      '/comments/$id/replies',
+      body: {'comment': comment, 'spoiler': spoiler},
+      mapper: (body, headers) =>
+          TraktComment.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  /// Get users who liked a comment.
+  Future<TraktListResponse<TraktUser>> getLikes(int id,
+      {int page = 1, int limit = 10}) async {
+    return _client.get(
+      '/comments/$id/likes',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((item) =>
+                TraktUser.fromJson(item['user'] as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
     );
   }
 
@@ -77,23 +127,102 @@ class CommentsApi {
     );
   }
 
-  /// Get replies for a comment.
-  Future<List<TraktComment>> getReplies(int id) async {
+  /// Get trending comments.
+  Future<TraktListResponse<TraktComment>> getTrending({
+    String? commentType,
+    String? type,
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _getCommentList(
+        '/comments/trending', commentType, type, page, limit, extended);
+  }
+
+  /// Get recent comments.
+  Future<TraktListResponse<TraktComment>> getRecent({
+    String? commentType,
+    String? type,
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _getCommentList(
+        '/comments/recent', commentType, type, page, limit, extended);
+  }
+
+  /// Get recently updated comments.
+  Future<TraktListResponse<TraktComment>> getUpdates({
+    String? commentType,
+    String? type,
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _getCommentList(
+        '/comments/updates', commentType, type, page, limit, extended);
+  }
+
+  /// Get the object the comment is attached to.
+  ///
+  /// Returns a dynamic object which can be [TraktMovie], [TraktShow],
+  /// [TraktSeason], [TraktEpisode], or [TraktList].
+  Future<dynamic> getAttachedMedia(int id,
+      {String extended = TraktExtendedInfo.metadata}) async {
     return _client.get(
-      '/comments/$id/replies',
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      '/comments/$id/attached_media',
+      queryParams: {'extended': extended},
+      mapper: (body, headers) {
+        final Map<String, dynamic> json = body as Map<String, dynamic>;
+        final String type = json['type'] as String;
+        final data = json[type] as Map<String, dynamic>;
+
+        switch (type) {
+          case 'movie':
+            return TraktMovie.fromJson(data);
+          case 'show':
+            return TraktShow.fromJson(data);
+          case 'season':
+            return TraktSeason.fromJson(data);
+          case 'episode':
+            return TraktEpisode.fromJson(data);
+          case 'list':
+            return TraktList.fromJson(data);
+          default:
+            return data;
+        }
+      },
     );
   }
 
-  /// Post a reply to a comment.
-  Future<TraktComment> postReply(int id, {required String comment, bool spoiler = false}) async {
-    return _client.post(
-      '/comments/$id/replies',
-      body: {'comment': comment, 'spoiler': spoiler},
-      mapper: (body, headers) =>
-          TraktComment.fromJson(body as Map<String, dynamic>),
+  Future<TraktListResponse<TraktComment>> _getCommentList(
+    String path,
+    String? commentType,
+    String? type,
+    int page,
+    int limit,
+    String extended,
+  ) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      'extended': extended,
+    };
+    if (commentType != null) queryParams['comment_type'] = commentType;
+    if (type != null) queryParams['type'] = type;
+
+    return _client.get(
+      path,
+      queryParams: queryParams,
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
     );
   }
 }
