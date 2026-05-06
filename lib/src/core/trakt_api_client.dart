@@ -11,6 +11,7 @@ import '../api/languages_api.dart';
 import '../api/lists_api.dart';
 import '../api/movies_api.dart';
 import '../api/networks_api.dart';
+import '../api/notes_api.dart';
 import '../api/shows_api.dart';
 import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
@@ -38,6 +39,7 @@ class TraktApiClient {
   late final LanguagesApi languages;
   late final ListsApi lists;
   late final NetworksApi networks;
+  late final NotesApi notes;
 
   TraktApiClient({
     required this.config,
@@ -57,6 +59,7 @@ class TraktApiClient {
     languages = LanguagesApi(this);
     lists = ListsApi(this);
     networks = NetworksApi(this);
+    notes = NotesApi(this);
   }
 
   Future<T> get<T>(

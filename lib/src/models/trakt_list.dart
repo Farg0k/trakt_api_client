@@ -1,10 +1,11 @@
+import '../core/trakt_privacy.dart';
 import 'trakt_ids.dart';
 import 'trakt_user.dart';
 
 class TraktList {
   final String? name;
   final String? description;
-  final String? privacy;
+  final TraktPrivacy? privacy;
   final String? type;
   final bool? displayNumbers;
   final bool? allowComments;
@@ -40,7 +41,7 @@ class TraktList {
     return TraktList(
       name: json['name'] as String?,
       description: json['description'] as String?,
-      privacy: json['privacy'] as String?,
+      privacy: json['privacy'] != null ? TraktPrivacy.fromString(json['privacy'] as String) : null,
       type: json['type'] as String?,
       displayNumbers: json['display_numbers'] as bool?,
       allowComments: json['allow_comments'] as bool?,
@@ -60,7 +61,7 @@ class TraktList {
     return {
       'name': name,
       'description': description,
-      'privacy': privacy,
+      'privacy': privacy?.name,
       'type': type,
       'display_numbers': displayNumbers,
       'allow_comments': allowComments,
