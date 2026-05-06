@@ -4,6 +4,8 @@ class TraktIds {
   final String? imdb;
   final int? tmdb;
   final int? tvdb;
+  final int? tvrage;
+  final String? uuid;
 
   const TraktIds({
     this.trakt,
@@ -11,6 +13,8 @@ class TraktIds {
     this.imdb,
     this.tmdb,
     this.tvdb,
+    this.tvrage,
+    this.uuid,
   });
 
   factory TraktIds.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class TraktIds {
       imdb: json['imdb'] as String?,
       tmdb: json['tmdb'] as int?,
       tvdb: json['tvdb'] as int?,
+      tvrage: json['tvrage'] as int?,
+      uuid: json['uuid'] as String?,
     );
   }
 
@@ -30,6 +36,8 @@ class TraktIds {
       'imdb': imdb,
       'tmdb': tmdb,
       'tvdb': tvdb,
+      'tvrage': tvrage,
+      'uuid': uuid,
     };
   }
 }

@@ -5,11 +5,11 @@ import 'trakt_season.dart';
 import 'trakt_show.dart';
 
 class TraktSyncRequest {
-  final List<TraktMovie>? movies;
-  final List<TraktShow>? shows;
-  final List<TraktSeason>? seasons;
-  final List<TraktEpisode>? episodes;
-  final List<TraktPerson>? people;
+  final List<TraktSyncMovie>? movies;
+  final List<TraktSyncShow>? shows;
+  final List<TraktSyncSeason>? seasons;
+  final List<TraktSyncEpisode>? episodes;
+  final List<TraktSyncPerson>? people;
 
   const TraktSyncRequest({
     this.movies,
@@ -21,16 +21,132 @@ class TraktSyncRequest {
 
   Map<String, dynamic> toJson() {
     return {
-      if (movies != null) 'movies': movies!.map((e) => _mapMediaItem(e)).toList(),
-      if (shows != null) 'shows': shows!.map((e) => _mapMediaItem(e)).toList(),
-      if (seasons != null) 'seasons': seasons!.map((e) => _mapMediaItem(e)).toList(),
-      if (episodes != null) 'episodes': episodes!.map((e) => _mapMediaItem(e)).toList(),
-      if (people != null) 'people': people!.map((e) => _mapMediaItem(e)).toList(),
+      if (movies != null) 'movies': movies!.map((e) => e.toJson()).toList(),
+      if (shows != null) 'shows': shows!.map((e) => e.toJson()).toList(),
+      if (seasons != null) 'seasons': seasons!.map((e) => e.toJson()).toList(),
+      if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
+      if (people != null) 'people': people!.map((e) => e.toJson()).toList(),
     };
   }
+}
 
-  Map<String, dynamic> _mapMediaItem(dynamic item) {
-    return {'ids': item.ids.toJson()};
+class TraktSyncMovie {
+  final TraktMovie movie;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
+  final int? rating;
+  final DateTime? ratedAt;
+
+  const TraktSyncMovie({
+    required this.movie,
+    this.watchedAt,
+    this.collectedAt,
+    this.rating,
+    this.ratedAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ids': movie.ids?.toJson(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (rating != null) 'rating': rating,
+      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+    };
+  }
+}
+
+class TraktSyncShow {
+  final TraktShow show;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
+  final int? rating;
+  final DateTime? ratedAt;
+  final List<TraktSyncSeason>? seasons;
+
+  const TraktSyncShow({
+    required this.show,
+    this.watchedAt,
+    this.collectedAt,
+    this.rating,
+    this.ratedAt,
+    this.seasons,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ids': show.ids?.toJson(),
+      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (rating != null) 'rating': rating,
+      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (seasons != null) 'seasons': seasons!.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class TraktSyncSeason {
+  final int number;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
+  final int? rating;
+  final DateTime? ratedAt;
+  final List<TraktSyncEpisode>? episodes;
+
+  const TraktSyncSeason({
+    required this.number,
+    this.watchedAt,
+    this.collectedAt,
+    this.rating,
+    this.ratedAt,
+    this.episodes,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'number': number,
+      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (rating != null) 'rating': rating,
+      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+      if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class TraktSyncEpisode {
+  final int number;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
+  final int? rating;
+  final DateTime? ratedAt;
+
+  const TraktSyncEpisode({
+    required this.number,
+    this.watchedAt,
+    this.collectedAt,
+    this.rating,
+    this.ratedAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'number': number,
+      if (watchedAt != null) 'watched_at': watchedAt!.toIso8601String(),
+      if (collectedAt != null) 'collected_at': collectedAt!.toIso8601String(),
+      if (rating != null) 'rating': rating,
+      if (ratedAt != null) 'rated_at': ratedAt!.toIso8601String(),
+    };
+  }
+}
+
+class TraktSyncPerson {
+  final TraktPerson person;
+
+  const TraktSyncPerson({required this.person});
+
+  Map<String, dynamic> toJson() {
+    return {'ids': person.ids?.toJson()};
   }
 }
 

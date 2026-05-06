@@ -1,8 +1,11 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../models/trakt_comment.dart';
+import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_list_item.dart';
+import '../models/trakt_movie.dart';
 import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
 import '../models/trakt_user.dart';
@@ -13,6 +16,8 @@ class UsersApi {
 
   UsersApi(this._client);
 
+  // --- SETTINGS & FILTERS ---
+
   /// Get the user's settings.
   Future<TraktUserSettings> getSettings() async {
     return _client.get(
@@ -20,6 +25,16 @@ class UsersApi {
       mapper: (body, headers) => TraktUserSettings.fromJson(body as Map<String, dynamic>),
     );
   }
+
+  /// Get saved filters.
+  Future<List<Map<String, dynamic>>> getSavedFilters({String? section}) async {
+    return _client.get(
+      '/users/saved_filters${section != null ? '/$section' : ''}',
+      mapper: (body, headers) => List<Map<String, dynamic>>.from(body as List),
+    );
+  }
+
+  // --- FOLLOW REQUESTS ---
 
   /// Get follower requests.
   Future<List<TraktFollowRequest>> getFollowRequests() async {
@@ -47,6 +62,90 @@ class UsersApi {
     );
   }
 
+  // --- HIDDEN ITEMS ---
+
+  /// Get hidden items.
+  Future<TraktListResponse<TraktSearchResult>> getHiddenItems(
+    String section, {
+    String? type,
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      'extended': extended,
+    };
+    if (type != null) queryParams['type'] = type;
+
+    return _client.get(
+      '/users/hidden/$section',
+      queryParams: queryParams,
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  /// Add items to hidden list.
+  Future<TraktSyncResponse> addHiddenItems(String section, TraktSyncRequest request) async {
+    return _client.post(
+      '/users/hidden/$section',
+      body: request.toJson(),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  /// Remove items from hidden list.
+  Future<TraktSyncResponse> removeHiddenItems(String section, TraktSyncRequest request) async {
+    return _client.post(
+      '/users/hidden/$section/remove',
+      body: request.toJson(),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  // --- LIKES ---
+
+  /// Get user's likes.
+  Future<TraktListResponse<dynamic>> getLikes(
+    String username, {
+    required String type,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    return _client.get(
+      '/users/$username/likes/$type',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
+      mapper: (body, headers) {
+        final data = (body as List).map((e) {
+          final json = e as Map<String, dynamic>;
+          if (type == 'comments') {
+            return TraktComment.fromJson(json['comment'] as Map<String, dynamic>);
+          } else {
+            return TraktList.fromJson(json['list'] as Map<String, dynamic>);
+          }
+        }).toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  // --- PROFILE ---
+
   /// Get a user's profile.
   Future<TraktUser> getProfile(String username, {String extended = TraktExtendedInfo.metadata}) async {
     return _client.get(
@@ -56,7 +155,24 @@ class UsersApi {
     );
   }
 
-  /// Get a user's collection.
+  /// Get what a user is currently watching.
+  Future<dynamic> getWatching(String username, {String extended = TraktExtendedInfo.metadata}) async {
+    return _client.get(
+      '/users/$username/watching',
+      queryParams: {'extended': extended},
+      mapper: (body, headers) {
+        if (body == null) return null;
+        final json = body as Map<String, dynamic>;
+        final type = json['type'] as String;
+        if (type == 'movie') return TraktMovie.fromJson(json['movie'] as Map<String, dynamic>);
+        if (type == 'episode') return TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>);
+        return json;
+      },
+    );
+  }
+
+  // --- COLLECTION, HISTORY, WATCHED, FAVORITES ---
+
   Future<List<dynamic>> getCollection(String username, {required String type, String extended = TraktExtendedInfo.metadata}) async {
     return _client.get(
       '/users/$username/collection/$type',
@@ -65,7 +181,6 @@ class UsersApi {
     );
   }
 
-  /// Get a user's watch history.
   Future<TraktListResponse<TraktSyncHistory>> getHistory(
     String username, {
     String? type,
@@ -99,7 +214,70 @@ class UsersApi {
     );
   }
 
-  /// Get a user's personal lists.
+  Future<List<dynamic>> getWatched(String username, {required String type, String extended = TraktExtendedInfo.metadata}) async {
+    return _client.get(
+      '/users/$username/watched/$type',
+      queryParams: {'extended': extended},
+      mapper: (body, headers) => body as List,
+    );
+  }
+
+  Future<TraktListResponse<TraktSearchResult>> getWatchlist(
+    String username, {
+    String? type,
+    String sort = 'rank',
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _client.get(
+      '/users/$username/watchlist${type != null ? '/$type' : ''}/$sort',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+        'extended': extended,
+      },
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  Future<TraktListResponse<TraktSearchResult>> getFavorites(
+    String username, {
+    String? type,
+    String sort = 'rank',
+    int page = 1,
+    int limit = 10,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _client.get(
+      '/users/$username/favorites${type != null ? '/$type' : ''}/$sort',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+        'extended': extended,
+      },
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  // --- LISTS MANAGEMENT ---
+
   Future<List<TraktList>> getLists(String username) async {
     return _client.get(
       '/users/$username/lists',
@@ -109,7 +287,6 @@ class UsersApi {
     );
   }
 
-  /// Create a new personal list.
   Future<TraktList> createList(String username, TraktList list) async {
     return _client.post(
       '/users/$username/lists',
@@ -118,24 +295,14 @@ class UsersApi {
     );
   }
 
-  /// Update a personal list.
-  Future<TraktList> updateList(String username, String listId, TraktList list) async {
-    return _client.put(
-      '/users/$username/lists/$listId',
-      body: list.toJson(),
-      mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),
-    );
-  }
-
-  /// Delete a personal list.
-  Future<void> deleteList(String username, String listId) async {
-    await _client.delete(
-      '/users/$username/lists/$listId',
+  Future<void> reorderLists(String username, List<int> rank) async {
+    await _client.post(
+      '/users/$username/lists/reorder',
+      body: {'rank': rank},
       mapper: (body, headers) => null,
     );
   }
 
-  /// Get items in a personal list.
   Future<List<TraktListItem>> getListItems(
     String username,
     String listId, {
@@ -154,25 +321,16 @@ class UsersApi {
     );
   }
 
-  /// Add items to a personal list.
-  Future<TraktSyncResponse> addListItems(String username, String listId, TraktSyncRequest request) async {
-    return _client.post(
-      '/users/$username/lists/$listId/items',
-      body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+  Future<void> reorderListItems(String username, String listId, List<int> rank) async {
+    await _client.post(
+      '/users/$username/lists/$listId/items/reorder',
+      body: {'rank': rank},
+      mapper: (body, headers) => null,
     );
   }
 
-  /// Remove items from a personal list.
-  Future<TraktSyncResponse> removeListItems(String username, String listId, TraktSyncRequest request) async {
-    return _client.post(
-      '/users/$username/lists/$listId/items/remove',
-      body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
-    );
-  }
+  // --- SOCIAL ---
 
-  /// Follow a user.
   Future<TraktUserConnection> follow(String username) async {
     return _client.post(
       '/users/$username/follow',
@@ -180,7 +338,6 @@ class UsersApi {
     );
   }
 
-  /// Unfollow a user.
   Future<void> unfollow(String username) async {
     await _client.delete(
       '/users/$username/follow',
@@ -188,27 +345,6 @@ class UsersApi {
     );
   }
 
-  /// Get a user's followers.
-  Future<List<TraktUserConnection>> getFollowers(String username) async {
-    return _client.get(
-      '/users/$username/followers',
-      mapper: (body, headers) => (body as List)
-          .map((e) => TraktUserConnection.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  /// Get users a user is following.
-  Future<List<TraktUserConnection>> getFollowing(String username) async {
-    return _client.get(
-      '/users/$username/following',
-      mapper: (body, headers) => (body as List)
-          .map((e) => TraktUserConnection.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  /// Get a user's friends.
   Future<List<TraktUserConnection>> getFriends(String username) async {
     return _client.get(
       '/users/$username/friends',
@@ -218,7 +354,33 @@ class UsersApi {
     );
   }
 
-  /// Get a user's statistics.
+  // --- BLOCKING ---
+
+  Future<List<TraktUser>> getBlockedUsers() async {
+    return _client.get(
+      '/users/block',
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktUser.fromJson(e['user'] as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  Future<void> block(String username) async {
+    await _client.post(
+      '/users/$username/block',
+      mapper: (body, headers) => null,
+    );
+  }
+
+  Future<void> unblock(String username) async {
+    await _client.delete(
+      '/users/$username/block',
+      mapper: (body, headers) => null,
+    );
+  }
+
+  // --- STATS & REPORT ---
+
   Future<TraktUserStats> getStats(String username) async {
     return _client.get(
       '/users/$username/stats',
@@ -226,30 +388,14 @@ class UsersApi {
     );
   }
 
-  /// Get a user's watchlist.
-  Future<TraktListResponse<TraktSearchResult>> getWatchlist(
-    String username, {
-    String sort = 'rank',
-    int page = 1,
-    int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
-  }) async {
-    return _client.get(
-      '/users/$username/watchlist/$sort',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+  Future<void> report(String username, {required String reason, String? notes}) async {
+    await _client.post(
+      '/users/$username/report',
+      body: {
+        'reason': reason,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
+      mapper: (body, headers) => null,
     );
   }
 }

@@ -37,6 +37,14 @@ class SyncApi {
     );
   }
 
+  /// Get a specific playback progress item.
+  Future<TraktSyncPlayback?> getPlaybackItem(int id) async {
+    return _client.get(
+      '/sync/playback/$id',
+      mapper: (body, headers) => body == null ? null : TraktSyncPlayback.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
   /// Remove a playback progress item.
   Future<void> removePlaybackProgress(int id) async {
     await _client.delete(
@@ -74,6 +82,20 @@ class SyncApi {
       '/sync/collection/remove',
       body: request.toJson(),
       mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  // --- WATCHED ---
+
+  /// Get the user's watched items.
+  Future<List<dynamic>> getWatched({
+    required String type,
+    String extended = TraktExtendedInfo.metadata,
+  }) async {
+    return _client.get(
+      '/sync/watched/$type',
+      queryParams: {'extended': extended},
+      mapper: (body, headers) => body as List,
     );
   }
 
@@ -220,6 +242,15 @@ class SyncApi {
       '/sync/watchlist/remove',
       body: request.toJson(),
       mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  /// Reorder items in the user's watchlist.
+  Future<void> reorderWatchlist(List<int> rank) async {
+    await _client.post(
+      '/sync/watchlist/reorder',
+      body: {'rank': rank},
+      mapper: (body, headers) => null,
     );
   }
 
