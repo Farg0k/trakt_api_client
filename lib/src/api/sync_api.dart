@@ -1,10 +1,6 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
-import '../models/trakt_movie.dart';
-import '../models/trakt_show.dart';
-import '../models/trakt_season.dart';
-import '../models/trakt_episode.dart';
 import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
 

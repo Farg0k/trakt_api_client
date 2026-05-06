@@ -1,4 +1,5 @@
 import 'trakt_ids.dart';
+import 'trakt_user_models.dart';
 
 class TraktPerson {
   final String? name;
@@ -10,6 +11,7 @@ class TraktPerson {
   final String? homepage;
   final String? gender;
   final String? knownForDepartment;
+  final TraktUserSocialIds? socialIds;
 
   const TraktPerson({
     this.name,
@@ -21,6 +23,7 @@ class TraktPerson {
     this.homepage,
     this.gender,
     this.knownForDepartment,
+    this.socialIds,
   });
 
   factory TraktPerson.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,9 @@ class TraktPerson {
       homepage: json['homepage'] as String?,
       gender: json['gender'] as String?,
       knownForDepartment: json['known_for_department'] as String?,
+      socialIds: json['social_ids'] != null
+          ? TraktUserSocialIds.fromJson(json['social_ids'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -54,6 +60,7 @@ class TraktPerson {
       'homepage': homepage,
       'gender': gender,
       'known_for_department': knownForDepartment,
+      'social_ids': socialIds?.toJson(),
     };
   }
 }

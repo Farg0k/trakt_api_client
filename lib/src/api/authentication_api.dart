@@ -1,5 +1,4 @@
 import '../core/trakt_api_client.dart';
-import '../core/trakt_api_exception.dart';
 import '../models/trakt_auth_models.dart';
 
 class AuthenticationApi {
@@ -8,9 +7,6 @@ class AuthenticationApi {
   AuthenticationApi(this._client);
 
   /// Generate new codes to start the device authentication flow.
-  ///
-  /// The user will need to visit the [TraktDeviceCode.verificationUrl] and
-  /// enter the [TraktDeviceCode.userCode].
   Future<TraktDeviceCode> generateDeviceCode() async {
     return _client.post(
       '/oauth/device/code',
@@ -21,11 +17,6 @@ class AuthenticationApi {
   }
 
   /// Poll for the access token after the user has authorized the app.
-  ///
-  /// This should be called every [TraktDeviceCode.interval] seconds.
-  ///
-  /// Throws [TraktApiException] with status 400 if the code is still pending,
-  /// 404 if the code has expired, or 418 if the user denied access.
   Future<TraktOAuthToken> pollForDeviceToken(String deviceCode) async {
     return _client.post(
       '/oauth/device/token',
@@ -33,6 +24,22 @@ class AuthenticationApi {
         'code': deviceCode,
         'client_id': _client.config.clientId,
         'client_secret': _client.config.clientSecret,
+      },
+      mapper: (body, headers) =>
+          TraktOAuthToken.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  /// Exchange an authorization code (or PIN) for an access token.
+  Future<TraktOAuthToken> getToken(String code, {String redirectUri = 'urn:ietf:wg:oauth:2.0:oob'}) async {
+    return _client.post(
+      '/oauth/token',
+      body: {
+        'code': code,
+        'client_id': _client.config.clientId,
+        'client_secret': _client.config.clientSecret,
+        'redirect_uri': redirectUri,
+        'grant_type': 'authorization_code',
       },
       mapper: (body, headers) =>
           TraktOAuthToken.fromJson(body as Map<String, dynamic>),
