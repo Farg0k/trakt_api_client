@@ -1,10 +1,12 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
+import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
+import '../models/trakt_collected_item.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -15,6 +17,7 @@ import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_user_models.dart';
+import '../models/trakt_watched_item.dart';
 
 class UsersApi {
   final TraktApiClient _client;
@@ -75,12 +78,12 @@ class UsersApi {
     TraktMediaType? type,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
     };
     if (type != null) queryParams['type'] = type.value;
 
@@ -152,19 +155,19 @@ class UsersApi {
   // --- PROFILE & SOCIAL ---
 
   /// Get a user's profile.
-  Future<TraktUser> getProfile(String username, {String extended = TraktExtendedInfo.metadata}) async {
+  Future<TraktUser> getProfile(String username, {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => TraktUser.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// Get what a user is currently watching.
-  Future<dynamic> getWatching(String username, {String extended = TraktExtendedInfo.metadata}) async {
+  Future<dynamic> getWatching(String username, {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watching',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) {
         if (body == null) return null;
         final json = body as Map<String, dynamic>;
@@ -183,14 +186,14 @@ class UsersApi {
     TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/users/$username/comments/${commentType.value}/${type.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -205,22 +208,50 @@ class UsersApi {
   }
 
   /// Get user's notes.
-  Future<List<TraktNote>> getNotes(String username, {TraktMediaType? type}) async {
+  Future<TraktListResponse<TraktNote>> getNotes(
+    String username, {
+    TraktMediaType? type,
+    int page = 1,
+    int limit = 10,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      'extended': extended.value,
+    };
+    if (filters != null) queryParams.addAll(filters.toQueryParams());
+
     return _client.get(
       '/users/$username/notes${type != null ? '/${type.value}' : ''}',
-      mapper: (body, headers) => (body as List)
-          .map((e) => TraktNote.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      queryParams: queryParams,
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((e) => TraktNote.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
     );
   }
 
   // --- COLLECTION, HISTORY, WATCHED, FAVORITES ---
 
-  Future<List<dynamic>> getCollection(String username, {required TraktMediaType type, String extended = TraktExtendedInfo.metadata}) async {
+  Future<List<T>> getCollection<T>(String username, {required TraktMediaType type, TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/collection/${type.value}',
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => body as List,
+      queryParams: {'extended': extended.value},
+      mapper: (body, headers) {
+        final list = body as List;
+        if (type == TraktMediaType.movies) {
+          return list.map((e) => TraktCollectedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
+        } else {
+          return list.map((e) => TraktCollectedShow.fromJson(e as Map<String, dynamic>) as T).toList();
+        }
+      },
     );
   }
 
@@ -230,7 +261,7 @@ class UsersApi {
     int? id,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     var path = '/users/$username/history';
     if (type != null) {
@@ -243,7 +274,7 @@ class UsersApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -257,11 +288,18 @@ class UsersApi {
     );
   }
 
-  Future<List<dynamic>> getWatched(String username, {required TraktMediaType type, String extended = TraktExtendedInfo.metadata}) async {
+  Future<List<T>> getWatched<T>(String username, {required TraktMediaType type, TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watched/${type.value}',
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => body as List,
+      queryParams: {'extended': extended.value},
+      mapper: (body, headers) {
+        final list = body as List;
+        if (type == TraktMediaType.movies) {
+          return list.map((e) => TraktWatchedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
+        } else {
+          return list.map((e) => TraktWatchedShow.fromJson(e as Map<String, dynamic>) as T).toList();
+        }
+      },
     );
   }
 
@@ -271,14 +309,14 @@ class UsersApi {
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/users/$username/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -298,14 +336,14 @@ class UsersApi {
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/users/$username/favorites${type != null ? '/${type.value}' : ''}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -350,9 +388,9 @@ class UsersApi {
     String username,
     String listId, {
     TraktMediaType? type,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final queryParams = <String, String>{'extended': extended};
+    final queryParams = <String, String>{'extended': extended.value};
     if (type != null) queryParams['type'] = type.value;
 
     return _client.get(

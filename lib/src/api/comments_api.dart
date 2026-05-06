@@ -122,7 +122,7 @@ class CommentsApi {
     );
   }
 
-  /// Remove a like from a list.
+  /// Remove a like from a comment.
   Future<void> unlike(int id) async {
     await _client.delete(
       '/comments/$id/like',
@@ -149,7 +149,7 @@ class CommentsApi {
     TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
         '/comments/trending', commentType, type, page, limit, extended);
@@ -161,7 +161,7 @@ class CommentsApi {
     TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
         '/comments/recent', commentType, type, page, limit, extended);
@@ -173,7 +173,7 @@ class CommentsApi {
     TraktMediaType type = TraktMediaType.all,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
         '/comments/updates', commentType, type, page, limit, extended);
@@ -184,10 +184,10 @@ class CommentsApi {
   /// Returns a dynamic object which can be [TraktMovie], [TraktShow],
   /// [TraktSeason], [TraktEpisode], or [TraktList].
   Future<dynamic> getAttachedMedia(int id,
-      {String extended = TraktExtendedInfo.metadata}) async {
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/comments/$id/attached_media',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) {
         final Map<String, dynamic> json = body as Map<String, dynamic>;
         final String type = json['type'] as String;
@@ -217,12 +217,12 @@ class CommentsApi {
     TraktMediaType type,
     int page,
     int limit,
-    String extended,
+    TraktExtendedInfo extended,
   ) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
       'comment_type': commentType.value,
       'type': type.value,
     };

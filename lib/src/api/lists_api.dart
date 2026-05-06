@@ -54,7 +54,7 @@ class ListsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktList.fromJson(item['list'] as Map<String, dynamic>))
+            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -101,9 +101,9 @@ class ListsApi {
   Future<List<TraktListItem>> getItems(
     String id, {
     String? type,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final queryParams = <String, String>{'extended': extended};
+    final queryParams = <String, String>{'extended': extended.value};
     if (type != null) queryParams['type'] = type;
 
     return _client.get(
@@ -129,7 +129,7 @@ class ListsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
+            .map((item) => TraktUser.fromJson(item['user'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,

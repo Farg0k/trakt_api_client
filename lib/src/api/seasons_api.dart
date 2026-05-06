@@ -21,11 +21,11 @@ class SeasonsApi {
   /// Get all seasons for a show.
   Future<List<TraktSeason>> getAll(
     String showId, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((item) => TraktSeason.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -36,10 +36,10 @@ class SeasonsApi {
   Future<List<TraktEpisode>> getEpisodes(
     String showId,
     int seasonNumber, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     String? translations,
   }) async {
-    final queryParams = <String, String>{'extended': extended};
+    final queryParams = <String, String>{'extended': extended.value};
     if (translations != null) queryParams['translations'] = translations;
 
     return _client.get(
@@ -69,12 +69,14 @@ class SeasonsApi {
     TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -119,11 +121,11 @@ class SeasonsApi {
   Future<TraktCredits> getPeople(
     String showId,
     int seasonNumber, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/people',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktCredits.fromJson(body as Map<String, dynamic>),
     );
@@ -151,11 +153,11 @@ class SeasonsApi {
   Future<List<TraktUser>> getWatching(
     String showId,
     int seasonNumber, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/watching',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -177,7 +179,7 @@ class SeasonsApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -185,7 +187,7 @@ class SeasonsApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -228,7 +230,7 @@ class SeasonsApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -236,7 +238,7 @@ class SeasonsApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)

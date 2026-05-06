@@ -1,5 +1,6 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
+import '../core/trakt_filters.dart';
 import '../models/trakt_calendar_movie.dart';
 import '../models/trakt_calendar_show.dart';
 
@@ -8,124 +9,137 @@ class CalendarsApi {
 
   CalendarsApi(this._client);
 
-  // --- ALL (Public) ---
-
-  Future<List<TraktCalendarMovie>> getAllMovies({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getMovies('/calendars/all/movies', startDate, days, extended);
-
-  Future<List<TraktCalendarMovie>> getAllDvd({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getMovies('/calendars/all/dvd', startDate, days, extended);
-
-  Future<List<TraktCalendarShow>> getAllShows({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/all/shows', startDate, days, extended);
-
-  Future<List<TraktCalendarShow>> getAllNewShows({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/all/shows/new', startDate, days, extended);
-
-  Future<List<TraktCalendarShow>> getAllPremieres({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/all/shows/premieres', startDate, days, extended);
-
-  // --- MY (Authenticated) ---
-
-  Future<List<TraktCalendarMovie>> getMyMovies({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getMovies('/calendars/my/movies', startDate, days, extended);
-
-  Future<List<TraktCalendarMovie>> getMyDvd({
-    DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getMovies('/calendars/my/dvd', startDate, days, extended);
+  // --- MY CALENDARS (Authenticated) ---
 
   Future<List<TraktCalendarShow>> getMyShows({
     DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/my/shows', startDate, days, extended);
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/my/shows', startDate, days, extended,
+        filters, (json) => TraktCalendarShow.fromJson(json));
+  }
 
   Future<List<TraktCalendarShow>> getMyNewShows({
     DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/my/shows/new', startDate, days, extended);
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/my/shows/new', startDate, days,
+        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+  }
 
   Future<List<TraktCalendarShow>> getMyPremieres({
     DateTime? startDate,
-    int days = 7,
-    String extended = TraktExtendedInfo.metadata,
-  }) =>
-      _getShows('/calendars/my/shows/premieres', startDate, days, extended);
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/my/shows/premieres', startDate, days,
+        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+  }
+
+  Future<List<TraktCalendarMovie>> getMyMovies({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/my/movies', startDate, days, extended,
+        filters, (json) => TraktCalendarMovie.fromJson(json));
+  }
+
+  Future<List<TraktCalendarMovie>> getMyDvdMovies({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/my/dvd', startDate, days, extended,
+        filters, (json) => TraktCalendarMovie.fromJson(json));
+  }
+
+  // --- ALL CALENDARS (Public) ---
+
+  Future<List<TraktCalendarShow>> getAllShows({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/all/shows', startDate, days, extended,
+        filters, (json) => TraktCalendarShow.fromJson(json));
+  }
+
+  Future<List<TraktCalendarShow>> getAllNewShows({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/all/shows/new', startDate, days,
+        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+  }
+
+  Future<List<TraktCalendarShow>> getAllPremieres({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/all/shows/premieres', startDate, days,
+        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+  }
+
+  Future<List<TraktCalendarMovie>> getAllMovies({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/all/movies', startDate, days, extended,
+        filters, (json) => TraktCalendarMovie.fromJson(json));
+  }
+
+  Future<List<TraktCalendarMovie>> getAllDvdMovies({
+    DateTime? startDate,
+    int? days,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktFilters? filters,
+  }) async {
+    return _getCalendarList('/calendars/all/dvd', startDate, days, extended,
+        filters, (json) => TraktCalendarMovie.fromJson(json));
+  }
 
   // --- HELPERS ---
 
-  Future<List<TraktCalendarMovie>> _getMovies(
+  Future<List<T>> _getCalendarList<T>(
     String basePath,
     DateTime? startDate,
-    int days,
-    String extended,
+    int? days,
+    TraktExtendedInfo extended,
+    TraktFilters? filters,
+    T Function(Map<String, dynamic> json) itemMapper,
   ) async {
-    final path = _buildPath(basePath, startDate, days);
-    return _client.get(
-      path,
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktCalendarMovie.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  Future<List<TraktCalendarShow>> _getShows(
-    String basePath,
-    DateTime? startDate,
-    int days,
-    String extended,
-  ) async {
-    final path = _buildPath(basePath, startDate, days);
-    return _client.get(
-      path,
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktCalendarShow.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  String _buildPath(String basePath, DateTime? startDate, int days) {
     var path = basePath;
     if (startDate != null) {
-      final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
-      path += '/$dateStr';
-      path += '/$days';
-    } else if (days != 7) {
-      final today = DateTime.now().toUtc().toIso8601String().split('T')[0];
-      path += '/$today/$days';
+      path += '/${startDate.toUtc().toIso8601String().split('T')[0]}';
+      if (days != null) {
+        path += '/$days';
+      }
     }
-    return path;
+
+    final queryParams = <String, String>{'extended': extended.value};
+    if (filters != null) queryParams.addAll(filters.toQueryParams());
+
+    return _client.get(
+      path,
+      queryParams: queryParams,
+      mapper: (body, headers) => (body as List)
+          .map((item) => itemMapper(item as Map<String, dynamic>))
+          .toList(),
+    );
   }
 }

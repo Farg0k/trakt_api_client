@@ -15,11 +15,11 @@ class PeopleApi {
   /// Get detailed person information.
   Future<TraktPerson> getSummary(
     String id, {
-    String extended = TraktExtendedInfo.full,
+    TraktExtendedInfo extended = TraktExtendedInfo.full,
   }) async {
     return _client.get(
       '/people/$id',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktPerson.fromJson(body as Map<String, dynamic>),
     );
@@ -28,11 +28,11 @@ class PeopleApi {
   /// Get movie credits for a person.
   Future<TraktPersonMovieCredits> getMovies(
     String id, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/people/$id/movies',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktPersonMovieCredits.fromJson(body as Map<String, dynamic>),
     );
@@ -41,11 +41,11 @@ class PeopleApi {
   /// Get show credits for a person.
   Future<TraktPersonShowCredits> getShows(
     String id, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/people/$id/shows',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktPersonShowCredits.fromJson(body as Map<String, dynamic>),
     );
@@ -82,7 +82,7 @@ class PeopleApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -90,7 +90,7 @@ class PeopleApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -133,7 +133,7 @@ class PeopleApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -141,7 +141,7 @@ class PeopleApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)

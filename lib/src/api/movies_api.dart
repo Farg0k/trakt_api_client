@@ -23,7 +23,7 @@ class MoviesApi {
   Future<TraktListResponse<TraktTrendingMovie>> getTrending({
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList('/movies/trending', page, limit, extended,
@@ -34,7 +34,7 @@ class MoviesApi {
   Future<TraktListResponse<TraktMovie>> getPopular({
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getMovieResponseList('/movies/popular', page, limit, extended, null,
         (json) => TraktMovie.fromJson(json));
@@ -45,7 +45,7 @@ class MoviesApi {
     String? period,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
@@ -62,7 +62,7 @@ class MoviesApi {
     String? period,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
@@ -79,7 +79,7 @@ class MoviesApi {
     String? period,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
@@ -96,7 +96,7 @@ class MoviesApi {
     String? period,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
@@ -112,7 +112,7 @@ class MoviesApi {
   Future<TraktListResponse<TraktAnticipatedMovie>> getAnticipated({
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList('/movies/anticipated', page, limit, extended,
@@ -124,7 +124,7 @@ class MoviesApi {
     String? period,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
@@ -138,11 +138,11 @@ class MoviesApi {
 
   /// Get the top 10 weekend box office.
   Future<List<TraktBoxOfficeMovie>> getBoxOffice({
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/movies/boxoffice',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((item) =>
               TraktBoxOfficeMovie.fromJson(item as Map<String, dynamic>))
@@ -155,7 +155,7 @@ class MoviesApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -163,7 +163,7 @@ class MoviesApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -206,7 +206,7 @@ class MoviesApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -214,7 +214,7 @@ class MoviesApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -232,11 +232,11 @@ class MoviesApi {
   /// Get detailed movie information.
   Future<TraktMovie> getSummary(
     String id, {
-    String extended = TraktExtendedInfo.full,
+    TraktExtendedInfo extended = TraktExtendedInfo.full,
   }) async {
     return _client.get(
       '/movies/$id',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktMovie.fromJson(body as Map<String, dynamic>),
     );
@@ -300,12 +300,14 @@ class MoviesApi {
     TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/movies/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -347,10 +349,10 @@ class MoviesApi {
 
   /// Get all cast and crew for a movie.
   Future<TraktCredits> getPeople(String id,
-      {String extended = TraktExtendedInfo.metadata}) async {
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/movies/$id/people',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktCredits.fromJson(body as Map<String, dynamic>),
     );
@@ -370,14 +372,14 @@ class MoviesApi {
     String id, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/movies/$id/related',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -422,10 +424,10 @@ class MoviesApi {
 
   /// Get users currently watching a movie.
   Future<List<TraktUser>> getWatching(String id,
-      {String extended = TraktExtendedInfo.metadata}) async {
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/movies/$id/watching',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -461,14 +463,14 @@ class MoviesApi {
     String path,
     int page,
     int limit,
-    String extended,
+    TraktExtendedInfo extended,
     TraktFilters? filters,
     T Function(Map<String, dynamic> json) itemMapper,
   ) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
     };
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 

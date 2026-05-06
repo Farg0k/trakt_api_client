@@ -1,23 +1,31 @@
-/// Extended info parameters to control the level of detail returned by the Trakt API.
-class TraktExtendedInfo {
+enum TraktExtendedInfo {
   /// Minimal info (default).
-  static const String min = 'min';
+  min('min'),
 
   /// Complete info for the item.
-  static const String full = 'full';
+  full('full'),
 
-  /// Includes additional metadata like images and genres.
-  static const String metadata = 'metadata';
+  /// Includes additional metadata like genres.
+  metadata('metadata'),
 
   /// Excludes season details for shows.
-  static const String noSeasons = 'no_seasons';
+  noSeasons('no_seasons'),
 
   /// Includes episode details for each season of a show.
-  static const String episodes = 'episodes';
+  episodes('episodes'),
 
   /// Includes guest stars for movies and episodes.
-  static const String guestStars = 'guest_stars';
+  guestStars('guest_stars'),
 
   /// Includes comment counts for the item.
-  static const String comments = 'comments';
+  comments('comments'),
+
+  /// Includes VIP specific data.
+  vip('vip');
+
+  final String value;
+  const TraktExtendedInfo(this.value);
+
+  @override
+  String toString() => value;
 }

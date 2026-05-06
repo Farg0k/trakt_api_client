@@ -2,8 +2,11 @@ import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
+import '../core/trakt_sort_types.dart';
+import '../models/trakt_collected_item.dart';
 import '../models/trakt_search_result.dart';
 import '../models/trakt_sync_models.dart';
+import '../models/trakt_watched_item.dart';
 
 class SyncApi {
   final TraktApiClient _client;
@@ -57,14 +60,21 @@ class SyncApi {
   // --- COLLECTION ---
 
   /// Get the user's collection.
-  Future<List<dynamic>> getCollection({
+  Future<List<T>> getCollection<T>({
     required TraktMediaType type,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/sync/collection/${type.value}',
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => body as List,
+      queryParams: {'extended': extended.value},
+      mapper: (body, headers) {
+        final list = body as List;
+        if (type == TraktMediaType.movies) {
+          return list.map((e) => TraktCollectedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
+        } else {
+          return list.map((e) => TraktCollectedShow.fromJson(e as Map<String, dynamic>) as T).toList();
+        }
+      },
     );
   }
 
@@ -89,14 +99,21 @@ class SyncApi {
   // --- WATCHED ---
 
   /// Get the user's watched items.
-  Future<List<dynamic>> getWatched({
+  Future<List<T>> getWatched<T>({
     required TraktMediaType type,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/sync/watched/${type.value}',
-      queryParams: {'extended': extended},
-      mapper: (body, headers) => body as List,
+      queryParams: {'extended': extended.value},
+      mapper: (body, headers) {
+        final list = body as List;
+        if (type == TraktMediaType.movies) {
+          return list.map((e) => TraktWatchedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
+        } else {
+          return list.map((e) => TraktWatchedShow.fromJson(e as Map<String, dynamic>) as T).toList();
+        }
+      },
     );
   }
 
@@ -110,7 +127,7 @@ class SyncApi {
     DateTime? endAt,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     var path = '/sync/history';
     if (type != null) {
@@ -121,7 +138,7 @@ class SyncApi {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
     };
     if (startAt != null) queryParams['start_at'] = startAt.toUtc().toIso8601String();
     if (endAt != null) queryParams['end_at'] = endAt.toUtc().toIso8601String();
@@ -165,14 +182,14 @@ class SyncApi {
   Future<List<TraktSyncRating>> getRatings({
     required TraktMediaType type,
     int? rating,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     var path = '/sync/ratings/${type.value}';
     if (rating != null) path += '/$rating';
 
     return _client.get(
       path,
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((e) => TraktSyncRating.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -202,19 +219,19 @@ class SyncApi {
   /// Get the user's watchlist.
   Future<TraktListResponse<TraktSearchResult>> getWatchlist({
     TraktMediaType? type,
-    String sort = 'rank',
+    TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}/$sort';
+    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
 
     return _client.get(
       path,
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -262,7 +279,7 @@ class SyncApi {
     TraktMediaType? type,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final path = '/sync/recommendations${type != null ? '/${type.value}' : ''}';
 
@@ -271,7 +288,7 @@ class SyncApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)

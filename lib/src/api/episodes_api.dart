@@ -22,11 +22,11 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    String extended = TraktExtendedInfo.full,
+    TraktExtendedInfo extended = TraktExtendedInfo.full,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktEpisode.fromJson(body as Map<String, dynamic>),
     );
@@ -55,12 +55,14 @@ class EpisodesApi {
     TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -107,11 +109,11 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/people',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
           TraktCredits.fromJson(body as Map<String, dynamic>),
     );
@@ -148,11 +150,11 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/watching',
-      queryParams: {'extended': extended},
+      queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
           .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -178,7 +180,7 @@ class EpisodesApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -186,7 +188,7 @@ class EpisodesApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -229,7 +231,7 @@ class EpisodesApi {
     DateTime startDate, {
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
     return _client.get(
@@ -237,7 +239,7 @@ class EpisodesApi {
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
-        'extended': extended,
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)

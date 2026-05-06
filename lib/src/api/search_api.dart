@@ -3,6 +3,7 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
+import '../core/trakt_search_fields.dart';
 import '../models/trakt_search_result.dart';
 
 class SearchApi {
@@ -14,10 +15,10 @@ class SearchApi {
   Future<TraktListResponse<TraktSearchResult>> textQuery(
     String query, {
     List<TraktMediaType>? types,
-    List<String>? fields,
+    List<TraktSearchField>? fields,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     final typePath = types != null
@@ -27,9 +28,9 @@ class SearchApi {
       'query': query,
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
     };
-    if (fields != null) queryParams['fields'] = fields.join(',');
+    if (fields != null) queryParams['fields'] = fields.map((e) => e.value).join(',');
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
     return _client.get(
@@ -55,12 +56,12 @@ class SearchApi {
     TraktMediaType? type,
     int page = 1,
     int limit = 10,
-    String extended = TraktExtendedInfo.metadata,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
-      'extended': extended,
+      'extended': extended.value,
     };
     if (type != null) queryParams['type'] = type.value;
 
