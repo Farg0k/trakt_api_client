@@ -58,7 +58,7 @@ class ListsApi {
   }
 
   /// Get a single list by its ID.
-  Future<TraktList> getDetails(String id) async {
+  Future<TraktList> getSummary(String id) async {
     return _client.get(
       '/lists/$id',
       mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),

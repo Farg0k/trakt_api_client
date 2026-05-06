@@ -5,10 +5,13 @@ import '../core/trakt_list_response.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
+import '../models/trakt_media_certification.dart';
 import '../models/trakt_movie_models.dart';
 import '../models/trakt_show.dart';
 import '../models/trakt_show_models.dart';
+import '../models/trakt_studio.dart';
 import '../models/trakt_user.dart';
+import '../models/trakt_video.dart';
 
 class ShowsApi {
   final TraktApiClient _client;
@@ -212,7 +215,7 @@ class ShowsApi {
   }
 
   /// Get detailed show information.
-  Future<TraktShow> getDetails(
+  Future<TraktShow> getSummary(
     String id, {
     String extended = TraktExtendedInfo.full,
   }) async {
@@ -231,6 +234,25 @@ class ShowsApi {
       mapper: (body, headers) => (body as List)
           .map((item) => TraktShowAlias.fromJson(item as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  /// Get all certifications for a show.
+  Future<List<TraktMediaCertification>> getCertifications(String id) async {
+    return _client.get(
+      '/shows/$id/certifications',
+      mapper: (body, headers) => (body as List)
+          .map((item) =>
+              TraktMediaCertification.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  /// Get all languages for a show.
+  Future<List<String>> getLanguages(String id) async {
+    return _client.get(
+      '/shows/$id/languages',
+      mapper: (body, headers) => (body as List).map((e) => e as String).toList(),
     );
   }
 
@@ -348,6 +370,26 @@ class ShowsApi {
       '/shows/$id/stats',
       mapper: (body, headers) =>
           TraktShowStats.fromJson(body as Map<String, dynamic>),
+    );
+  }
+
+  /// Get all studios for a show.
+  Future<List<TraktStudio>> getStudios(String id) async {
+    return _client.get(
+      '/shows/$id/studios',
+      mapper: (body, headers) => (body as List)
+          .map((item) => TraktStudio.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  /// Get all videos for a show.
+  Future<List<TraktVideo>> getVideos(String id) async {
+    return _client.get(
+      '/shows/$id/videos',
+      mapper: (body, headers) => (body as List)
+          .map((item) => TraktVideo.fromJson(item as Map<String, dynamic>))
+          .toList(),
     );
   }
 

@@ -1,10 +1,12 @@
 import 'trakt_airs.dart';
 import 'trakt_ids.dart';
+import 'trakt_season.dart';
 
 class TraktShow {
   final String? title;
   final int? year;
   final TraktIds? ids;
+  final String? tagline;
   final String? overview;
   final double? rating;
   final int? votes;
@@ -23,11 +25,13 @@ class TraktShow {
   final List<String>? availableTranslations;
   final List<String>? genres;
   final int? airedEpisodes;
+  final List<TraktSeason>? seasons;
 
   const TraktShow({
     this.title,
     this.year,
     this.ids,
+    this.tagline,
     this.overview,
     this.rating,
     this.votes,
@@ -46,6 +50,7 @@ class TraktShow {
     this.availableTranslations,
     this.genres,
     this.airedEpisodes,
+    this.seasons,
   });
 
   factory TraktShow.fromJson(Map<String, dynamic> json) {
@@ -55,6 +60,7 @@ class TraktShow {
       ids: json['ids'] != null
           ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
           : null,
+      tagline: json['tagline'] as String?,
       overview: json['overview'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
       votes: json['votes'] as int?,
@@ -81,6 +87,9 @@ class TraktShow {
           .toList(),
       genres: (json['genres'] as List?)?.map((e) => e as String).toList(),
       airedEpisodes: json['aired_episodes'] as int?,
+      seasons: (json['seasons'] as List?)
+          ?.map((e) => TraktSeason.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -89,6 +98,7 @@ class TraktShow {
       'title': title,
       'year': year,
       'ids': ids?.toJson(),
+      'tagline': tagline,
       'overview': overview,
       'rating': rating,
       'votes': votes,
@@ -107,6 +117,7 @@ class TraktShow {
       'available_translations': availableTranslations,
       'genres': genres,
       'aired_episodes': airedEpisodes,
+      if (seasons != null) 'seasons': seasons!.map((e) => e.toJson()).toList(),
     };
   }
 }

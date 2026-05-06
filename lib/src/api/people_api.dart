@@ -11,7 +11,7 @@ class PeopleApi {
   PeopleApi(this._client);
 
   /// Get detailed person information.
-  Future<TraktPerson> getDetails(
+  Future<TraktPerson> getSummary(
     String id, {
     String extended = TraktExtendedInfo.full,
   }) async {
