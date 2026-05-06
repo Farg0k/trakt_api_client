@@ -15,6 +15,7 @@ import '../api/notes_api.dart';
 import '../api/people_api.dart';
 import '../api/recommendations_api.dart';
 import '../api/scrobble_api.dart';
+import '../api/search_api.dart';
 import '../api/shows_api.dart';
 import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
@@ -46,6 +47,7 @@ class TraktApiClient {
   late final PeopleApi people;
   late final RecommendationsApi recommendations;
   late final ScrobbleApi scrobble;
+  late final SearchApi search;
 
   TraktApiClient({
     required this.config,
@@ -69,6 +71,7 @@ class TraktApiClient {
     people = PeopleApi(this);
     recommendations = RecommendationsApi(this);
     scrobble = ScrobbleApi(this);
+    search = SearchApi(this);
   }
 
   Future<T> get<T>(
