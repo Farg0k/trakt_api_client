@@ -8,6 +8,8 @@ class TraktPerson {
   final DateTime? death;
   final String? birthplace;
   final String? homepage;
+  final String? gender;
+  final String? knownForDepartment;
 
   const TraktPerson({
     this.name,
@@ -17,6 +19,8 @@ class TraktPerson {
     this.death,
     this.birthplace,
     this.homepage,
+    this.gender,
+    this.knownForDepartment,
   });
 
   factory TraktPerson.fromJson(Map<String, dynamic> json) {
@@ -34,6 +38,8 @@ class TraktPerson {
           : null,
       birthplace: json['birthplace'] as String?,
       homepage: json['homepage'] as String?,
+      gender: json['gender'] as String?,
+      knownForDepartment: json['known_for_department'] as String?,
     );
   }
 
@@ -46,6 +52,8 @@ class TraktPerson {
       'death': death?.toIso8601String(),
       'birthplace': birthplace,
       'homepage': homepage,
+      'gender': gender,
+      'known_for_department': knownForDepartment,
     };
   }
 }

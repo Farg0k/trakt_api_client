@@ -20,8 +20,8 @@ class MoviesApi {
     String extended = TraktExtendedInfo.metadata,
     TraktFilters? filters,
   }) async {
-    return _getMovieResponseList('/movies/trending', page, limit, extended, filters,
-        (json) => TraktTrendingMovie.fromJson(json));
+    return _getMovieResponseList('/movies/trending', page, limit, extended,
+        filters, (json) => TraktTrendingMovie.fromJson(json));
   }
 
   /// Get popular movies.
@@ -29,7 +29,6 @@ class MoviesApi {
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
-    // Note: Popular doesn't support filters according to Trakt docs
   }) async {
     return _getMovieResponseList('/movies/popular', page, limit, extended, null,
         (json) => TraktMovie.fromJson(json));
@@ -165,6 +164,29 @@ class MoviesApi {
             .map((item) =>
                 TraktMovieUpdate.fromJson(item as Map<String, dynamic>))
             .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
+
+  /// Get recently updated movie IDs.
+  Future<TraktListResponse<int>> getUpdatedIds(
+    DateTime startDate, {
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final dateStr = startDate.toIso8601String().split('T')[0];
+    return _client.get(
+      '/movies/updates/id/$dateStr',
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
+      mapper: (body, headers) {
+        final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
           data: data,
           pagination: TraktPagination.fromHeaders(headers),
@@ -362,6 +384,30 @@ class MoviesApi {
       mapper: (body, headers) => (body as List)
           .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
           .toList(),
+    );
+  }
+
+  /// Report a movie for inappropriate content.
+  ///
+  /// [reason] must be one of: off-topic, offensive, spam, other.
+  Future<void> report(String id, {required String reason, String? notes}) async {
+    await _client.post(
+      '/movies/$id/report',
+      body: {
+        'reason': reason,
+        if (notes != null) 'notes': notes,
+      },
+      mapper: (body, headers) => null,
+    );
+  }
+
+  /// Refresh a movie to get the latest metadata from TMDB.
+  ///
+  /// Note: This is a VIP only method.
+  Future<void> refresh(String id) async {
+    await _client.post(
+      '/movies/$id/refresh',
+      mapper: (body, headers) => null,
     );
   }
 
