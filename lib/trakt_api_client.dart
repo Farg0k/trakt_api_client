@@ -11,6 +11,7 @@ export 'src/core/trakt_privacy.dart';
 export 'src/core/trakt_report_reason.dart';
 export 'src/core/trakt_comment_types.dart';
 export 'src/core/trakt_media_type.dart';
+export 'src/core/trakt_sort_types.dart';
 export 'src/core/trakt_image_utils.dart';
 export 'src/models/trakt_movie.dart';
 export 'src/models/trakt_movie_models.dart';

@@ -1,0 +1,30 @@
+enum TraktCommentSort {
+  newest('newest'),
+  oldest('oldest'),
+  likes('likes'),
+  likes30('likes_30'),
+  replies('replies'),
+  replies30('replies_30'),
+  plays('plays'),
+  rating('rating'),
+  added('added');
+
+  final String value;
+  const TraktCommentSort(this.value);
+
+  @override
+  String toString() => value;
+}
+
+enum TraktWatchlistSort {
+  rank('rank'),
+  added('added'),
+  released('released'),
+  title('title');
+
+  final String value;
+  const TraktWatchlistSort(this.value);
+
+  @override
+  String toString() => value;
+}

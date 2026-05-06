@@ -3,6 +3,8 @@ import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
+import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -266,13 +268,13 @@ class UsersApi {
   Future<TraktListResponse<TraktSearchResult>> getWatchlist(
     String username, {
     TraktMediaType? type,
-    String sort = 'rank',
+    TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/users/$username/watchlist${type != null ? '/${type.value}' : ''}/$sort',
+      '/users/$username/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -293,13 +295,13 @@ class UsersApi {
   Future<TraktListResponse<TraktSearchResult>> getFavorites(
     String username, {
     TraktMediaType? type,
-    String sort = 'rank',
+    TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
     int limit = 10,
     String extended = TraktExtendedInfo.metadata,
   }) async {
     return _client.get(
-      '/users/$username/favorites${type != null ? '/${type.value}' : ''}/$sort',
+      '/users/$username/favorites${type != null ? '/${type.value}' : ''}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -429,11 +431,11 @@ class UsersApi {
     );
   }
 
-  Future<void> report(String username, {required String reason, String? notes}) async {
+  Future<void> report(String username, {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/users/$username/report',
       body: {
-        'reason': reason,
+        'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
       mapper: (body, headers) => null,

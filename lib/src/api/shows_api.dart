@@ -2,7 +2,9 @@ import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -271,12 +273,12 @@ class ShowsApi {
   /// Get all comments for a show.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
-    String sort = 'newest',
+    TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/shows/$id/comments/$sort',
+      '/shows/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -296,13 +298,13 @@ class ShowsApi {
   /// Get all lists that contain this show.
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
-    String type = 'personal',
+    TraktListType type = TraktListType.personal,
     String sort = 'popular',
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/shows/$id/lists/$type/$sort',
+      '/shows/$id/lists/${type.value}/$sort',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

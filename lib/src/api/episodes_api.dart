@@ -1,7 +1,9 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -50,12 +52,12 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    String sort = 'newest',
+    TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/comments/$sort',
+      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -77,13 +79,13 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    String type = 'personal',
+    TraktListType type = TraktListType.personal,
     String sort = 'popular',
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/lists/$type/$sort',
+      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/lists/${type.value}/$sort',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

@@ -1,6 +1,7 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_person.dart';
@@ -53,13 +54,13 @@ class PeopleApi {
   /// Get all lists that contain this person.
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
-    String type = 'personal',
+    TraktListType type = TraktListType.personal,
     String sort = 'popular',
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/people/$id/lists/$type/$sort',
+      '/people/$id/lists/${type.value}/$sort',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

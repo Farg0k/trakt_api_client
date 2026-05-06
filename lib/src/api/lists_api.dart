@@ -1,7 +1,9 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_list_item.dart';
@@ -14,11 +16,13 @@ class ListsApi {
 
   /// Get trending lists.
   Future<TraktListResponse<TraktList>> getTrending({
+    TraktListType? type,
     int page = 1,
     int limit = 10,
   }) async {
+    final path = '/lists/trending${type != null ? '/${type.value}' : ''}';
     return _client.get(
-      '/lists/trending',
+      path,
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -37,18 +41,20 @@ class ListsApi {
 
   /// Get popular lists.
   Future<TraktListResponse<TraktList>> getPopular({
+    TraktListType? type,
     int page = 1,
     int limit = 10,
   }) async {
+    final path = '/lists/popular${type != null ? '/${type.value}' : ''}';
     return _client.get(
-      '/lists/popular',
+      path,
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
+            .map((item) => TraktList.fromJson(item['list'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -69,11 +75,12 @@ class ListsApi {
   /// Get comments for a list.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
+    TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/lists/$id/comments',
+      '/lists/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -122,7 +129,7 @@ class ListsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktUser.fromJson(item['user'] as Map<String, dynamic>))
+            .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
