@@ -155,8 +155,8 @@ class ListsApi {
       '/lists/$id/report',
       body: {
         'reason': reason,
-        if (notes != null) 'notes': notes,
-      },
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       mapper: (body, headers) => null,
     );
   }

@@ -64,7 +64,8 @@ void main() async {
       
       print('Page: ${response.pagination?.currentPage} / ${response.pagination?.pageCount}');
 
-      for (var movie in response.data) {
+      for (var trending in response.data) {
+        final movie = trending.movie;
         print(' - ${movie.title} (${movie.year}) [Rating: ${movie.rating}]');
       }
 
@@ -82,7 +83,7 @@ void main() async {
 
       // 4. Checkin (Authenticated)
       if (response.data.isNotEmpty) {
-        final movieToWatch = response.data.first;
+        final movieToWatch = response.data.first.movie;
         print('\nStep 4: Checking into "${movieToWatch.title}"...');
         try {
           final checkinResponse = await client.checkin.checkin(
@@ -103,8 +104,6 @@ void main() async {
 
       // 5. Comments (Authenticated)
       print('\nStep 5: Fetching Recent Comments...');
-      // Note: We don't have getRecent yet, but we can get replies to a known comment
-      // or try to post one. Let's just show how to structure the call.
       print('Comment logic is ready. Use client.comments.post(...) to interact.');
     } else {
       // If not authenticated, we can still fetch public calendars

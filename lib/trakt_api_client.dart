@@ -9,6 +9,7 @@ export 'src/core/trakt_extended_info.dart';
 export 'src/core/trakt_filters.dart';
 export 'src/core/trakt_image_utils.dart';
 export 'src/models/trakt_movie.dart';
+export 'src/models/trakt_movie_models.dart';
 export 'src/models/trakt_show.dart';
 export 'src/models/trakt_ids.dart';
 export 'src/models/trakt_airs.dart';
