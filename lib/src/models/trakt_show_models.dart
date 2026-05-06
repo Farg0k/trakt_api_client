@@ -59,6 +59,46 @@ class TraktDeletedSeason {
   }
 }
 
+class TraktEpisodeUpdate {
+  final DateTime updatedAt;
+  final TraktEpisode episode;
+  final TraktShow show;
+
+  const TraktEpisodeUpdate({
+    required this.updatedAt,
+    required this.episode,
+    required this.show,
+  });
+
+  factory TraktEpisodeUpdate.fromJson(Map<String, dynamic> json) {
+    return TraktEpisodeUpdate(
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+      episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
+      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
+    );
+  }
+}
+
+class TraktDeletedEpisode {
+  final DateTime deletedAt;
+  final TraktEpisode episode;
+  final TraktShow show;
+
+  const TraktDeletedEpisode({
+    required this.deletedAt,
+    required this.episode,
+    required this.show,
+  });
+
+  factory TraktDeletedEpisode.fromJson(Map<String, dynamic> json) {
+    return TraktDeletedEpisode(
+      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
+      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
+    );
+  }
+}
+
 class TraktShowStats {
   final int watchers;
   final int plays;

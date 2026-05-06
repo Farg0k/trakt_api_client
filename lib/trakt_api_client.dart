@@ -41,6 +41,7 @@ export 'src/models/trakt_list_item.dart';
 export 'src/api/movies_api.dart';
 export 'src/api/shows_api.dart';
 export 'src/api/seasons_api.dart';
+export 'src/api/episodes_api.dart';
 export 'src/api/authentication_api.dart';
 export 'src/api/calendars_api.dart';
 export 'src/api/checkin_api.dart';

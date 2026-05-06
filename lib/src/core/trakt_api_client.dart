@@ -6,6 +6,7 @@ import '../api/certifications_api.dart';
 import '../api/checkin_api.dart';
 import '../api/comments_api.dart';
 import '../api/countries_api.dart';
+import '../api/episodes_api.dart';
 import '../api/genres_api.dart';
 import '../api/languages_api.dart';
 import '../api/lists_api.dart';
@@ -36,6 +37,7 @@ class TraktApiClient {
   late final MoviesApi movies;
   late final ShowsApi shows;
   late final SeasonsApi seasons;
+  late final EpisodesApi episodes;
   late final CalendarsApi calendars;
   late final CheckinApi checkin;
   late final CommentsApi comments;
@@ -61,6 +63,7 @@ class TraktApiClient {
     movies = MoviesApi(this);
     shows = ShowsApi(this);
     seasons = SeasonsApi(this);
+    episodes = EpisodesApi(this);
     calendars = CalendarsApi(this);
     checkin = CheckinApi(this);
     comments = CommentsApi(this);
