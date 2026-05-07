@@ -3,6 +3,7 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_period.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
@@ -42,14 +43,14 @@ class MoviesApi {
 
   /// Get recommended movies.
   Future<TraktListResponse<TraktMovie>> getRecommended({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/recommended${period != null ? '/$period' : ''}',
+        '/movies/recommended${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -59,14 +60,14 @@ class MoviesApi {
 
   /// Get most played movies.
   Future<TraktListResponse<TraktMostMovie>> getPlayed({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/played${period != null ? '/$period' : ''}',
+        '/movies/played${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -76,14 +77,14 @@ class MoviesApi {
 
   /// Get most watched movies.
   Future<TraktListResponse<TraktMostMovie>> getWatched({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/watched${period != null ? '/$period' : ''}',
+        '/movies/watched${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -93,14 +94,14 @@ class MoviesApi {
 
   /// Get most collected movies.
   Future<TraktListResponse<TraktMostMovie>> getCollected({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/collected${period != null ? '/$period' : ''}',
+        '/movies/collected${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -121,14 +122,14 @@ class MoviesApi {
 
   /// Get most favorited movies.
   Future<TraktListResponse<TraktFavoritedMovie>> getFavorited({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/favorited${period != null ? '/$period' : ''}',
+        '/movies/favorited${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,

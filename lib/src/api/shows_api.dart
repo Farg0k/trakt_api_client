@@ -3,6 +3,7 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_period.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
@@ -44,14 +45,14 @@ class ShowsApi {
 
   /// Get recommended shows.
   Future<TraktListResponse<TraktShow>> getRecommended({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getShowResponseList(
-        '/shows/recommended${period != null ? '/$period' : ''}',
+        '/shows/recommended${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -61,14 +62,14 @@ class ShowsApi {
 
   /// Get most played shows.
   Future<TraktListResponse<TraktMostShow>> getPlayed({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getShowResponseList(
-        '/shows/played${period != null ? '/$period' : ''}',
+        '/shows/played${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -78,14 +79,14 @@ class ShowsApi {
 
   /// Get most watched shows.
   Future<TraktListResponse<TraktMostShow>> getWatched({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getShowResponseList(
-        '/shows/watched${period != null ? '/$period' : ''}',
+        '/shows/watched${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -95,14 +96,14 @@ class ShowsApi {
 
   /// Get most collected shows.
   Future<TraktListResponse<TraktMostShow>> getCollected({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getShowResponseList(
-        '/shows/collected${period != null ? '/$period' : ''}',
+        '/shows/collected${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
@@ -123,14 +124,14 @@ class ShowsApi {
 
   /// Get most favorited shows.
   Future<TraktListResponse<TraktFavoritedShow>> getFavorited({
-    String? period,
+    TraktPeriod? period,
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return _getShowResponseList(
-        '/shows/favorited${period != null ? '/$period' : ''}',
+        '/shows/favorited${period != null ? '/${period.value}' : ''}',
         page,
         limit,
         extended,
