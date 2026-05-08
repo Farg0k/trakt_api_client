@@ -1,5 +1,18 @@
-import '../../trakt_api_client.dart';
+import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
+import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
+import '../models/trakt_comment.dart';
+import '../models/trakt_episode.dart';
+import '../models/trakt_list.dart';
+import '../models/trakt_movie_models.dart';
+import '../models/trakt_season.dart';
+import '../models/trakt_show_models.dart';
+import '../models/trakt_user.dart';
+import '../models/trakt_video.dart';
+import '../core/trakt_date_utils.dart';
 
 class SeasonsApi {
   final TraktApiClient _client;
@@ -7,6 +20,8 @@ class SeasonsApi {
   SeasonsApi(this._client);
 
   /// Get all seasons for a show.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktSeason>> getAll(
     String showId, {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
@@ -21,6 +36,8 @@ class SeasonsApi {
   }
 
   /// Get all episodes for a single season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktEpisode>> getEpisodes(
     String showId,
     int seasonNumber, {
@@ -40,6 +57,8 @@ class SeasonsApi {
   }
 
   /// Get all translations for a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(String showId, int seasonNumber,
       {String? language}) async {
     return _client.get(
@@ -51,6 +70,8 @@ class SeasonsApi {
   }
 
   /// Get all comments for a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktComment>> getComments(
     String showId,
     int seasonNumber, {
@@ -79,6 +100,8 @@ class SeasonsApi {
   }
 
   /// Get all lists that contain this season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String showId,
     int seasonNumber, {
@@ -106,6 +129,8 @@ class SeasonsApi {
   }
 
   /// Get cast and crew for a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktCredits> getPeople(
     String showId,
     int seasonNumber, {
@@ -120,6 +145,8 @@ class SeasonsApi {
   }
 
   /// Get rating distribution for a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(String showId, int seasonNumber) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/ratings',
@@ -129,6 +156,8 @@ class SeasonsApi {
   }
 
   /// Get season stats.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShowStats> getStats(String showId, int seasonNumber) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/stats',
@@ -138,6 +167,8 @@ class SeasonsApi {
   }
 
   /// Get users currently watching a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktUser>> getWatching(
     String showId,
     int seasonNumber, {
@@ -153,6 +184,8 @@ class SeasonsApi {
   }
 
   /// Get all videos for a season.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(String showId, int seasonNumber) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/videos',
@@ -241,7 +274,9 @@ class SeasonsApi {
     );
   }
 
-  /// Report a season for inappropriate content.
+  /// [🔒 OAuth Required] Report a season for inappropriate content.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(String showId, int seasonNumber,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -250,11 +285,14 @@ class SeasonsApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   /// Refresh a season to get the latest metadata from TMDB.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> refresh(String showId, int seasonNumber) async {
     await _client.post(
       '/shows/$showId/seasons/$seasonNumber/refresh',

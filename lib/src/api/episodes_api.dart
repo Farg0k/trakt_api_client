@@ -1,5 +1,17 @@
-import '../../trakt_api_client.dart';
+import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
+import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
+import '../models/trakt_comment.dart';
+import '../models/trakt_episode.dart';
+import '../models/trakt_list.dart';
+import '../models/trakt_movie_models.dart';
+import '../models/trakt_show_models.dart';
+import '../models/trakt_user.dart';
+import '../models/trakt_video.dart';
+import '../core/trakt_date_utils.dart';
 
 class EpisodesApi {
   final TraktApiClient _client;
@@ -7,6 +19,8 @@ class EpisodesApi {
   EpisodesApi(this._client);
 
   /// Get detailed episode information.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktEpisode> getSummary(
     String showId,
     int seasonNumber,
@@ -22,6 +36,8 @@ class EpisodesApi {
   }
 
   /// Get all translations for an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(
     String showId,
     int seasonNumber,
@@ -37,6 +53,8 @@ class EpisodesApi {
   }
 
   /// Get all comments for an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktComment>> getComments(
     String showId,
     int seasonNumber,
@@ -66,6 +84,8 @@ class EpisodesApi {
   }
 
   /// Get all lists that contain this episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String showId,
     int seasonNumber,
@@ -94,6 +114,8 @@ class EpisodesApi {
   }
 
   /// Get cast and crew for an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktCredits> getPeople(
     String showId,
     int seasonNumber,
@@ -109,6 +131,8 @@ class EpisodesApi {
   }
 
   /// Get rating distribution for an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(
     String showId,
     int seasonNumber,
@@ -122,6 +146,8 @@ class EpisodesApi {
   }
 
   /// Get episode stats.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShowStats> getStats(
     String showId,
     int seasonNumber,
@@ -135,6 +161,8 @@ class EpisodesApi {
   }
 
   /// Get users currently watching an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktUser>> getWatching(
     String showId,
     int seasonNumber,
@@ -151,6 +179,8 @@ class EpisodesApi {
   }
 
   /// Get all videos for an episode.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(
     String showId,
     int seasonNumber,
@@ -243,7 +273,9 @@ class EpisodesApi {
     );
   }
 
-  /// Report an episode for inappropriate content.
+  /// [🔒 OAuth Required] Report an episode for inappropriate content.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(
     String showId,
     int seasonNumber,
@@ -257,11 +289,14 @@ class EpisodesApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   /// Refresh an episode to get the latest metadata from TMDB.
+  /// 
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> refresh(
     String showId,
     int seasonNumber,

@@ -65,6 +65,8 @@ class ListsApi {
   }
 
   /// Get a single list by its ID.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktList> getSummary(String id) async {
     return _client.get(
       '/lists/$id',
@@ -73,6 +75,8 @@ class ListsApi {
   }
 
   /// Get comments for a list.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
     TraktCommentSort sort = TraktCommentSort.newest,
@@ -100,6 +104,8 @@ class ListsApi {
   }
 
   /// Get items for a list.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<List<TraktListItem>> getItems(
     String id, {
     String? type,
@@ -118,6 +124,8 @@ class ListsApi {
   }
 
   /// Get users who liked a list.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktListResponse<TraktUser>> getLikes(
     String id, {
     int page = 1,
@@ -142,6 +150,8 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Like a list.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<void> like(String id) async {
     await _client.post(
       '/lists/$id/like',
@@ -151,6 +161,8 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Remove a like from a list.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<void> unlike(String id) async {
     await _client.delete(
       '/lists/$id/like',
@@ -160,6 +172,8 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Report a list for inappropriate content.
+  /// 
+  /// [id] can be a Trakt ID or Trakt slug.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(

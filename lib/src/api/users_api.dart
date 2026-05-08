@@ -131,6 +131,8 @@ class UsersApi {
   // --- LIKES ---
 
   /// Get user's likes.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<dynamic>> getLikes(
     String username, {
     required String type,
@@ -163,6 +165,8 @@ class UsersApi {
   // --- PROFILE & SOCIAL ---
 
   /// Get a user's profile.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktUser> getProfile(String username, {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username',
@@ -172,6 +176,8 @@ class UsersApi {
   }
 
   /// Get what a user is currently watching.
+  /// 
+  /// [username] can be a username or UUID.
   Future<dynamic> getWatching(String username, {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watching',
@@ -188,6 +194,8 @@ class UsersApi {
   }
 
   /// Get user's comments.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<TraktComment>> getComments(
     String username, {
     TraktCommentType commentType = TraktCommentType.all,
@@ -216,6 +224,8 @@ class UsersApi {
   }
 
   /// Get user's notes.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<TraktNote>> getNotes(
     String username, {
     TraktMediaType? type,
@@ -248,6 +258,9 @@ class UsersApi {
 
   // --- COLLECTION, HISTORY, WATCHED, FAVORITES ---
 
+  /// Get user's collection.
+  /// 
+  /// [username] can be a username or UUID.
   Future<List<T>> getCollection<T>(String username, {required TraktMediaType type, TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/collection/${type.value}',
@@ -263,6 +276,9 @@ class UsersApi {
     );
   }
 
+  /// Get user's watch history.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<TraktSyncHistory>> getHistory(
     String username, {
     TraktMediaType? type,
@@ -296,6 +312,9 @@ class UsersApi {
     );
   }
 
+  /// Get user's watched items.
+  /// 
+  /// [username] can be a username or UUID.
   Future<List<T>> getWatched<T>(String username, {required TraktMediaType type, TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watched/${type.value}',
@@ -311,6 +330,9 @@ class UsersApi {
     );
   }
 
+  /// Get user's watchlist.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<TraktSearchResult>> getWatchlist(
     String username, {
     TraktMediaType? type,
@@ -338,6 +360,9 @@ class UsersApi {
     );
   }
 
+  /// Get user's favorites.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktListResponse<TraktSearchResult>> getFavorites(
     String username, {
     TraktMediaType? type,
@@ -367,6 +392,9 @@ class UsersApi {
 
   // --- LISTS MANAGEMENT ---
 
+  /// Get user's lists.
+  /// 
+  /// [username] can be a username or UUID.
   Future<List<TraktList>> getLists(String username) async {
     return _client.get(
       '/users/$username/lists',
@@ -377,6 +405,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Create a new list for the user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktList> createList(String username, TraktList list) async {
     return _client.post(
       '/users/$username/lists',
@@ -387,6 +417,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Reorder lists for the user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> reorderLists(String username, List<int> rank) async {
     await _client.post(
       '/users/$username/lists/reorder',
@@ -396,6 +428,9 @@ class UsersApi {
     );
   }
 
+  /// Get items in a list.
+  /// 
+  /// [username] can be a username or UUID.
   Future<List<TraktListItem>> getListItems(
     String username,
     String listId, {
@@ -415,6 +450,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Reorder items in a list.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> reorderListItems(String username, String listId, List<int> rank) async {
     await _client.post(
       '/users/$username/lists/$listId/items/reorder',
@@ -427,6 +464,8 @@ class UsersApi {
   // --- SOCIAL ---
 
   /// [🔒 OAuth Required] Follow a user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktUserConnection> follow(String username) async {
     return _client.post(
       '/users/$username/follow',
@@ -436,6 +475,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Unfollow a user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> unfollow(String username) async {
     await _client.delete(
       '/users/$username/follow',
@@ -444,6 +485,9 @@ class UsersApi {
     );
   }
 
+  /// Get user's friends.
+  /// 
+  /// [username] can be a username or UUID.
   Future<List<TraktUserConnection>> getFriends(String username) async {
     return _client.get(
       '/users/$username/friends',
@@ -467,6 +511,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Block a user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> block(String username) async {
     await _client.post(
       '/users/$username/block',
@@ -476,6 +522,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Unblock a user.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> unblock(String username) async {
     await _client.delete(
       '/users/$username/block',
@@ -486,6 +534,9 @@ class UsersApi {
 
   // --- STATS & REPORT ---
 
+  /// Get user stats.
+  /// 
+  /// [username] can be a username or UUID.
   Future<TraktUserStats> getStats(String username) async {
     return _client.get(
       '/users/$username/stats',
@@ -494,6 +545,8 @@ class UsersApi {
   }
 
   /// [🔒 OAuth Required] Report a user for inappropriate content.
+  /// 
+  /// [username] can be a username or UUID.
   Future<void> report(String username, {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/users/$username/report',

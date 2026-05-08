@@ -58,6 +58,8 @@ class SearchApi {
   }
 
   /// Lookup items by their ID.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktSearchResult>> idLookup(
     String id, {
     required TraktIdType idType,

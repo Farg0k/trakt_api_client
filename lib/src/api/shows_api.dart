@@ -220,6 +220,8 @@ class ShowsApi {
   }
 
   /// Get detailed show information.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShow> getSummary(
     String id, {
     TraktExtendedInfo extended = TraktExtendedInfo.full,
@@ -233,6 +235,8 @@ class ShowsApi {
   }
 
   /// Get all title aliases for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktShowAlias>> getAliases(String id) async {
     return _client.get(
       '/shows/$id/aliases',
@@ -243,6 +247,8 @@ class ShowsApi {
   }
 
   /// Get all certifications for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktMediaCertification>> getCertifications(String id) async {
     return _client.get(
       '/shows/$id/certifications',
@@ -254,6 +260,8 @@ class ShowsApi {
   }
 
   /// Get all languages for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<String>> getLanguages(String id) async {
     return _client.get(
       '/shows/$id/languages',
@@ -262,6 +270,8 @@ class ShowsApi {
   }
 
   /// Get all translations for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(String id,
       {String? language}) async {
     return _client.get(
@@ -273,6 +283,8 @@ class ShowsApi {
   }
 
   /// Get all comments for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
     TraktCommentSort sort = TraktCommentSort.newest,
@@ -300,6 +312,8 @@ class ShowsApi {
   }
 
   /// Get all lists that contain this show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
     TraktListType type = TraktListType.personal,
@@ -326,6 +340,8 @@ class ShowsApi {
   }
 
   /// Get all cast and crew for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktCredits> getPeople(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -337,6 +353,8 @@ class ShowsApi {
   }
 
   /// Get rating distribution for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(String id) async {
     return _client.get(
       '/shows/$id/ratings',
@@ -346,6 +364,8 @@ class ShowsApi {
   }
 
   /// Get related shows.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktShow>> getRelated(
     String id, {
     int page = 1,
@@ -372,6 +392,8 @@ class ShowsApi {
   }
 
   /// Get show stats.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShowStats> getStats(String id) async {
     return _client.get(
       '/shows/$id/stats',
@@ -381,6 +403,8 @@ class ShowsApi {
   }
 
   /// Get all studios for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktStudio>> getStudios(String id) async {
     return _client.get(
       '/shows/$id/studios',
@@ -391,6 +415,8 @@ class ShowsApi {
   }
 
   /// Get all videos for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(String id) async {
     return _client.get(
       '/shows/$id/videos',
@@ -401,6 +427,8 @@ class ShowsApi {
   }
 
   /// Get users currently watching a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktUser>> getWatching(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -413,6 +441,8 @@ class ShowsApi {
   }
 
   /// Get collection progress for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShowProgress> getCollectionProgress(
     String id, {
     bool hidden = false,
@@ -432,6 +462,8 @@ class ShowsApi {
   }
 
   /// Get watched progress for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktShowProgress> getWatchedProgress(
     String id, {
     bool hidden = false,
@@ -451,6 +483,8 @@ class ShowsApi {
   }
 
   /// Reset watched progress for a show.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> resetWatchedProgress(String id) async {
     await _client.delete(
       '/shows/$id/progress/watched',
@@ -459,6 +493,8 @@ class ShowsApi {
   }
 
   /// Get the next episode to air.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktEpisode?> getNextEpisode(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -470,6 +506,8 @@ class ShowsApi {
   }
 
   /// Get the last episode to air.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktEpisode?> getLastEpisode(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -480,7 +518,9 @@ class ShowsApi {
     );
   }
 
-  /// Report a show for inappropriate content.
+  /// [🔒 OAuth Required] Report a show for inappropriate content.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -489,11 +529,14 @@ class ShowsApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   /// Refresh a show to get the latest metadata from TMDB.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> refresh(String id) async {
     await _client.post(
       '/shows/$id/refresh',

@@ -232,6 +232,8 @@ class MoviesApi {
   }
 
   /// Get detailed movie information.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktMovie> getSummary(
     String id, {
     TraktExtendedInfo extended = TraktExtendedInfo.full,
@@ -245,6 +247,8 @@ class MoviesApi {
   }
 
   /// Get all title aliases for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktMovieAlias>> getAliases(String id) async {
     return _client.get(
       '/movies/$id/aliases',
@@ -255,6 +259,8 @@ class MoviesApi {
   }
 
   /// Get all certifications for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktMediaCertification>> getCertifications(String id) async {
     return _client.get(
       '/movies/$id/certifications',
@@ -266,6 +272,8 @@ class MoviesApi {
   }
 
   /// Get all languages for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<String>> getLanguages(String id) async {
     return _client.get(
       '/movies/$id/languages',
@@ -274,6 +282,8 @@ class MoviesApi {
   }
 
   /// Get all release dates and certifications for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktMovieRelease>> getReleases(String id,
       {String? country}) async {
     return _client.get(
@@ -286,6 +296,8 @@ class MoviesApi {
   }
 
   /// Get all translations for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(String id,
       {String? language}) async {
     return _client.get(
@@ -297,6 +309,8 @@ class MoviesApi {
   }
 
   /// Get all comments for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
     TraktCommentSort sort = TraktCommentSort.newest,
@@ -324,6 +338,8 @@ class MoviesApi {
   }
 
   /// Get all lists that contain this movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
     TraktListType type = TraktListType.personal,
@@ -350,6 +366,8 @@ class MoviesApi {
   }
 
   /// Get all cast and crew for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktCredits> getPeople(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -361,6 +379,8 @@ class MoviesApi {
   }
 
   /// Get rating distribution for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(String id) async {
     return _client.get(
       '/movies/$id/ratings',
@@ -370,6 +390,8 @@ class MoviesApi {
   }
 
   /// Get related movies.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktMovie>> getRelated(
     String id, {
     int page = 1,
@@ -396,6 +418,8 @@ class MoviesApi {
   }
 
   /// Get movie stats.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktMovieStats> getStats(String id) async {
     return _client.get(
       '/movies/$id/stats',
@@ -405,6 +429,8 @@ class MoviesApi {
   }
 
   /// Get all studios for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktStudio>> getStudios(String id) async {
     return _client.get(
       '/movies/$id/studios',
@@ -415,6 +441,8 @@ class MoviesApi {
   }
 
   /// Get all videos for a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(String id) async {
     return _client.get(
       '/movies/$id/videos',
@@ -425,6 +453,8 @@ class MoviesApi {
   }
 
   /// Get users currently watching a movie.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktUser>> getWatching(String id,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
@@ -437,6 +467,8 @@ class MoviesApi {
   }
 
   /// [🔒 OAuth Required] Report a movie for inappropriate content.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -451,6 +483,8 @@ class MoviesApi {
   }
 
   /// [🔒 OAuth Required] Refresh a movie to get the latest metadata from TMDB.
+  /// 
+  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   ///
   /// Note: This is a VIP only method.
   Future<void> refresh(String id) async {
