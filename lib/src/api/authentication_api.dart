@@ -17,8 +17,10 @@ class AuthenticationApi {
   }
 
   /// Poll for the access token after the user has authorized the app.
+  /// 
+  /// Automatically updates the parent [TraktApiClient] config with the new token.
   Future<TraktOAuthToken> pollForDeviceToken(String deviceCode) async {
-    return _client.post(
+    final token = await _client.post(
       '/oauth/device/token',
       body: {
         'code': deviceCode,
@@ -28,11 +30,16 @@ class AuthenticationApi {
       mapper: (body, headers) =>
           TraktOAuthToken.fromJson(body as Map<String, dynamic>),
     );
+
+    _updateClientConfig(token);
+    return token;
   }
 
   /// Exchange an authorization code (or PIN) for an access token.
+  /// 
+  /// Automatically updates the parent [TraktApiClient] config with the new token.
   Future<TraktOAuthToken> getToken(String code, {String redirectUri = 'urn:ietf:wg:oauth:2.0:oob'}) async {
-    return _client.post(
+    final token = await _client.post(
       '/oauth/token',
       body: {
         'code': code,
@@ -44,11 +51,16 @@ class AuthenticationApi {
       mapper: (body, headers) =>
           TraktOAuthToken.fromJson(body as Map<String, dynamic>),
     );
+
+    _updateClientConfig(token);
+    return token;
   }
 
   /// Exchange a refresh token for a new access token.
+  /// 
+  /// Automatically updates the parent [TraktApiClient] config with the new token.
   Future<TraktOAuthToken> refreshToken(String refreshToken) async {
-    return _client.post(
+    final token = await _client.post(
       '/oauth/token',
       body: {
         'refresh_token': refreshToken,
@@ -60,9 +72,12 @@ class AuthenticationApi {
       mapper: (body, headers) =>
           TraktOAuthToken.fromJson(body as Map<String, dynamic>),
     );
+
+    _updateClientConfig(token);
+    return token;
   }
 
-  /// Revoke an access token.
+  /// Revoke an access token and clear it from the client config.
   Future<void> revokeToken(String accessToken) async {
     await _client.post(
       '/oauth/revoke',
@@ -73,5 +88,17 @@ class AuthenticationApi {
       },
       mapper: (body, headers) => null,
     );
+
+    if (_client.config.accessToken == accessToken) {
+      _client.config = _client.config.copyWith(accessToken: '', refreshToken: '');
+    }
+  }
+
+  void _updateClientConfig(TraktOAuthToken token) {
+    _client.config = _client.config.copyWith(
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken,
+    );
+    _client.onTokenRefreshed?.call(token);
   }
 }
