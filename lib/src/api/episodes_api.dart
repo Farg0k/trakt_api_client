@@ -7,7 +7,8 @@ import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
-import '../models/trakt_movie_models.dart';
+import '../models/trakt_media_models.dart';
+import '../models/trakt_generic_models.dart';
 import '../models/trakt_show_models.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
@@ -195,7 +196,7 @@ class EpisodesApi {
   }
 
   /// Get recently updated episodes.
-  Future<TraktListResponse<TraktEpisodeUpdate>> getUpdates(
+  Future<TraktListResponse<TraktUpdate<TraktEpisode>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -212,7 +213,7 @@ class EpisodesApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktEpisodeUpdate.fromJson(item as Map<String, dynamic>))
+                TraktUpdate<TraktEpisode>.fromJson(item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -246,7 +247,7 @@ class EpisodesApi {
   }
 
   /// Get recently deleted episodes.
-  Future<TraktListResponse<TraktDeletedEpisode>> getDeleted(
+  Future<TraktListResponse<TraktDeleted<TraktEpisode>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -263,7 +264,7 @@ class EpisodesApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktDeletedEpisode.fromJson(item as Map<String, dynamic>))
+                TraktDeleted<TraktEpisode>.fromJson(item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
             .toList();
         return TraktListResponse(
           data: data,

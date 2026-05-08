@@ -1,23 +1,22 @@
 import 'trakt_movie.dart';
-import 'trakt_person.dart';
 import 'trakt_show.dart';
 
 class TraktPersonMovieCredits {
-  final List<TraktPersonMovieCast>? cast;
-  final Map<String, List<TraktPersonMovieCrew>>? crew;
+  final List<TraktPersonCredit<TraktMovie>>? cast;
+  final Map<String, List<TraktPersonCredit<TraktMovie>>>? crew;
 
   const TraktPersonMovieCredits({this.cast, this.crew});
 
   factory TraktPersonMovieCredits.fromJson(Map<String, dynamic> json) {
     return TraktPersonMovieCredits(
       cast: (json['cast'] as List?)
-          ?.map((e) => TraktPersonMovieCast.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => TraktPersonCredit<TraktMovie>.fromJson(e as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
           .toList(),
       crew: (json['crew'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(
           key,
           (value as List)
-              .map((e) => TraktPersonMovieCrew.fromJson(e as Map<String, dynamic>))
+              .map((e) => TraktPersonCredit<TraktMovie>.fromJson(e as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
               .toList(),
         ),
       ),
@@ -25,50 +24,22 @@ class TraktPersonMovieCredits {
   }
 }
 
-class TraktPersonMovieCast {
-  final List<String> characters;
-  final TraktMovie movie;
-
-  const TraktPersonMovieCast({required this.characters, required this.movie});
-
-  factory TraktPersonMovieCast.fromJson(Map<String, dynamic> json) {
-    return TraktPersonMovieCast(
-      characters: (json['characters'] as List).map((e) => e as String).toList(),
-      movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
-    );
-  }
-}
-
-class TraktPersonMovieCrew {
-  final String job;
-  final TraktMovie movie;
-
-  const TraktPersonMovieCrew({required this.job, required this.movie});
-
-  factory TraktPersonMovieCrew.fromJson(Map<String, dynamic> json) {
-    return TraktPersonMovieCrew(
-      job: json['job'] as String,
-      movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
-    );
-  }
-}
-
 class TraktPersonShowCredits {
-  final List<TraktPersonShowCast>? cast;
-  final Map<String, List<TraktPersonShowCrew>>? crew;
+  final List<TraktPersonCredit<TraktShow>>? cast;
+  final Map<String, List<TraktPersonCredit<TraktShow>>>? crew;
 
   const TraktPersonShowCredits({this.cast, this.crew});
 
   factory TraktPersonShowCredits.fromJson(Map<String, dynamic> json) {
     return TraktPersonShowCredits(
       cast: (json['cast'] as List?)
-          ?.map((e) => TraktPersonShowCast.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => TraktPersonCredit<TraktShow>.fromJson(e as Map<String, dynamic>, TraktShow.fromJson, 'show'))
           .toList(),
       crew: (json['crew'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(
           key,
           (value as List)
-              .map((e) => TraktPersonShowCrew.fromJson(e as Map<String, dynamic>))
+              .map((e) => TraktPersonCredit<TraktShow>.fromJson(e as Map<String, dynamic>, TraktShow.fromJson, 'show'))
               .toList(),
         ),
       ),
@@ -76,58 +47,19 @@ class TraktPersonShowCredits {
   }
 }
 
-class TraktPersonShowCast {
-  final List<String> characters;
-  final TraktShow show;
+class TraktPersonCredit<T> {
+  final List<String>? characters;
+  final String? job;
+  final T item;
 
-  const TraktPersonShowCast({required this.characters, required this.show});
+  const TraktPersonCredit({this.characters, this.job, required this.item});
 
-  factory TraktPersonShowCast.fromJson(Map<String, dynamic> json) {
-    return TraktPersonShowCast(
-      characters: (json['characters'] as List).map((e) => e as String).toList(),
-      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
-    );
-  }
-}
-
-class TraktPersonShowCrew {
-  final String job;
-  final TraktShow show;
-
-  const TraktPersonShowCrew({required this.job, required this.show});
-
-  factory TraktPersonShowCrew.fromJson(Map<String, dynamic> json) {
-    return TraktPersonShowCrew(
-      job: json['job'] as String,
-      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
-    );
-  }
-}
-
-class TraktPersonUpdate {
-  final DateTime updatedAt;
-  final TraktPerson person;
-
-  const TraktPersonUpdate({required this.updatedAt, required this.person});
-
-  factory TraktPersonUpdate.fromJson(Map<String, dynamic> json) {
-    return TraktPersonUpdate(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
-    );
-  }
-}
-
-class TraktDeletedPerson {
-  final DateTime deletedAt;
-  final TraktPerson person;
-
-  const TraktDeletedPerson({required this.deletedAt, required this.person});
-
-  factory TraktDeletedPerson.fromJson(Map<String, dynamic> json) {
-    return TraktDeletedPerson(
-      deletedAt: DateTime.parse(json['deleted_at'] as String),
-      person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
+  factory TraktPersonCredit.fromJson(
+      Map<String, dynamic> json, T Function(Map<String, dynamic>) fromJsonT, String itemKey) {
+    return TraktPersonCredit(
+      characters: (json['characters'] as List?)?.map((e) => e as String).toList(),
+      job: json['job'] as String?,
+      item: fromJsonT(json[itemKey] as Map<String, dynamic>),
     );
   }
 }

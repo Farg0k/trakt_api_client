@@ -7,7 +7,8 @@ import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
-import '../models/trakt_movie_models.dart';
+import '../models/trakt_media_models.dart';
+import '../models/trakt_generic_models.dart';
 import '../models/trakt_season.dart';
 import '../models/trakt_show_models.dart';
 import '../models/trakt_user.dart';
@@ -196,7 +197,7 @@ class SeasonsApi {
   }
 
   /// Get recently updated seasons.
-  Future<TraktListResponse<TraktSeasonUpdate>> getUpdates(
+  Future<TraktListResponse<TraktUpdate<TraktSeason>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -213,7 +214,7 @@ class SeasonsApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktSeasonUpdate.fromJson(item as Map<String, dynamic>))
+                TraktUpdate<TraktSeason>.fromJson(item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -247,7 +248,7 @@ class SeasonsApi {
   }
 
   /// Get recently deleted seasons.
-  Future<TraktListResponse<TraktDeletedSeason>> getDeleted(
+  Future<TraktListResponse<TraktDeleted<TraktSeason>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -264,7 +265,7 @@ class SeasonsApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktDeletedSeason.fromJson(item as Map<String, dynamic>))
+                TraktDeleted<TraktSeason>.fromJson(item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
             .toList();
         return TraktListResponse(
           data: data,

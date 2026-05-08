@@ -1,6 +1,6 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_media_class.dart';
-import '../models/trakt_country.dart';
+import '../models/trakt_media_models.dart';
 
 class CountriesApi {
   final TraktApiClient _client;

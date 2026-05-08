@@ -6,7 +6,6 @@ import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
-import '../models/trakt_list_item.dart';
 import '../models/trakt_user.dart';
 
 class ListsApi {

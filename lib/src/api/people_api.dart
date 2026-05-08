@@ -7,6 +7,7 @@ import '../core/trakt_sort_types.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_person.dart';
 import '../models/trakt_person_models.dart';
+import '../models/trakt_generic_models.dart';
 import '../core/trakt_date_utils.dart';
 
 class PeopleApi {
@@ -88,7 +89,7 @@ class PeopleApi {
   }
 
   /// Get recently updated people.
-  Future<TraktListResponse<TraktPersonUpdate>> getUpdates(
+  Future<TraktListResponse<TraktUpdate<TraktPerson>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -105,7 +106,7 @@ class PeopleApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktPersonUpdate.fromJson(item as Map<String, dynamic>))
+                TraktUpdate<TraktPerson>.fromJson(item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -139,7 +140,7 @@ class PeopleApi {
   }
 
   /// Get recently deleted people.
-  Future<TraktListResponse<TraktDeletedPerson>> getDeleted(
+  Future<TraktListResponse<TraktDeleted<TraktPerson>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -156,7 +157,7 @@ class PeopleApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktDeletedPerson.fromJson(item as Map<String, dynamic>))
+                TraktDeleted<TraktPerson>.fromJson(item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
             .toList();
         return TraktListResponse(
           data: data,

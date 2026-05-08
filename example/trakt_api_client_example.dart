@@ -1,121 +1,90 @@
 import 'package:trakt_api_client/trakt_api_client.dart';
 
 void main() async {
+  // 1. Initial Configuration
   final config = TraktApiClientConfig(
     clientId: 'YOUR_CLIENT_ID',
     clientSecret: 'YOUR_CLIENT_SECRET',
-    userAgent: 'MyTraktApp/1.0.0',
+    // Optional: provide existing token if you have one
+    // accessToken: '...',
+    // refreshToken: '...',
   );
 
+  // 2. Initialize Client
   final client = TraktApiClient(
     config: config,
-    onRateLimitChanged: (limit) {
-      print('Rate Limit Updated: ${limit.remaining} remaining');
-    },
     onTokenRefreshed: (token) {
       print('Token refreshed automatically!');
-      // Here you would save token.accessToken and token.refreshToken to permanent storage
+      // Save token.accessToken to your storage
     },
   );
 
   try {
-    // 1. Device Authentication Flow
-    print('Step 1: Generating Device Code...');
+    // 3. Public API Example: Get Trending Movies (Paginated)
+    print('Fetching trending movies...');
+    final trendingMovies = await client.movies.getTrending(
+      page: 1,
+      limit: 5,
+      extended: TraktExtendedInfo.full,
+    );
+
+    print('Top Trending Movies:');
+    for (var trending in trendingMovies.data) {
+      final movie = trending.item;
+      print('- ${movie.title} (${movie.year}) - Watchers: ${trending.watchers}');
+      print('  Overview: ${movie.overview?.substring(0, 100)}...');
+    }
+
+    print('\nPagination Info:');
+    print('Current Page: ${trendingMovies.pagination?.currentPage}');
+    print('Total Pages: ${trendingMovies.pagination?.pageCount}');
+
+    // 4. Device Authentication Flow Example
+    /*
+    print('\nStarting Device Auth Flow...');
     final deviceCode = await client.auth.generateDeviceCode();
-    
-    print('Please visit: ${deviceCode.verificationUrl}');
+    print('Please go to: ${deviceCode.verificationUrl}');
     print('And enter code: ${deviceCode.userCode}');
-    print('Waiting for authorization (polling every ${deviceCode.interval}s)...');
 
-    TraktOAuthToken? token;
-    while (token == null) {
-      await Future.delayed(Duration(seconds: deviceCode.interval));
-      
-      try {
-        token = await client.auth.pollForDeviceToken(deviceCode.deviceCode);
-      } catch (e) {
-        if (e is TraktApiException) {
-          if (e.statusCode == 400) {
-            print('Still waiting for user to authorize...');
-            continue;
-          } else if (e.statusCode == 418) {
-            print('User denied access.');
-            break;
-          } else if (e.statusCode == 410) {
-            print('Code expired. Please restart the process.');
-            break;
-          }
-        }
-        rethrow;
-      }
-    }
+    // Polling for token (usually you'd do this in a loop with delay)
+    // The library handles automatic update of client.config upon success!
+    // final token = await client.auth.pollForDeviceToken(deviceCode.deviceCode);
+    */
 
-    if (token != null) {
-      print('Authorization Successful!');
-      print('Access Token: ${token.accessToken}');
-
-      // 2. Fetching Data with Pagination and Filters
-      print('\nStep 2: Fetching Trending Movies...');
-      final response = await client.movies.getTrending(
-        limit: 5,
-        extended: TraktExtendedInfo.full,
-        filters: TraktFilters(years: '2020-2024'),
+    // 5. Authenticated API Example: Get My Watchlist
+    // (Requires actual token in config)
+    /*
+    if (client.config.accessToken != null) {
+      print('\nFetching your watchlist...');
+      final watchlist = await client.sync.getWatchlist(
+        type: TraktMediaType.movies,
+        sort: TraktWatchlistSort.added,
       );
       
-      print('Page: ${response.pagination?.currentPage} / ${response.pagination?.pageCount}');
-
-      for (var trending in response.data) {
-        final movie = trending.movie;
-        print(' - ${movie.title} (${movie.year}) [Rating: ${movie.rating}]');
-      }
-
-      // 3. Personalized Calendars (Authenticated)
-      print('\nStep 3: Fetching Your Show Calendar...');
-      final myShows = await client.calendars.getMyShows(
-        days: 7,
-        extended: TraktExtendedInfo.full,
-      );
-
-      print('Upcoming episodes in your calendar:');
-      for (var entry in myShows) {
-        print(' - ${entry.firstAired.toLocal()}: ${entry.show.title} - S${entry.episode.season}E${entry.episode.number} "${entry.episode.title}"');
-      }
-
-      // 4. Checkin (Authenticated)
-      if (response.data.isNotEmpty) {
-        final movieToWatch = response.data.first.movie;
-        print('\nStep 4: Checking into "${movieToWatch.title}"...');
-        try {
-          final checkingResponse = await client.checkin.checkin(
-            TraktCheckinRequest(
-              movie: movieToWatch,
-              message: 'Watching this cool movie!',
-            ),
-          );
-          print('Checkin successful! Expires at: ${checkingResponse.expiresAt}');
-        } catch (e) {
-          if (e is TraktApiException && e.statusCode == 409) {
-            print('Checkin failed: You are already watching something.');
-          } else {
-            rethrow;
-          }
-        }
-      }
-
-      // 5. Comments (Authenticated)
-      print('\nStep 5: Fetching Recent Comments...');
-      print('Comment logic is ready. Use client.comments.post(...) to interact.');
-    } else {
-      // If not authenticated, we can still fetch public calendars
-      print('\nStep 2 (Public): Fetching Global Movie Premieres...');
-      final premieres = await client.calendars.getAllMovies(days: 3);
-      for (var entry in premieres) {
-        print(' - ${entry.released}: ${entry.movie.title}');
+      for (var result in watchlist.data) {
+        print('- ${result.movie?.title}');
       }
     }
+    */
 
-  } catch (e) {
-    print('Error: $e');
+    // 6. Advanced: Using Filters
+    print('\nSearching for Action movies from 2023...');
+    final actionMovies = await client.search.textQuery(
+      'Spiderman',
+      types: [TraktMediaType.movies],
+      filters: TraktFilters(
+        genres: ['action'],
+        years: '2023',
+      ),
+      escape: true, // Automatically escape special characters
+    );
+
+    for (var result in actionMovies.data) {
+      print('- Found: ${result.movie?.title} (${result.movie?.year})');
+    }
+
+  } on TraktApiException catch (e) {
+    print('API Error: ${e.message} (Status: ${e.statusCode})');
   } finally {
     client.close();
   }

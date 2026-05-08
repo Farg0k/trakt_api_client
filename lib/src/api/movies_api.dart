@@ -8,10 +8,10 @@ import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
-import '../models/trakt_media_certification.dart';
 import '../models/trakt_movie.dart';
 import '../models/trakt_movie_models.dart';
-import '../models/trakt_studio.dart';
+import '../models/trakt_media_models.dart';
+import '../models/trakt_generic_models.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
@@ -22,14 +22,20 @@ class MoviesApi {
   MoviesApi(this._client);
 
   /// Get trending movies.
-  Future<TraktListResponse<TraktTrendingMovie>> getTrending({
+  Future<TraktListResponse<TraktTrending<TraktMovie>>> getTrending({
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getMovieResponseList('/movies/trending', page, limit, extended,
-        filters, (json) => TraktTrendingMovie.fromJson(json));
+    return _getMovieResponseList(
+      '/movies/trending',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktTrending.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get popular movies.
@@ -60,7 +66,7 @@ class MoviesApi {
   }
 
   /// Get most played movies.
-  Future<TraktListResponse<TraktMostMovie>> getPlayed({
+  Future<TraktListResponse<TraktMost<TraktMovie>>> getPlayed({
     TraktPeriod? period,
     int page = 1,
     int limit = 10,
@@ -68,16 +74,17 @@ class MoviesApi {
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/played${period != null ? '/${period.value}' : ''}',
-        page,
-        limit,
-        extended,
-        filters,
-        (json) => TraktMostMovie.fromJson(json));
+      '/movies/played${period != null ? '/${period.value}' : ''}',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktMost.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get most watched movies.
-  Future<TraktListResponse<TraktMostMovie>> getWatched({
+  Future<TraktListResponse<TraktMost<TraktMovie>>> getWatched({
     TraktPeriod? period,
     int page = 1,
     int limit = 10,
@@ -85,16 +92,17 @@ class MoviesApi {
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/watched${period != null ? '/${period.value}' : ''}',
-        page,
-        limit,
-        extended,
-        filters,
-        (json) => TraktMostMovie.fromJson(json));
+      '/movies/watched${period != null ? '/${period.value}' : ''}',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktMost.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get most collected movies.
-  Future<TraktListResponse<TraktMostMovie>> getCollected({
+  Future<TraktListResponse<TraktMost<TraktMovie>>> getCollected({
     TraktPeriod? period,
     int page = 1,
     int limit = 10,
@@ -102,27 +110,34 @@ class MoviesApi {
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/collected${period != null ? '/${period.value}' : ''}',
-        page,
-        limit,
-        extended,
-        filters,
-        (json) => TraktMostMovie.fromJson(json));
+      '/movies/collected${period != null ? '/${period.value}' : ''}',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktMost.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get most anticipated movies.
-  Future<TraktListResponse<TraktAnticipatedMovie>> getAnticipated({
+  Future<TraktListResponse<TraktAnticipated<TraktMovie>>> getAnticipated({
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getMovieResponseList('/movies/anticipated', page, limit, extended,
-        filters, (json) => TraktAnticipatedMovie.fromJson(json));
+    return _getMovieResponseList(
+      '/movies/anticipated',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktAnticipated.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get most favorited movies.
-  Future<TraktListResponse<TraktFavoritedMovie>> getFavorited({
+  Future<TraktListResponse<TraktFavorited<TraktMovie>>> getFavorited({
     TraktPeriod? period,
     int page = 1,
     int limit = 10,
@@ -130,12 +145,13 @@ class MoviesApi {
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-        '/movies/favorited${period != null ? '/${period.value}' : ''}',
-        page,
-        limit,
-        extended,
-        filters,
-        (json) => TraktFavoritedMovie.fromJson(json));
+      '/movies/favorited${period != null ? '/${period.value}' : ''}',
+      page,
+      limit,
+      extended,
+      filters,
+      (json) => TraktFavorited.fromJson(json, TraktMovie.fromJson, 'movie'),
+    );
   }
 
   /// Get the top 10 weekend box office.
@@ -153,7 +169,7 @@ class MoviesApi {
   }
 
   /// Get recently updated movies.
-  Future<TraktListResponse<TraktMovieUpdate>> getUpdates(
+  Future<TraktListResponse<TraktUpdate<TraktMovie>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -170,7 +186,7 @@ class MoviesApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktMovieUpdate.fromJson(item as Map<String, dynamic>))
+                TraktUpdate<TraktMovie>.fromJson(item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -204,7 +220,7 @@ class MoviesApi {
   }
 
   /// Get recently deleted movies.
-  Future<TraktListResponse<TraktDeletedMovie>> getDeleted(
+  Future<TraktListResponse<TraktDeleted<TraktMovie>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
@@ -221,7 +237,7 @@ class MoviesApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktDeletedMovie.fromJson(item as Map<String, dynamic>))
+                TraktDeleted<TraktMovie>.fromJson(item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -249,11 +265,11 @@ class MoviesApi {
   /// Get all title aliases for a movie.
   /// 
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktMovieAlias>> getAliases(String id) async {
+  Future<List<TraktMediaAlias>> getAliases(String id) async {
     return _client.get(
       '/movies/$id/aliases',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktMovieAlias.fromJson(item as Map<String, dynamic>))
+          .map((item) => TraktMediaAlias.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -420,11 +436,10 @@ class MoviesApi {
   /// Get movie stats.
   /// 
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktMovieStats> getStats(String id) async {
+  Future<Map<String, dynamic>> getStats(String id) async {
     return _client.get(
       '/movies/$id/stats',
-      mapper: (body, headers) =>
-          TraktMovieStats.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => body as Map<String, dynamic>,
     );
   }
 

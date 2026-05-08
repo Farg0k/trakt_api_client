@@ -10,7 +10,6 @@ import '../models/trakt_collected_item.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
-import '../models/trakt_list_item.dart';
 import '../models/trakt_movie.dart';
 import '../models/trakt_note.dart';
 import '../models/trakt_search_result.dart';
