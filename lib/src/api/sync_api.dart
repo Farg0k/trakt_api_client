@@ -1,3 +1,4 @@
+import '../../trakt_api_client.dart';
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
@@ -29,7 +30,7 @@ class SyncApi {
     int? limit,
   }) async {
     final queryParams = <String, String>{};
-    if (type != null) queryParams['type'] = type.value;
+    if (type != null) queryParams['type'] = type.singularValue; // Search/Playback usually use singular
     if (limit != null) queryParams['limit'] = limit.toString();
 
     return _client.get(
@@ -69,11 +70,17 @@ class SyncApi {
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
         final list = body as List;
-        if (type == TraktMediaType.movies) {
-          return list.map((e) => TraktCollectedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
-        } else {
-          return list.map((e) => TraktCollectedShow.fromJson(e as Map<String, dynamic>) as T).toList();
-        }
+        return list.map((e) {
+          final json = e as Map<String, dynamic>;
+          if (type == TraktMediaType.movies) {
+            return TraktCollectedMovie.fromJson(json) as T;
+          } else if (type == TraktMediaType.shows) {
+            return TraktCollectedShow.fromJson(json) as T;
+          }
+          // For seasons/episodes, Trakt returns specialized structures, 
+          // but typically developers use movies/shows for full sync.
+          return json as T;
+        }).toList();
       },
     );
   }
@@ -108,11 +115,15 @@ class SyncApi {
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
         final list = body as List;
-        if (type == TraktMediaType.movies) {
-          return list.map((e) => TraktWatchedMovie.fromJson(e as Map<String, dynamic>) as T).toList();
-        } else {
-          return list.map((e) => TraktWatchedShow.fromJson(e as Map<String, dynamic>) as T).toList();
-        }
+        return list.map((e) {
+          final json = e as Map<String, dynamic>;
+          if (type == TraktMediaType.movies) {
+            return TraktWatchedMovie.fromJson(json) as T;
+          } else if (type == TraktMediaType.shows) {
+            return TraktWatchedShow.fromJson(json) as T;
+          }
+          return json as T;
+        }).toList();
       },
     );
   }
@@ -140,8 +151,8 @@ class SyncApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (startAt != null) queryParams['start_at'] = startAt.toUtc().toIso8601String();
-    if (endAt != null) queryParams['end_at'] = endAt.toUtc().toIso8601String();
+    if (startAt != null) queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
+    if (endAt != null) queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
 
     return _client.get(
       path,

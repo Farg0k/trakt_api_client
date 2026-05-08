@@ -1,77 +1,74 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_ids.dart';
 
 class TraktMovie {
-  final String? title;
-  final int? year;
+  final String title;
+  final int year;
   final TraktIds? ids;
   final String? tagline;
   final String? overview;
-  final double? rating;
-  final int? votes;
-  final String? certification;
   final DateTime? released;
   final int? runtime;
   final String? country;
+  final DateTime? updatedAt;
   final String? trailer;
   final String? homepage;
-  final String? status;
+  final int? status;
+  final double? rating;
+  final int? votes;
   final int? commentCount;
-  final DateTime? updatedAt;
   final String? language;
   final List<String>? availableTranslations;
   final List<String>? genres;
+  final String? certification;
 
   const TraktMovie({
-    this.title,
-    this.year,
+    required this.title,
+    required this.year,
     this.ids,
     this.tagline,
     this.overview,
-    this.rating,
-    this.votes,
-    this.certification,
     this.released,
     this.runtime,
     this.country,
+    this.updatedAt,
     this.trailer,
     this.homepage,
     this.status,
+    this.rating,
+    this.votes,
     this.commentCount,
-    this.updatedAt,
     this.language,
     this.availableTranslations,
     this.genres,
+    this.certification,
   });
 
   factory TraktMovie.fromJson(Map<String, dynamic> json) {
     return TraktMovie(
-      title: json['title'] as String?,
-      year: json['year'] as int?,
+      title: json['title'] as String? ?? '',
+      year: json['year'] as int? ?? 0,
       ids: json['ids'] != null
           ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
           : null,
       tagline: json['tagline'] as String?,
       overview: json['overview'] as String?,
-      rating: (json['rating'] as num?)?.toDouble(),
-      votes: json['votes'] as int?,
-      certification: json['certification'] as String?,
-      released: json['released'] != null
-          ? DateTime.tryParse(json['released'] as String)
-          : null,
+      released: TraktDateUtils.parse(json['released']),
       runtime: json['runtime'] as int?,
       country: json['country'] as String?,
+      updatedAt: TraktDateUtils.parse(json['updated_at']),
       trailer: json['trailer'] as String?,
       homepage: json['homepage'] as String?,
-      status: json['status'] as String?,
+      status: json['status'] as int?,
+      rating: (json['rating'] as num?)?.toDouble(),
+      votes: json['votes'] as int?,
       commentCount: json['comment_count'] as int?,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.tryParse(json['updated_at'] as String)
-          : null,
       language: json['language'] as String?,
       availableTranslations: (json['available_translations'] as List?)
           ?.map((e) => e as String)
           .toList(),
       genres: (json['genres'] as List?)?.map((e) => e as String).toList(),
+      certification: json['certification'] as String?,
     );
   }
 
@@ -82,20 +79,20 @@ class TraktMovie {
       'ids': ids?.toJson(),
       'tagline': tagline,
       'overview': overview,
-      'rating': rating,
-      'votes': votes,
-      'certification': certification,
       'released': released?.toIso8601String(),
       'runtime': runtime,
       'country': country,
+      'updated_at': updatedAt?.toIso8601String(),
       'trailer': trailer,
       'homepage': homepage,
       'status': status,
+      'rating': rating,
+      'votes': votes,
       'comment_count': commentCount,
-      'updated_at': updatedAt?.toIso8601String(),
       'language': language,
       'available_translations': availableTranslations,
       'genres': genres,
+      'certification': certification,
     };
   }
 }

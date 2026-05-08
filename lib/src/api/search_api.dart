@@ -23,7 +23,7 @@ class SearchApi {
     TraktFilters? filters,
   }) async {
     final typePath = types != null
-        ? types.map((e) => e.value).join(',')
+        ? types.map((e) => e.singularValue).join(',')
         : 'movie,show,person,list';
     final queryParams = <String, String>{
       'query': query,
@@ -64,7 +64,7 @@ class SearchApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (type != null) queryParams['type'] = type.value;
+    if (type != null) queryParams['type'] = type.singularValue;
 
     return _client.get(
       '/search/${idType.value}/$id',

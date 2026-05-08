@@ -35,6 +35,8 @@ class TraktApiClient {
   TraktRateLimit? _lastRateLimit;
   TraktRateLimit? get lastRateLimit => _lastRateLimit;
 
+  bool _isRefreshing = false;
+
   late final AuthenticationApi auth;
   late final MoviesApi movies;
   late final ShowsApi shows;
@@ -92,9 +94,9 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      () => _client.get(
+      (headers) => _client.get(
         Uri.parse('${config.baseUrl}$path').replace(queryParameters: queryParams),
-        headers: config.headers,
+        headers: headers,
       ),
       mapper,
     );
@@ -106,9 +108,9 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      () => _client.post(
+      (headers) => _client.post(
         Uri.parse('${config.baseUrl}$path'),
-        headers: config.headers,
+        headers: headers,
         body: body != null ? jsonEncode(body) : null,
       ),
       mapper,
@@ -121,9 +123,9 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      () => _client.put(
+      (headers) => _client.put(
         Uri.parse('${config.baseUrl}$path'),
-        headers: config.headers,
+        headers: headers,
         body: body != null ? jsonEncode(body) : null,
       ),
       mapper,
@@ -135,19 +137,19 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      () => _client.delete(
+      (headers) => _client.delete(
         Uri.parse('${config.baseUrl}$path'),
-        headers: config.headers,
+        headers: headers,
       ),
       mapper,
     );
   }
 
   Future<T> _performRequest<T>(
-    Future<http.Response> Function() request,
+    Future<http.Response> Function(Map<String, String> headers) request,
     T Function(dynamic body, Map<String, String> headers) mapper,
   ) async {
-    var response = await request();
+    var response = await request(config.headers);
 
     try {
       return _handleResponse(response, mapper);
@@ -155,8 +157,9 @@ class TraktApiClient {
       if (e is TraktApiException &&
           e.statusCode == 401 &&
           config.refreshToken != null &&
-          config.clientSecret != null) {
-        // Attempt to refresh token
+          config.clientSecret != null &&
+          !_isRefreshing) {
+        _isRefreshing = true;
         try {
           final newToken = await auth.refreshToken(config.refreshToken!);
           config = config.copyWith(
@@ -165,12 +168,14 @@ class TraktApiClient {
           );
           onTokenRefreshed?.call(newToken);
 
-          // Retry the request with new token
-          response = await request();
+          // Retry the request with new headers
+          response = await request(config.headers);
           return _handleResponse(response, mapper);
-        } catch (refreshError) {
-          // If refresh fails, throw original 401
-          throw e;
+        } catch (_) {
+          // If refresh fails, throw original 401 error
+          rethrow;
+        } finally {
+          _isRefreshing = false;
         }
       }
       rethrow;

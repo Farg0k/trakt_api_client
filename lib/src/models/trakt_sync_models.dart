@@ -1,3 +1,4 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_episode.dart';
 import 'trakt_movie.dart';
 import 'trakt_person.dart';
@@ -48,10 +49,10 @@ class TraktSyncMovie {
   Map<String, dynamic> toJson() {
     return {
       'ids': movie.ids?.toJson(),
-      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
+      if (watchedAt != null) 'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
+      if (collectedAt != null) 'collected_at': TraktDateUtils.formatFullDate(collectedAt!),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
+      if (ratedAt != null) 'rated_at': TraktDateUtils.formatFullDate(ratedAt!),
     };
   }
 }
@@ -76,10 +77,10 @@ class TraktSyncShow {
   Map<String, dynamic> toJson() {
     return {
       'ids': show.ids?.toJson(),
-      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
+      if (watchedAt != null) 'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
+      if (collectedAt != null) 'collected_at': TraktDateUtils.formatFullDate(collectedAt!),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
+      if (ratedAt != null) 'rated_at': TraktDateUtils.formatFullDate(ratedAt!),
       if (seasons != null) 'seasons': seasons!.map((e) => e.toJson()).toList(),
     };
   }
@@ -105,10 +106,10 @@ class TraktSyncSeason {
   Map<String, dynamic> toJson() {
     return {
       'number': number,
-      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
+      if (watchedAt != null) 'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
+      if (collectedAt != null) 'collected_at': TraktDateUtils.formatFullDate(collectedAt!),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
+      if (ratedAt != null) 'rated_at': TraktDateUtils.formatFullDate(ratedAt!),
       if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
     };
   }
@@ -132,10 +133,10 @@ class TraktSyncEpisode {
   Map<String, dynamic> toJson() {
     return {
       'number': number,
-      if (watchedAt != null) 'watched_at': watchedAt!.toUtc().toIso8601String(),
-      if (collectedAt != null) 'collected_at': collectedAt!.toUtc().toIso8601String(),
+      if (watchedAt != null) 'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
+      if (collectedAt != null) 'collected_at': TraktDateUtils.formatFullDate(collectedAt!),
       if (rating != null) 'rating': rating,
-      if (ratedAt != null) 'rated_at': ratedAt!.toUtc().toIso8601String(),
+      if (ratedAt != null) 'rated_at': TraktDateUtils.formatFullDate(ratedAt!),
     };
   }
 }
@@ -226,7 +227,7 @@ class TraktSyncNotFound {
 }
 
 class TraktLastActivities {
-  final DateTime all;
+  final DateTime? all;
   final TraktMediaActivities movies;
   final TraktMediaActivities episodes;
   final TraktMediaActivities shows;
@@ -235,7 +236,7 @@ class TraktLastActivities {
   final TraktListActivities lists;
 
   const TraktLastActivities({
-    required this.all,
+    this.all,
     required this.movies,
     required this.episodes,
     required this.shows,
@@ -246,7 +247,7 @@ class TraktLastActivities {
 
   factory TraktLastActivities.fromJson(Map<String, dynamic> json) {
     return TraktLastActivities(
-      all: DateTime.parse(json['all'] as String),
+      all: TraktDateUtils.parse(json['all']),
       movies: TraktMediaActivities.fromJson(json['movies'] as Map<String, dynamic>),
       episodes: TraktMediaActivities.fromJson(json['episodes'] as Map<String, dynamic>),
       shows: TraktMediaActivities.fromJson(json['shows'] as Map<String, dynamic>),
@@ -258,69 +259,69 @@ class TraktLastActivities {
 }
 
 class TraktMediaActivities {
-  final DateTime watchedAt;
-  final DateTime collectedAt;
-  final DateTime ratedAt;
-  final DateTime watchlistedAt;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
+  final DateTime? ratedAt;
+  final DateTime? watchlistedAt;
   final DateTime? recommendationsAt;
   final DateTime? commentedAt;
 
   const TraktMediaActivities({
-    required this.watchedAt,
-    required this.collectedAt,
-    required this.ratedAt,
-    required this.watchlistedAt,
+    this.watchedAt,
+    this.collectedAt,
+    this.ratedAt,
+    this.watchlistedAt,
     this.recommendationsAt,
     this.commentedAt,
   });
 
   factory TraktMediaActivities.fromJson(Map<String, dynamic> json) {
     return TraktMediaActivities(
-      watchedAt: DateTime.parse(json['watched_at'] as String),
-      collectedAt: DateTime.parse(json['collected_at'] as String),
-      ratedAt: DateTime.parse(json['rated_at'] as String),
-      watchlistedAt: DateTime.parse(json['watchlisted_at'] as String),
-      recommendationsAt: json['recommendations_at'] != null ? DateTime.tryParse(json['recommendations_at'] as String) : null,
-      commentedAt: json['commented_at'] != null ? DateTime.tryParse(json['commented_at'] as String) : null,
+      watchedAt: TraktDateUtils.parse(json['watched_at']),
+      collectedAt: TraktDateUtils.parse(json['collected_at']),
+      ratedAt: TraktDateUtils.parse(json['rated_at']),
+      watchlistedAt: TraktDateUtils.parse(json['watchlisted_at']),
+      recommendationsAt: TraktDateUtils.parse(json['recommendations_at']),
+      commentedAt: TraktDateUtils.parse(json['commented_at']),
     );
   }
 }
 
 class TraktCommentActivities {
-  final DateTime likedAt;
+  final DateTime? likedAt;
 
-  const TraktCommentActivities({required this.likedAt});
+  const TraktCommentActivities({this.likedAt});
 
   factory TraktCommentActivities.fromJson(Map<String, dynamic> json) {
     return TraktCommentActivities(
-      likedAt: DateTime.parse(json['liked_at'] as String),
+      likedAt: TraktDateUtils.parse(json['liked_at']),
     );
   }
 }
 
 class TraktListActivities {
-  final DateTime updatedAt;
-  final DateTime commentedAt;
-  final DateTime likedAt;
+  final DateTime? updatedAt;
+  final DateTime? commentedAt;
+  final DateTime? likedAt;
 
   const TraktListActivities({
-    required this.updatedAt,
-    required this.commentedAt,
-    required this.likedAt,
+    this.updatedAt,
+    this.commentedAt,
+    this.likedAt,
   });
 
   factory TraktListActivities.fromJson(Map<String, dynamic> json) {
     return TraktListActivities(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      commentedAt: DateTime.parse(json['commented_at'] as String),
-      likedAt: DateTime.parse(json['liked_at'] as String),
+      updatedAt: TraktDateUtils.parse(json['updated_at']),
+      commentedAt: TraktDateUtils.parse(json['commented_at']),
+      likedAt: TraktDateUtils.parse(json['liked_at']),
     );
   }
 }
 
 class TraktSyncRating {
   final int rating;
-  final DateTime ratedAt;
+  final DateTime? ratedAt;
   final String type;
   final TraktMovie? movie;
   final TraktShow? show;
@@ -329,7 +330,7 @@ class TraktSyncRating {
 
   const TraktSyncRating({
     required this.rating,
-    required this.ratedAt,
+    this.ratedAt,
     required this.type,
     this.movie,
     this.show,
@@ -341,7 +342,7 @@ class TraktSyncRating {
     final type = json['type'] as String;
     return TraktSyncRating(
       rating: json['rating'] as int,
-      ratedAt: DateTime.parse(json['rated_at'] as String),
+      ratedAt: TraktDateUtils.parse(json['rated_at']),
       type: type,
       movie: type == 'movie' && json['movie'] != null ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>) : null,
       show: type == 'show' && json['show'] != null ? TraktShow.fromJson(json['show'] as Map<String, dynamic>) : null,
@@ -354,7 +355,7 @@ class TraktSyncRating {
 class TraktSyncPlayback {
   final int id;
   final double progress;
-  final DateTime pausedAt;
+  final DateTime? pausedAt;
   final String type;
   final TraktMovie? movie;
   final TraktEpisode? episode;
@@ -363,7 +364,7 @@ class TraktSyncPlayback {
   const TraktSyncPlayback({
     required this.id,
     required this.progress,
-    required this.pausedAt,
+    this.pausedAt,
     required this.type,
     this.movie,
     this.episode,
@@ -375,7 +376,7 @@ class TraktSyncPlayback {
     return TraktSyncPlayback(
       id: json['id'] as int,
       progress: (json['progress'] as num).toDouble(),
-      pausedAt: DateTime.parse(json['paused_at'] as String),
+      pausedAt: TraktDateUtils.parse(json['paused_at']),
       type: type,
       movie: type == 'movie' && json['movie'] != null ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>) : null,
       episode: type == 'episode' && json['episode'] != null ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>) : null,
@@ -386,7 +387,7 @@ class TraktSyncPlayback {
 
 class TraktSyncHistory {
   final int id;
-  final DateTime watchedAt;
+  final DateTime? watchedAt;
   final String action;
   final String type;
   final TraktMovie? movie;
@@ -396,7 +397,7 @@ class TraktSyncHistory {
 
   const TraktSyncHistory({
     required this.id,
-    required this.watchedAt,
+    this.watchedAt,
     required this.action,
     required this.type,
     this.movie,
@@ -409,7 +410,7 @@ class TraktSyncHistory {
     final type = json['type'] as String;
     return TraktSyncHistory(
       id: json['id'] as int,
-      watchedAt: DateTime.parse(json['watched_at'] as String),
+      watchedAt: TraktDateUtils.parse(json['watched_at']),
       action: json['action'] as String,
       type: type,
       movie: type == 'movie' && json['movie'] != null ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>) : null,

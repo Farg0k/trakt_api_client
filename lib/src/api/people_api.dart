@@ -1,12 +1,5 @@
-import '../core/trakt_api_client.dart';
-import '../core/trakt_extended_info.dart';
-import '../core/trakt_list_response.dart';
+import '../../trakt_api_client.dart';
 import '../core/trakt_list_type.dart';
-import '../core/trakt_report_reason.dart';
-import '../core/trakt_sort_types.dart';
-import '../models/trakt_list.dart';
-import '../models/trakt_person.dart';
-import '../models/trakt_person_models.dart';
 
 class PeopleApi {
   final TraktApiClient _client;
@@ -85,7 +78,7 @@ class PeopleApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
+    final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/people/updates/$dateStr',
       queryParams: {
@@ -112,7 +105,7 @@ class PeopleApi {
     int page = 1,
     int limit = 10,
   }) async {
-    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
+    final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/people/updates/id/$dateStr',
       queryParams: {
@@ -136,7 +129,7 @@ class PeopleApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final dateStr = startDate.toUtc().toIso8601String().split('T')[0];
+    final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/people/updates/deleted/$dateStr',
       queryParams: {

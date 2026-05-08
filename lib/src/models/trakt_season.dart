@@ -1,8 +1,9 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_episode.dart';
 import 'trakt_ids.dart';
 
 class TraktSeason {
-  final int? number;
+  final int number;
   final TraktIds? ids;
   final double? rating;
   final int? votes;
@@ -15,7 +16,7 @@ class TraktSeason {
   final List<TraktEpisode>? episodes;
 
   const TraktSeason({
-    this.number,
+    required this.number,
     this.ids,
     this.rating,
     this.votes,
@@ -30,7 +31,7 @@ class TraktSeason {
 
   factory TraktSeason.fromJson(Map<String, dynamic> json) {
     return TraktSeason(
-      number: json['number'] as int?,
+      number: json['number'] as int? ?? 0,
       ids: json['ids'] != null
           ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
           : null,
@@ -40,13 +41,13 @@ class TraktSeason {
       airedEpisodes: json['aired_episodes'] as int?,
       title: json['title'] as String?,
       overview: json['overview'] as String?,
-      firstAired: json['first_aired'] != null
-          ? DateTime.tryParse(json['first_aired'] as String)
-          : null,
+      firstAired: TraktDateUtils.parse(json['first_aired']),
       network: json['network'] as String?,
-      episodes: (json['episodes'] as List?)
-          ?.map((e) => TraktEpisode.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      episodes: json['episodes'] != null
+          ? (json['episodes'] as List)
+              .map((e) => TraktEpisode.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
     );
   }
 
@@ -62,7 +63,6 @@ class TraktSeason {
       'overview': overview,
       'first_aired': firstAired?.toIso8601String(),
       'network': network,
-      if (episodes != null) 'episodes': episodes!.map((e) => e.toJson()).toList(),
     };
   }
 }
