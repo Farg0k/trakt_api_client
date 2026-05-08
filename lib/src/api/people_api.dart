@@ -3,6 +3,7 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_person.dart';
 import '../models/trakt_person_models.dart';
@@ -55,12 +56,12 @@ class PeopleApi {
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
     TraktListType type = TraktListType.personal,
-    String sort = 'popular',
+    TraktListSort sort = TraktListSort.popular,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/people/$id/lists/${type.value}/$sort',
+      '/people/$id/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

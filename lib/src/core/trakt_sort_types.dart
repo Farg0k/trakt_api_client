@@ -28,3 +28,18 @@ enum TraktWatchlistSort {
   @override
   String toString() => value;
 }
+
+enum TraktListSort {
+  popular('popular'),
+  likes('likes'),
+  comments('comments'),
+  items('items'),
+  added('added'),
+  updated('updated');
+
+  final String value;
+  const TraktListSort(this.value);
+
+  @override
+  String toString() => value;
+}

@@ -1,4 +1,5 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_media_class.dart';
 import '../models/trakt_genre.dart';
 
 class GenresApi {
@@ -6,19 +7,10 @@ class GenresApi {
 
   GenresApi(this._client);
 
-  /// Get a list of all genres for movies.
-  Future<List<TraktGenre>> getMovies() async {
-    return _getGenres('/genres/movies');
-  }
-
-  /// Get a list of all genres for shows.
-  Future<List<TraktGenre>> getShows() async {
-    return _getGenres('/genres/shows');
-  }
-
-  Future<List<TraktGenre>> _getGenres(String path) async {
+  /// Get all genres for movies or shows.
+  Future<List<TraktGenre>> getGenres(TraktMediaClass type) async {
     return _client.get(
-      path,
+      '/genres/${type.value}',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktGenre.fromJson(item as Map<String, dynamic>))
           .toList(),

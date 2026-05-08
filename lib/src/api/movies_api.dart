@@ -326,12 +326,12 @@ class MoviesApi {
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
     TraktListType type = TraktListType.personal,
-    String sort = 'popular',
+    TraktListSort sort = TraktListSort.popular,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/movies/$id/lists/${type.value}/$sort',
+      '/movies/$id/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

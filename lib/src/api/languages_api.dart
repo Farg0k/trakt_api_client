@@ -1,4 +1,5 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_media_class.dart';
 import '../models/trakt_language.dart';
 
 class LanguagesApi {
@@ -6,19 +7,10 @@ class LanguagesApi {
 
   LanguagesApi(this._client);
 
-  /// Get a list of all languages for movies.
-  Future<List<TraktLanguage>> getMovies() async {
-    return _getLanguages('/languages/movies');
-  }
-
-  /// Get a list of all languages for shows.
-  Future<List<TraktLanguage>> getShows() async {
-    return _getLanguages('/languages/shows');
-  }
-
-  Future<List<TraktLanguage>> _getLanguages(String path) async {
+  /// Get all languages for movies or shows.
+  Future<List<TraktLanguage>> getLanguages(TraktMediaClass type) async {
     return _client.get(
-      path,
+      '/languages/${type.value}',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktLanguage.fromJson(item as Map<String, dynamic>))
           .toList(),

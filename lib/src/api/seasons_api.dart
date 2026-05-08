@@ -95,12 +95,12 @@ class SeasonsApi {
     String showId,
     int seasonNumber, {
     TraktListType type = TraktListType.personal,
-    String sort = 'popular',
+    TraktListSort sort = TraktListSort.popular,
     int page = 1,
     int limit = 10,
   }) async {
     return _client.get(
-      '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/$sort',
+      '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),

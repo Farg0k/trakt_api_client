@@ -1,4 +1,5 @@
 import '../core/trakt_api_client.dart';
+import '../core/trakt_media_class.dart';
 import '../models/trakt_network.dart';
 
 class NetworksApi {
@@ -6,8 +7,8 @@ class NetworksApi {
 
   NetworksApi(this._client);
 
-  /// Get a list of all TV networks.
-  Future<List<TraktNetwork>> get() async {
+  /// Get all networks for movies or shows.
+  Future<List<TraktNetwork>> getNetworks() async {
     return _client.get(
       '/networks',
       mapper: (body, headers) => (body as List)

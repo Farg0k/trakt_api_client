@@ -1,6 +1,7 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
+import '../core/trakt_id_type.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_search_fields.dart';
@@ -52,7 +53,7 @@ class SearchApi {
   /// Lookup items by their ID.
   Future<TraktListResponse<TraktSearchResult>> idLookup(
     String id, {
-    required String idType,
+    required TraktIdType idType,
     TraktMediaType? type,
     int page = 1,
     int limit = 10,
@@ -66,7 +67,7 @@ class SearchApi {
     if (type != null) queryParams['type'] = type.value;
 
     return _client.get(
-      '/search/$idType/$id',
+      '/search/${idType.value}/$id',
       queryParams: queryParams,
       mapper: (body, headers) {
         final data = (body as List)
