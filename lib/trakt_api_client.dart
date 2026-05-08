@@ -38,6 +38,7 @@ export 'src/models/trakt_language.dart';
 export 'src/models/trakt_network.dart';
 export 'src/models/trakt_note.dart';
 export 'src/models/trakt_note_item.dart';
+export 'src/models/trakt_sharing.dart';
 export 'src/models/trakt_studio.dart';
 export 'src/models/trakt_media_certification.dart';
 export 'src/models/trakt_video.dart';

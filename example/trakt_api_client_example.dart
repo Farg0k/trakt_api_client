@@ -78,7 +78,7 @@ void main() async {
 
       print('Upcoming episodes in your calendar:');
       for (var entry in myShows) {
-        print(' - ${entry.firstAired?.toLocal()}: ${entry.show.title} - S${entry.episode.season}E${entry.episode.number} "${entry.episode.title}"');
+        print(' - ${entry.firstAired.toLocal()}: ${entry.show.title} - S${entry.episode.season}E${entry.episode.number} "${entry.episode.title}"');
       }
 
       // 4. Checkin (Authenticated)

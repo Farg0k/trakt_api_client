@@ -1,13 +1,4 @@
 import '../../trakt_api_client.dart';
-import '../core/trakt_api_client.dart';
-import '../core/trakt_extended_info.dart';
-import '../core/trakt_list_response.dart';
-import '../core/trakt_media_type.dart';
-import '../core/trakt_sort_types.dart';
-import '../models/trakt_collected_item.dart';
-import '../models/trakt_search_result.dart';
-import '../models/trakt_sync_models.dart';
-import '../models/trakt_watched_item.dart';
 
 class SyncApi {
   final TraktApiClient _client;
@@ -18,7 +9,8 @@ class SyncApi {
   Future<TraktLastActivities> getLastActivities() async {
     return _client.get(
       '/sync/last_activities',
-      mapper: (body, headers) => TraktLastActivities.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktLastActivities.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -30,7 +22,10 @@ class SyncApi {
     int? limit,
   }) async {
     final queryParams = <String, String>{};
-    if (type != null) queryParams['type'] = type.singularValue; // Search/Playback usually use singular
+    if (type != null) {
+      queryParams['type'] =
+          type.singularValue; // Search/Playback usually use singular
+    }
     if (limit != null) queryParams['limit'] = limit.toString();
 
     return _client.get(
@@ -46,16 +41,15 @@ class SyncApi {
   Future<TraktSyncPlayback?> getPlaybackItem(int id) async {
     return _client.get(
       '/sync/playback/$id',
-      mapper: (body, headers) => body == null ? null : TraktSyncPlayback.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => body == null
+          ? null
+          : TraktSyncPlayback.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// Remove a playback progress item.
   Future<void> removePlaybackProgress(int id) async {
-    await _client.delete(
-      '/sync/playback/$id',
-      mapper: (body, headers) => null,
-    );
+    await _client.delete('/sync/playback/$id', mapper: (body, headers) => null);
   }
 
   // --- COLLECTION ---
@@ -77,7 +71,7 @@ class SyncApi {
           } else if (type == TraktMediaType.shows) {
             return TraktCollectedShow.fromJson(json) as T;
           }
-          // For seasons/episodes, Trakt returns specialized structures, 
+          // For seasons/episodes, Trakt returns specialized structures,
           // but typically developers use movies/shows for full sync.
           return json as T;
         }).toList();
@@ -90,16 +84,20 @@ class SyncApi {
     return _client.post(
       '/sync/collection',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// Remove items from the user's collection.
-  Future<TraktSyncResponse> removeFromCollection(TraktSyncRequest request) async {
+  Future<TraktSyncResponse> removeFromCollection(
+    TraktSyncRequest request,
+  ) async {
     return _client.post(
       '/sync/collection/remove',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -151,8 +149,12 @@ class SyncApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (startAt != null) queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
-    if (endAt != null) queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
+    if (startAt != null) {
+      queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
+    }
+    if (endAt != null) {
+      queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
+    }
 
     return _client.get(
       path,
@@ -174,7 +176,8 @@ class SyncApi {
     return _client.post(
       '/sync/history',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -183,7 +186,8 @@ class SyncApi {
     return _client.post(
       '/sync/history/remove',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -212,7 +216,8 @@ class SyncApi {
     return _client.post(
       '/sync/ratings',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -221,7 +226,8 @@ class SyncApi {
     return _client.post(
       '/sync/ratings/remove',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -235,7 +241,8 @@ class SyncApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
+    final path =
+        '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
 
     return _client.get(
       path,
@@ -261,16 +268,20 @@ class SyncApi {
     return _client.post(
       '/sync/watchlist',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// Remove items from the user's watchlist.
-  Future<TraktSyncResponse> removeFromWatchlist(TraktSyncRequest request) async {
+  Future<TraktSyncResponse> removeFromWatchlist(
+    TraktSyncRequest request,
+  ) async {
     return _client.post(
       '/sync/watchlist/remove',
       body: request.toJson(),
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 

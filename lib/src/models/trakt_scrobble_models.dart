@@ -5,7 +5,6 @@ import 'trakt_show.dart';
 class TraktScrobbleRequest {
   final TraktMovie? movie;
   final TraktEpisode? episode;
-  final TraktShow? show;
   final double progress;
   final String? appVersion;
   final String? appDate;
@@ -13,7 +12,6 @@ class TraktScrobbleRequest {
   const TraktScrobbleRequest({
     this.movie,
     this.episode,
-    this.show,
     required this.progress,
     this.appVersion,
     this.appDate,
@@ -23,11 +21,10 @@ class TraktScrobbleRequest {
     return {
       if (movie != null) 'movie': {'ids': movie!.ids?.toJson()},
       if (episode != null) 'episode': {'ids': episode!.ids?.toJson()},
-      if (show != null) 'show': {'ids': show!.ids?.toJson()},
       'progress': progress,
       if (appVersion != null) 'app_version': appVersion,
       if (appDate != null) 'app_date': appDate,
-    }..removeWhere((key, value) => value == null);
+    };
   }
 }
 
@@ -50,9 +47,9 @@ class TraktScrobbleResponse {
 
   factory TraktScrobbleResponse.fromJson(Map<String, dynamic> json) {
     return TraktScrobbleResponse(
-      id: json['id'] as int,
-      action: json['action'] as String,
-      progress: (json['progress'] as num).toDouble(),
+      id: json['id'] as int? ?? 0,
+      action: json['action'] as String? ?? '',
+      progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
       movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,

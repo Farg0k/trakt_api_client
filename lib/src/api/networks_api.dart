@@ -1,5 +1,4 @@
 import '../core/trakt_api_client.dart';
-import '../core/trakt_media_class.dart';
 import '../models/trakt_network.dart';
 
 class NetworksApi {

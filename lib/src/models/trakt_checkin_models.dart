@@ -1,5 +1,7 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_episode.dart';
 import 'trakt_movie.dart';
+import 'trakt_sharing.dart';
 import 'trakt_show.dart';
 
 class TraktCheckinRequest {
@@ -7,6 +9,7 @@ class TraktCheckinRequest {
   final TraktEpisode? episode;
   final TraktShow? show;
   final String? message;
+  final TraktSharing? sharing;
   final String? appVersion;
   final String? appDate;
 
@@ -15,15 +18,17 @@ class TraktCheckinRequest {
     this.episode,
     this.show,
     this.message,
+    this.sharing,
     this.appVersion,
     this.appDate,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      if (movie != null) 'movie': movie!.toJson(),
-      if (episode != null) 'episode': episode!.toJson(),
-      if (show != null) 'show': show!.toJson(),
+      if (movie != null) 'movie': {'ids': movie!.ids?.toJson()},
+      if (episode != null) 'episode': {'ids': episode!.ids?.toJson()},
+      if (show != null) 'show': {'ids': show!.ids?.toJson()},
+      if (sharing != null) 'sharing': sharing!.toJson(),
       if (message != null) 'message': message,
       if (appVersion != null) 'app_version': appVersion,
       if (appDate != null) 'app_date': appDate,
@@ -48,12 +53,8 @@ class TraktCheckinResponse {
 
   factory TraktCheckinResponse.fromJson(Map<String, dynamic> json) {
     return TraktCheckinResponse(
-      watchedAt: json['watched_at'] != null
-          ? DateTime.tryParse(json['watched_at'] as String)
-          : null,
-      expiresAt: json['expires_at'] != null
-          ? DateTime.tryParse(json['expires_at'] as String)
-          : null,
+      watchedAt: TraktDateUtils.parse(json['watched_at']),
+      expiresAt: TraktDateUtils.parse(json['expires_at']),
       movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
