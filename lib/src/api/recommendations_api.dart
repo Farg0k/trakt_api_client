@@ -17,12 +17,14 @@ class RecommendationsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
     bool ignoreCollected = false,
+    bool ignoreWatchlisted = false,
   }) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
       'extended': extended.value,
       'ignore_collected': ignoreCollected.toString(),
+      'ignore_watchlisted': ignoreWatchlisted.toString(),
     };
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
@@ -56,12 +58,14 @@ class RecommendationsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
     bool ignoreCollected = false,
+    bool ignoreWatchlisted = false,
   }) async {
     final queryParams = <String, String>{
       'page': page.toString(),
       'limit': limit.toString(),
       'extended': extended.value,
       'ignore_collected': ignoreCollected.toString(),
+      'ignore_watchlisted': ignoreWatchlisted.toString(),
     };
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
