@@ -12,7 +12,7 @@ class TraktComment {
   final int? userRating;
   final TraktUser? user;
 
-  const TraktComment({
+  TraktComment({
     required this.id,
     required this.comment,
     required this.spoiler,

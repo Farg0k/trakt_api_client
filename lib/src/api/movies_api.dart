@@ -1,5 +1,20 @@
-import '../../trakt_api_client.dart';
+import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
+import '../core/trakt_filters.dart';
+import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_period.dart';
+import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
+import '../models/trakt_comment.dart';
+import '../models/trakt_list.dart';
+import '../models/trakt_media_certification.dart';
+import '../models/trakt_movie.dart';
+import '../models/trakt_movie_models.dart';
+import '../models/trakt_studio.dart';
+import '../models/trakt_user.dart';
+import '../models/trakt_video.dart';
+import '../core/trakt_date_utils.dart';
 
 class MoviesApi {
   final TraktApiClient _client;
@@ -421,7 +436,7 @@ class MoviesApi {
     );
   }
 
-  /// Report a movie for inappropriate content.
+  /// [🔒 OAuth Required] Report a movie for inappropriate content.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -430,16 +445,18 @@ class MoviesApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// Refresh a movie to get the latest metadata from TMDB.
+  /// [🔒 OAuth Required] Refresh a movie to get the latest metadata from TMDB.
   ///
   /// Note: This is a VIP only method.
   Future<void> refresh(String id) async {
     await _client.post(
       '/movies/$id/refresh',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

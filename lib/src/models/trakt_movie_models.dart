@@ -1,3 +1,4 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_movie.dart';
 import 'trakt_person.dart';
 
@@ -5,7 +6,7 @@ class TraktMovieAlias {
   final String title;
   final String country;
 
-  const TraktMovieAlias({
+  TraktMovieAlias({
     required this.title,
     required this.country,
   });
@@ -16,37 +17,30 @@ class TraktMovieAlias {
       country: json['country'] as String,
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'country': country,
-    };
-  }
 }
 
 class TraktMovieRelease {
   final String country;
-  final DateTime date;
-  final String certification;
+  final DateTime? releaseDate;
   final String releaseType;
   final String note;
+  final String certification;
 
-  const TraktMovieRelease({
+  TraktMovieRelease({
     required this.country,
-    required this.date,
-    required this.certification,
+    this.releaseDate,
     required this.releaseType,
     required this.note,
+    required this.certification,
   });
 
   factory TraktMovieRelease.fromJson(Map<String, dynamic> json) {
     return TraktMovieRelease(
       country: json['country'] as String,
-      date: DateTime.parse(json['release_date'] as String),
-      certification: json['certification'] as String,
-      releaseType: json['release_type'] as String,
+      releaseDate: TraktDateUtils.parse(json['release_date']),
+      releaseType: json['release_type'] as String? ?? '',
       note: json['note'] as String? ?? '',
+      certification: json['certification'] as String? ?? '',
     );
   }
 }
@@ -56,12 +50,14 @@ class TraktTranslation {
   final String overview;
   final String tagline;
   final String language;
+  final String? country;
 
-  const TraktTranslation({
+  TraktTranslation({
     required this.title,
     required this.overview,
     required this.tagline,
     required this.language,
+    this.country,
   });
 
   factory TraktTranslation.fromJson(Map<String, dynamic> json) {
@@ -69,7 +65,8 @@ class TraktTranslation {
       title: json['title'] as String? ?? '',
       overview: json['overview'] as String? ?? '',
       tagline: json['tagline'] as String? ?? '',
-      language: json['language'] as String,
+      language: json['language'] as String? ?? '',
+      country: json['country'] as String?,
     );
   }
 }
@@ -79,7 +76,7 @@ class TraktRating {
   final int votes;
   final Map<String, int> distribution;
 
-  const TraktRating({
+  TraktRating({
     required this.rating,
     required this.votes,
     required this.distribution,
@@ -102,7 +99,7 @@ class TraktMovieStats {
   final int lists;
   final int votes;
 
-  const TraktMovieStats({
+  TraktMovieStats({
     required this.watchers,
     required this.plays,
     required this.collectors,
@@ -127,7 +124,7 @@ class TraktBoxOfficeMovie {
   final int revenue;
   final TraktMovie movie;
 
-  const TraktBoxOfficeMovie({
+  TraktBoxOfficeMovie({
     required this.revenue,
     required this.movie,
   });
@@ -144,14 +141,14 @@ class TraktMovieUpdate {
   final DateTime updatedAt;
   final TraktMovie movie;
 
-  const TraktMovieUpdate({
+  TraktMovieUpdate({
     required this.updatedAt,
     required this.movie,
   });
 
   factory TraktMovieUpdate.fromJson(Map<String, dynamic> json) {
     return TraktMovieUpdate(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: TraktDateUtils.parse(json['updated_at']) ?? DateTime.now(),
       movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }
@@ -161,16 +158,16 @@ class TraktCredits {
   final List<TraktCast>? cast;
   final Map<String, List<TraktCrew>>? crew;
 
-  const TraktCredits({this.cast, this.crew});
+  TraktCredits({this.cast, this.crew});
 
   factory TraktCredits.fromJson(Map<String, dynamic> json) {
     return TraktCredits(
       cast: (json['cast'] as List?)
           ?.map((e) => TraktCast.fromJson(e as Map<String, dynamic>))
           .toList(),
-      crew: (json['crew'] as Map<String, dynamic>?)?.map(
+      crew: (json['crew'] as Map?)?.map(
         (key, value) => MapEntry(
-          key,
+          key as String,
           (value as List)
               .map((e) => TraktCrew.fromJson(e as Map<String, dynamic>))
               .toList(),
@@ -184,11 +181,11 @@ class TraktCast {
   final List<String> characters;
   final TraktPerson person;
 
-  const TraktCast({required this.characters, required this.person});
+  TraktCast({required this.characters, required this.person});
 
   factory TraktCast.fromJson(Map<String, dynamic> json) {
     return TraktCast(
-      characters: (json['characters'] as List).map((e) => e as String).toList(),
+      characters: List<String>.from(json['characters'] as List),
       person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
     );
   }
@@ -198,7 +195,7 @@ class TraktCrew {
   final String job;
   final TraktPerson person;
 
-  const TraktCrew({required this.job, required this.person});
+  TraktCrew({required this.job, required this.person});
 
   factory TraktCrew.fromJson(Map<String, dynamic> json) {
     return TraktCrew(
@@ -212,7 +209,7 @@ class TraktTrendingMovie {
   final int watchers;
   final TraktMovie movie;
 
-  const TraktTrendingMovie({required this.watchers, required this.movie});
+  TraktTrendingMovie({required this.watchers, required this.movie});
 
   factory TraktTrendingMovie.fromJson(Map<String, dynamic> json) {
     return TraktTrendingMovie(
@@ -228,7 +225,7 @@ class TraktMostMovie {
   final int? collectedCount;
   final TraktMovie movie;
 
-  const TraktMostMovie({
+  TraktMostMovie({
     this.watcherCount,
     this.playCount,
     this.collectedCount,
@@ -249,7 +246,7 @@ class TraktAnticipatedMovie {
   final int listCount;
   final TraktMovie movie;
 
-  const TraktAnticipatedMovie({required this.listCount, required this.movie});
+  TraktAnticipatedMovie({required this.listCount, required this.movie});
 
   factory TraktAnticipatedMovie.fromJson(Map<String, dynamic> json) {
     return TraktAnticipatedMovie(
@@ -263,7 +260,7 @@ class TraktFavoritedMovie {
   final int userCount;
   final TraktMovie movie;
 
-  const TraktFavoritedMovie({required this.userCount, required this.movie});
+  TraktFavoritedMovie({required this.userCount, required this.movie});
 
   factory TraktFavoritedMovie.fromJson(Map<String, dynamic> json) {
     return TraktFavoritedMovie(
@@ -277,11 +274,11 @@ class TraktDeletedMovie {
   final DateTime deletedAt;
   final TraktMovie movie;
 
-  const TraktDeletedMovie({required this.deletedAt, required this.movie});
+  TraktDeletedMovie({required this.deletedAt, required this.movie});
 
   factory TraktDeletedMovie.fromJson(Map<String, dynamic> json) {
     return TraktDeletedMovie(
-      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      deletedAt: TraktDateUtils.parse(json['deleted_at']) ?? DateTime.now(),
       movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }

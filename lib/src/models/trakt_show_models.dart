@@ -1,3 +1,4 @@
+import '../core/trakt_date_utils.dart';
 import 'trakt_show.dart';
 import 'trakt_season.dart';
 import 'trakt_episode.dart';
@@ -6,14 +7,14 @@ class TraktShowUpdate {
   final DateTime updatedAt;
   final TraktShow show;
 
-  const TraktShowUpdate({
+  TraktShowUpdate({
     required this.updatedAt,
     required this.show,
   });
 
   factory TraktShowUpdate.fromJson(Map<String, dynamic> json) {
     return TraktShowUpdate(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: TraktDateUtils.parse(json['updated_at']) ?? DateTime.now(),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
   }
@@ -24,7 +25,7 @@ class TraktSeasonUpdate {
   final TraktSeason season;
   final TraktShow show;
 
-  const TraktSeasonUpdate({
+  TraktSeasonUpdate({
     required this.updatedAt,
     required this.season,
     required this.show,
@@ -32,7 +33,7 @@ class TraktSeasonUpdate {
 
   factory TraktSeasonUpdate.fromJson(Map<String, dynamic> json) {
     return TraktSeasonUpdate(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: TraktDateUtils.parse(json['updated_at']) ?? DateTime.now(),
       season: TraktSeason.fromJson(json['season'] as Map<String, dynamic>),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
@@ -44,7 +45,7 @@ class TraktDeletedSeason {
   final TraktSeason season;
   final TraktShow show;
 
-  const TraktDeletedSeason({
+  TraktDeletedSeason({
     required this.deletedAt,
     required this.season,
     required this.show,
@@ -52,7 +53,7 @@ class TraktDeletedSeason {
 
   factory TraktDeletedSeason.fromJson(Map<String, dynamic> json) {
     return TraktDeletedSeason(
-      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      deletedAt: TraktDateUtils.parse(json['deleted_at']) ?? DateTime.now(),
       season: TraktSeason.fromJson(json['season'] as Map<String, dynamic>),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
@@ -64,7 +65,7 @@ class TraktEpisodeUpdate {
   final TraktEpisode episode;
   final TraktShow show;
 
-  const TraktEpisodeUpdate({
+  TraktEpisodeUpdate({
     required this.updatedAt,
     required this.episode,
     required this.show,
@@ -72,7 +73,7 @@ class TraktEpisodeUpdate {
 
   factory TraktEpisodeUpdate.fromJson(Map<String, dynamic> json) {
     return TraktEpisodeUpdate(
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: TraktDateUtils.parse(json['updated_at']) ?? DateTime.now(),
       episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
@@ -84,7 +85,7 @@ class TraktDeletedEpisode {
   final TraktEpisode episode;
   final TraktShow show;
 
-  const TraktDeletedEpisode({
+  TraktDeletedEpisode({
     required this.deletedAt,
     required this.episode,
     required this.show,
@@ -92,7 +93,7 @@ class TraktDeletedEpisode {
 
   factory TraktDeletedEpisode.fromJson(Map<String, dynamic> json) {
     return TraktDeletedEpisode(
-      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      deletedAt: TraktDateUtils.parse(json['deleted_at']) ?? DateTime.now(),
       episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
@@ -108,7 +109,7 @@ class TraktShowStats {
   final int lists;
   final int votes;
 
-  const TraktShowStats({
+  TraktShowStats({
     required this.watchers,
     required this.plays,
     required this.collectors,
@@ -135,7 +136,7 @@ class TraktShowAlias {
   final String title;
   final String country;
 
-  const TraktShowAlias({
+  TraktShowAlias({
     required this.title,
     required this.country,
   });
@@ -152,7 +153,7 @@ class TraktTrendingShow {
   final int watchers;
   final TraktShow show;
 
-  const TraktTrendingShow({required this.watchers, required this.show});
+  TraktTrendingShow({required this.watchers, required this.show});
 
   factory TraktTrendingShow.fromJson(Map<String, dynamic> json) {
     return TraktTrendingShow(
@@ -168,7 +169,7 @@ class TraktMostShow {
   final int? collectedCount;
   final TraktShow show;
 
-  const TraktMostShow({
+  TraktMostShow({
     this.watcherCount,
     this.playCount,
     this.collectedCount,
@@ -189,7 +190,7 @@ class TraktAnticipatedShow {
   final int listCount;
   final TraktShow show;
 
-  const TraktAnticipatedShow({required this.listCount, required this.show});
+  TraktAnticipatedShow({required this.listCount, required this.show});
 
   factory TraktAnticipatedShow.fromJson(Map<String, dynamic> json) {
     return TraktAnticipatedShow(
@@ -203,7 +204,7 @@ class TraktFavoritedShow {
   final int userCount;
   final TraktShow show;
 
-  const TraktFavoritedShow({required this.userCount, required this.show});
+  TraktFavoritedShow({required this.userCount, required this.show});
 
   factory TraktFavoritedShow.fromJson(Map<String, dynamic> json) {
     return TraktFavoritedShow(
@@ -217,11 +218,11 @@ class TraktDeletedShow {
   final DateTime deletedAt;
   final TraktShow show;
 
-  const TraktDeletedShow({required this.deletedAt, required this.show});
+  TraktDeletedShow({required this.deletedAt, required this.show});
 
   factory TraktDeletedShow.fromJson(Map<String, dynamic> json) {
     return TraktDeletedShow(
-      deletedAt: DateTime.parse(json['deleted_at'] as String),
+      deletedAt: TraktDateUtils.parse(json['deleted_at']) ?? DateTime.now(),
       show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
     );
   }
@@ -236,7 +237,7 @@ class TraktShowProgress {
   final TraktEpisode? nextEpisode;
   final TraktEpisode? lastEpisode;
 
-  const TraktShowProgress({
+  TraktShowProgress({
     required this.aired,
     required this.completed,
     this.lastWatchedAt,
@@ -250,12 +251,8 @@ class TraktShowProgress {
     return TraktShowProgress(
       aired: json['aired'] as int,
       completed: json['completed'] as int,
-      lastWatchedAt: json['last_watched_at'] != null
-          ? DateTime.tryParse(json['last_watched_at'] as String)
-          : null,
-      lastCollectedAt: json['last_collected_at'] != null
-          ? DateTime.tryParse(json['last_collected_at'] as String)
-          : null,
+      lastWatchedAt: TraktDateUtils.parse(json['last_watched_at']),
+      lastCollectedAt: TraktDateUtils.parse(json['last_collected_at']),
       seasons: (json['seasons'] as List)
           .map((e) => TraktSeasonProgress.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -276,7 +273,7 @@ class TraktSeasonProgress {
   final String? title;
   final List<TraktEpisodeProgress> episodes;
 
-  const TraktSeasonProgress({
+  TraktSeasonProgress({
     required this.number,
     required this.aired,
     required this.completed,
@@ -303,7 +300,7 @@ class TraktEpisodeProgress {
   final DateTime? watchedAt;
   final DateTime? collectedAt;
 
-  const TraktEpisodeProgress({
+  TraktEpisodeProgress({
     required this.number,
     required this.completed,
     this.watchedAt,
@@ -314,12 +311,8 @@ class TraktEpisodeProgress {
     return TraktEpisodeProgress(
       number: json['number'] as int,
       completed: json['completed'] as bool,
-      watchedAt: json['watched_at'] != null
-          ? DateTime.tryParse(json['watched_at'] as String)
-          : null,
-      collectedAt: json['collected_at'] != null
-          ? DateTime.tryParse(json['collected_at'] as String)
-          : null,
+      watchedAt: TraktDateUtils.parse(json['watched_at']),
+      collectedAt: TraktDateUtils.parse(json['collected_at']),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'trakt_movie.dart';
 import 'trakt_person.dart';
 import 'trakt_season.dart';
 import 'trakt_show.dart';
+import '../core/trakt_date_utils.dart';
 
 class TraktListItem {
   final int? rank;
@@ -33,10 +34,8 @@ class TraktListItem {
     final type = json['type'] as String;
     return TraktListItem(
       rank: json['rank'] as int?,
-      id: json['id'] as int,
-      listedAt: json['listed_at'] != null
-          ? DateTime.tryParse(json['listed_at'] as String)
-          : null,
+      id: json['id'] as int? ?? 0,
+      listedAt: TraktDateUtils.parse(json['listed_at']),
       notes: json['notes'] as String?,
       type: type,
       movie: type == 'movie' && json['movie'] != null

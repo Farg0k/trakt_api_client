@@ -3,11 +3,7 @@ class TraktAirs {
   final String? time;
   final String? timezone;
 
-  const TraktAirs({
-    this.day,
-    this.time,
-    this.timezone,
-  });
+  TraktAirs({this.day, this.time, this.timezone});
 
   factory TraktAirs.fromJson(Map<String, dynamic> json) {
     return TraktAirs(

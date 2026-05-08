@@ -7,7 +7,7 @@ class TraktApiClientConfig {
   final String? userAgent;
   final Map<String, String>? customHeaders;
 
-  const TraktApiClientConfig({
+  TraktApiClientConfig({
     required this.clientId,
     this.clientSecret,
     this.accessToken,

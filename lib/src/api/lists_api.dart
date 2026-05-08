@@ -54,7 +54,7 @@ class ListsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
+            .map((item) => TraktList.fromJson(item['list'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -78,12 +78,14 @@ class ListsApi {
     TraktCommentSort sort = TraktCommentSort.newest,
     int page = 1,
     int limit = 10,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _client.get(
       '/lists/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
+        'extended': extended.value,
       },
       mapper: (body, headers) {
         final data = (body as List)
@@ -139,23 +141,25 @@ class ListsApi {
     );
   }
 
-  /// Like a list.
+  /// [🔒 OAuth Required] Like a list.
   Future<void> like(String id) async {
     await _client.post(
       '/lists/$id/like',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// Remove a like from a list.
+  /// [🔒 OAuth Required] Remove a like from a list.
   Future<void> unlike(String id) async {
     await _client.delete(
       '/lists/$id/like',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// Report a list for inappropriate content.
+  /// [🔒 OAuth Required] Report a list for inappropriate content.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -164,6 +168,7 @@ class ListsApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

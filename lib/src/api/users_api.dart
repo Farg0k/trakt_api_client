@@ -26,53 +26,58 @@ class UsersApi {
 
   // --- SETTINGS & FILTERS ---
 
-  /// Get the user's settings.
+  /// [🔒 OAuth Required] Get the user's settings.
   Future<TraktUserSettings> getSettings() async {
     return _client.get(
       '/users/settings',
+      authenticated: true,
       mapper: (body, headers) => TraktUserSettings.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Get saved filters.
+  /// [🔒 OAuth Required] Get saved filters.
   Future<List<Map<String, dynamic>>> getSavedFilters({String? section}) async {
     return _client.get(
       '/users/saved_filters${section != null ? '/$section' : ''}',
+      authenticated: true,
       mapper: (body, headers) => List<Map<String, dynamic>>.from(body as List),
     );
   }
 
   // --- FOLLOW REQUESTS ---
 
-  /// Get follower requests.
+  /// [🔒 OAuth Required] Get follower requests.
   Future<List<TraktFollowRequest>> getFollowRequests() async {
     return _client.get(
       '/users/requests',
+      authenticated: true,
       mapper: (body, headers) => (body as List)
           .map((e) => TraktFollowRequest.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
   }
 
-  /// Approve a follower request.
+  /// [🔒 OAuth Required] Approve a follower request.
   Future<TraktUserConnection> approveFollowRequest(int requestId) async {
     return _client.post(
       '/users/requests/$requestId',
+      authenticated: true,
       mapper: (body, headers) => TraktUserConnection.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Deny a follower request.
+  /// [🔒 OAuth Required] Deny a follower request.
   Future<void> denyFollowRequest(int requestId) async {
     await _client.delete(
       '/users/requests/$requestId',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   // --- HIDDEN ITEMS ---
 
-  /// Get hidden items.
+  /// [🔒 OAuth Required] Get hidden items.
   Future<TraktListResponse<TraktSearchResult>> getHiddenItems(
     String section, {
     TraktMediaType? type,
@@ -90,6 +95,7 @@ class UsersApi {
     return _client.get(
       '/users/hidden/$section',
       queryParams: queryParams,
+      authenticated: true,
       mapper: (body, headers) {
         final data = (body as List)
             .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
@@ -102,20 +108,22 @@ class UsersApi {
     );
   }
 
-  /// Add items to hidden list.
+  /// [🔒 OAuth Required] Add items to hidden list.
   Future<TraktSyncResponse> addHiddenItems(String section, TraktSyncRequest request) async {
     return _client.post(
       '/users/hidden/$section',
       body: request.toJson(),
+      authenticated: true,
       mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Remove items from hidden list.
+  /// [🔒 OAuth Required] Remove items from hidden list.
   Future<TraktSyncResponse> removeHiddenItems(String section, TraktSyncRequest request) async {
     return _client.post(
       '/users/hidden/$section/remove',
       body: request.toJson(),
+      authenticated: true,
       mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
@@ -368,18 +376,22 @@ class UsersApi {
     );
   }
 
+  /// [🔒 OAuth Required] Create a new list for the user.
   Future<TraktList> createList(String username, TraktList list) async {
     return _client.post(
       '/users/$username/lists',
       body: list.toJson(),
+      authenticated: true,
       mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),
     );
   }
 
+  /// [🔒 OAuth Required] Reorder lists for the user.
   Future<void> reorderLists(String username, List<int> rank) async {
     await _client.post(
       '/users/$username/lists/reorder',
       body: {'rank': rank},
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
@@ -402,26 +414,32 @@ class UsersApi {
     );
   }
 
+  /// [🔒 OAuth Required] Reorder items in a list.
   Future<void> reorderListItems(String username, String listId, List<int> rank) async {
     await _client.post(
       '/users/$username/lists/$listId/items/reorder',
       body: {'rank': rank},
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   // --- SOCIAL ---
 
+  /// [🔒 OAuth Required] Follow a user.
   Future<TraktUserConnection> follow(String username) async {
     return _client.post(
       '/users/$username/follow',
+      authenticated: true,
       mapper: (body, headers) => TraktUserConnection.fromJson(body as Map<String, dynamic>),
     );
   }
 
+  /// [🔒 OAuth Required] Unfollow a user.
   Future<void> unfollow(String username) async {
     await _client.delete(
       '/users/$username/follow',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
@@ -437,25 +455,31 @@ class UsersApi {
 
   // --- BLOCKING ---
 
+  /// [🔒 OAuth Required] Get blocked users.
   Future<List<TraktUser>> getBlockedUsers() async {
     return _client.get(
       '/users/block',
+      authenticated: true,
       mapper: (body, headers) => (body as List)
           .map((e) => TraktUser.fromJson(e['user'] as Map<String, dynamic>))
           .toList(),
     );
   }
 
+  /// [🔒 OAuth Required] Block a user.
   Future<void> block(String username) async {
     await _client.post(
       '/users/$username/block',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
+  /// [🔒 OAuth Required] Unblock a user.
   Future<void> unblock(String username) async {
     await _client.delete(
       '/users/$username/block',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
@@ -469,6 +493,7 @@ class UsersApi {
     );
   }
 
+  /// [🔒 OAuth Required] Report a user for inappropriate content.
   Future<void> report(String username, {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/users/$username/report',
@@ -476,6 +501,7 @@ class UsersApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

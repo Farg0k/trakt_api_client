@@ -1,10 +1,10 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
+import '../models/trakt_note.dart';
+import '../models/trakt_note_item.dart';
 import '../core/trakt_privacy.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_movie.dart';
-import '../models/trakt_note.dart';
-import '../models/trakt_note_item.dart';
 import '../models/trakt_person.dart';
 import '../models/trakt_season.dart';
 import '../models/trakt_show.dart';
@@ -16,7 +16,7 @@ class NotesApi {
 
   /// Get a single note by its ID.
   Future<TraktNote> get(int id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.metadata}) async {
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/notes/$id',
       queryParams: {'extended': extended.value},
@@ -25,7 +25,7 @@ class NotesApi {
     );
   }
 
-  /// Create a new note.
+  /// [🔒 OAuth Required] Create a new note.
   ///
   /// You can attach the note to a [movie], [show], [season], [episode], or [person].
   Future<TraktNote> create({
@@ -48,12 +48,13 @@ class NotesApi {
         if (episode != null) 'episode': {'ids': episode.ids?.toJson()},
         if (person != null) 'person': {'ids': person.ids?.toJson()},
       },
+      authenticated: true,
       mapper: (body, headers) =>
           TraktNote.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Update an existing note.
+  /// [🔒 OAuth Required] Update an existing note.
   Future<TraktNote> update(
     int id, {
     required String note,
@@ -65,15 +66,17 @@ class NotesApi {
         'note': note,
         'privacy': privacy.name,
       },
+      authenticated: true,
       mapper: (body, headers) =>
           TraktNote.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Delete a note.
+  /// [🔒 OAuth Required] Delete a note.
   Future<void> delete(int id) async {
     await _client.delete(
       '/notes/$id',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

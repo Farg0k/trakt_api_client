@@ -3,6 +3,8 @@ enum TraktPrivacy {
   friends,
   public;
 
+  String get value => name;
+
   static TraktPrivacy fromString(String? value) {
     switch (value?.toLowerCase()) {
       case 'friends':

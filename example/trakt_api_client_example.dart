@@ -59,7 +59,7 @@ void main() async {
       final response = await client.movies.getTrending(
         limit: 5,
         extended: TraktExtendedInfo.full,
-        filters: const TraktFilters(years: '2020-2024'),
+        filters: TraktFilters(years: '2020-2024'),
       );
       
       print('Page: ${response.pagination?.currentPage} / ${response.pagination?.pageCount}');

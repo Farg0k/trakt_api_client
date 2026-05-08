@@ -7,7 +7,7 @@ class TraktIds {
   final int? tvrage;
   final String? uuid;
 
-  const TraktIds({
+  TraktIds({
     this.trakt,
     this.slug,
     this.imdb,

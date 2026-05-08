@@ -6,7 +6,7 @@ class CheckinApi {
 
   CheckinApi(this._client);
 
-  /// Check into a movie or episode.
+  /// [🔒 OAuth Required] Check into a movie or episode.
   ///
   /// This should be called when the user starts watching something.
   /// Only one check-in can be active at a time.
@@ -17,18 +17,20 @@ class CheckinApi {
     return _client.post(
       '/checkin',
       body: request.toJson(),
+      authenticated: true,
       mapper: (body, headers) =>
           TraktCheckinResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Removes any active check-ins.
+  /// [🔒 OAuth Required] Removes any active check-ins.
   ///
   /// This should be called if the user stops watching or if you want to
   /// clear an existing check-in before starting a new one.
   Future<void> deleteActiveCheckins() async {
     await _client.delete(
       '/checkin',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

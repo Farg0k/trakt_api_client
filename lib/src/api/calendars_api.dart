@@ -11,6 +11,7 @@ class CalendarsApi {
 
   // --- MY CALENDARS (Authenticated) ---
 
+  /// [🔒 OAuth Required] Get my shows calendar.
   Future<List<TraktCalendarShow>> getMyShows({
     DateTime? startDate,
     int? days,
@@ -18,9 +19,11 @@ class CalendarsApi {
     TraktFilters? filters,
   }) async {
     return _getCalendarList('/calendars/my/shows', startDate, days, extended,
-        filters, (json) => TraktCalendarShow.fromJson(json));
+        filters, (json) => TraktCalendarShow.fromJson(json),
+        authenticated: true);
   }
 
+  /// [🔒 OAuth Required] Get my new shows calendar.
   Future<List<TraktCalendarShow>> getMyNewShows({
     DateTime? startDate,
     int? days,
@@ -28,9 +31,11 @@ class CalendarsApi {
     TraktFilters? filters,
   }) async {
     return _getCalendarList('/calendars/my/shows/new', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+        extended, filters, (json) => TraktCalendarShow.fromJson(json),
+        authenticated: true);
   }
 
+  /// [🔒 OAuth Required] Get my premieres calendar.
   Future<List<TraktCalendarShow>> getMyPremieres({
     DateTime? startDate,
     int? days,
@@ -38,9 +43,11 @@ class CalendarsApi {
     TraktFilters? filters,
   }) async {
     return _getCalendarList('/calendars/my/shows/premieres', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+        extended, filters, (json) => TraktCalendarShow.fromJson(json),
+        authenticated: true);
   }
 
+  /// [🔒 OAuth Required] Get my movies calendar.
   Future<List<TraktCalendarMovie>> getMyMovies({
     DateTime? startDate,
     int? days,
@@ -48,9 +55,11 @@ class CalendarsApi {
     TraktFilters? filters,
   }) async {
     return _getCalendarList('/calendars/my/movies', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json));
+        filters, (json) => TraktCalendarMovie.fromJson(json),
+        authenticated: true);
   }
 
+  /// [🔒 OAuth Required] Get my DVD movies calendar.
   Future<List<TraktCalendarMovie>> getMyDvdMovies({
     DateTime? startDate,
     int? days,
@@ -58,11 +67,13 @@ class CalendarsApi {
     TraktFilters? filters,
   }) async {
     return _getCalendarList('/calendars/my/dvd', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json));
+        filters, (json) => TraktCalendarMovie.fromJson(json),
+        authenticated: true);
   }
 
   // --- ALL CALENDARS (Public) ---
 
+  /// Get all shows calendar.
   Future<List<TraktCalendarShow>> getAllShows({
     DateTime? startDate,
     int? days,
@@ -73,6 +84,7 @@ class CalendarsApi {
         filters, (json) => TraktCalendarShow.fromJson(json));
   }
 
+  /// Get all new shows calendar.
   Future<List<TraktCalendarShow>> getAllNewShows({
     DateTime? startDate,
     int? days,
@@ -83,6 +95,7 @@ class CalendarsApi {
         extended, filters, (json) => TraktCalendarShow.fromJson(json));
   }
 
+  /// Get all premieres calendar.
   Future<List<TraktCalendarShow>> getAllPremieres({
     DateTime? startDate,
     int? days,
@@ -93,6 +106,7 @@ class CalendarsApi {
         extended, filters, (json) => TraktCalendarShow.fromJson(json));
   }
 
+  /// Get all movies calendar.
   Future<List<TraktCalendarMovie>> getAllMovies({
     DateTime? startDate,
     int? days,
@@ -103,6 +117,7 @@ class CalendarsApi {
         filters, (json) => TraktCalendarMovie.fromJson(json));
   }
 
+  /// Get all DVD movies calendar.
   Future<List<TraktCalendarMovie>> getAllDvdMovies({
     DateTime? startDate,
     int? days,
@@ -121,8 +136,9 @@ class CalendarsApi {
     int? days,
     TraktExtendedInfo extended,
     TraktFilters? filters,
-    T Function(Map<String, dynamic> json) itemMapper,
-  ) async {
+    T Function(Map<String, dynamic> json) itemMapper, {
+    bool authenticated = false,
+  }) async {
     var path = basePath;
     if (startDate != null) {
       path += '/${startDate.toUtc().toIso8601String().split('T')[0]}';
@@ -137,6 +153,7 @@ class CalendarsApi {
     return _client.get(
       path,
       queryParams: queryParams,
+      authenticated: authenticated,
       mapper: (body, headers) => (body as List)
           .map((item) => itemMapper(item as Map<String, dynamic>))
           .toList(),

@@ -91,6 +91,7 @@ class TraktApiClient {
   Future<T> get<T>(
     String path, {
     Map<String, String>? queryParams,
+    bool authenticated = false,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
@@ -99,12 +100,14 @@ class TraktApiClient {
         headers: headers,
       ),
       mapper,
+      authenticated: authenticated,
     );
   }
 
   Future<T> post<T>(
     String path, {
     dynamic body,
+    bool authenticated = false,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
@@ -114,12 +117,14 @@ class TraktApiClient {
         body: body != null ? jsonEncode(body) : null,
       ),
       mapper,
+      authenticated: authenticated,
     );
   }
 
   Future<T> put<T>(
     String path, {
     dynamic body,
+    bool authenticated = false,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
@@ -129,11 +134,13 @@ class TraktApiClient {
         body: body != null ? jsonEncode(body) : null,
       ),
       mapper,
+      authenticated: authenticated,
     );
   }
 
   Future<T> delete<T>(
     String path, {
+    bool authenticated = false,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
@@ -142,13 +149,22 @@ class TraktApiClient {
         headers: headers,
       ),
       mapper,
+      authenticated: authenticated,
     );
   }
 
   Future<T> _performRequest<T>(
     Future<http.Response> Function(Map<String, String> headers) request,
-    T Function(dynamic body, Map<String, String> headers) mapper,
-  ) async {
+    T Function(dynamic body, Map<String, String> headers) mapper, {
+    bool authenticated = false,
+  }) async {
+    if (authenticated && config.accessToken == null) {
+      throw TraktApiException(
+        'OAuth required for this endpoint. Please provide an accessToken in config.',
+        statusCode: 401,
+      );
+    }
+
     var response = await request(config.headers);
 
     try {
@@ -172,7 +188,6 @@ class TraktApiClient {
           response = await request(config.headers);
           return _handleResponse(response, mapper);
         } catch (_) {
-          // If refresh fails, throw original 401 error
           rethrow;
         } finally {
           _isRefreshing = false;

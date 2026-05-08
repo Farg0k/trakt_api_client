@@ -12,7 +12,7 @@ class TraktSyncRequest {
   final List<TraktSyncEpisode>? episodes;
   final List<TraktSyncPerson>? people;
 
-  const TraktSyncRequest({
+  TraktSyncRequest({
     this.movies,
     this.shows,
     this.seasons,
@@ -38,7 +38,7 @@ class TraktSyncMovie {
   final int? rating;
   final DateTime? ratedAt;
 
-  const TraktSyncMovie({
+  TraktSyncMovie({
     required this.movie,
     this.watchedAt,
     this.collectedAt,
@@ -65,7 +65,7 @@ class TraktSyncShow {
   final DateTime? ratedAt;
   final List<TraktSyncSeason>? seasons;
 
-  const TraktSyncShow({
+  TraktSyncShow({
     required this.show,
     this.watchedAt,
     this.collectedAt,
@@ -94,7 +94,7 @@ class TraktSyncSeason {
   final DateTime? ratedAt;
   final List<TraktSyncEpisode>? episodes;
 
-  const TraktSyncSeason({
+  TraktSyncSeason({
     required this.number,
     this.watchedAt,
     this.collectedAt,
@@ -122,7 +122,7 @@ class TraktSyncEpisode {
   final int? rating;
   final DateTime? ratedAt;
 
-  const TraktSyncEpisode({
+  TraktSyncEpisode({
     required this.number,
     this.watchedAt,
     this.collectedAt,
@@ -144,7 +144,7 @@ class TraktSyncEpisode {
 class TraktSyncPerson {
   final TraktPerson person;
 
-  const TraktSyncPerson({required this.person});
+  TraktSyncPerson({required this.person});
 
   Map<String, dynamic> toJson() {
     return {'ids': person.ids?.toJson()};
@@ -157,7 +157,7 @@ class TraktSyncResponse {
   final TraktSyncCount existing;
   final TraktSyncNotFound notFound;
 
-  const TraktSyncResponse({
+  TraktSyncResponse({
     required this.added,
     required this.deleted,
     required this.existing,
@@ -181,7 +181,7 @@ class TraktSyncCount {
   final int episodes;
   final int people;
 
-  const TraktSyncCount({
+  TraktSyncCount({
     this.movies = 0,
     this.shows = 0,
     this.seasons = 0,
@@ -207,7 +207,7 @@ class TraktSyncNotFound {
   final List<Map<String, dynamic>> episodes;
   final List<Map<String, dynamic>> people;
 
-  const TraktSyncNotFound({
+  TraktSyncNotFound({
     required this.movies,
     required this.shows,
     required this.seasons,
@@ -235,7 +235,7 @@ class TraktLastActivities {
   final TraktCommentActivities comments;
   final TraktListActivities lists;
 
-  const TraktLastActivities({
+  TraktLastActivities({
     this.all,
     required this.movies,
     required this.episodes,
@@ -266,7 +266,7 @@ class TraktMediaActivities {
   final DateTime? recommendationsAt;
   final DateTime? commentedAt;
 
-  const TraktMediaActivities({
+  TraktMediaActivities({
     this.watchedAt,
     this.collectedAt,
     this.ratedAt,
@@ -290,7 +290,7 @@ class TraktMediaActivities {
 class TraktCommentActivities {
   final DateTime? likedAt;
 
-  const TraktCommentActivities({this.likedAt});
+  TraktCommentActivities({this.likedAt});
 
   factory TraktCommentActivities.fromJson(Map<String, dynamic> json) {
     return TraktCommentActivities(
@@ -304,7 +304,7 @@ class TraktListActivities {
   final DateTime? commentedAt;
   final DateTime? likedAt;
 
-  const TraktListActivities({
+  TraktListActivities({
     this.updatedAt,
     this.commentedAt,
     this.likedAt,
@@ -328,7 +328,7 @@ class TraktSyncRating {
   final TraktSeason? season;
   final TraktEpisode? episode;
 
-  const TraktSyncRating({
+  TraktSyncRating({
     required this.rating,
     this.ratedAt,
     required this.type,
@@ -361,7 +361,7 @@ class TraktSyncPlayback {
   final TraktEpisode? episode;
   final TraktShow? show;
 
-  const TraktSyncPlayback({
+  TraktSyncPlayback({
     required this.id,
     required this.progress,
     this.pausedAt,
@@ -395,7 +395,7 @@ class TraktSyncHistory {
   final TraktSeason? season;
   final TraktEpisode? episode;
 
-  const TraktSyncHistory({
+  TraktSyncHistory({
     required this.id,
     this.watchedAt,
     required this.action,

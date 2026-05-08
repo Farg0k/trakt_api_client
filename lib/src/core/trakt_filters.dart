@@ -27,7 +27,7 @@ class TraktFilters {
   /// Filter by rating range (e.g., '70-100').
   final String? ratings;
 
-  const TraktFilters({
+  TraktFilters({
     this.query,
     this.years,
     this.genres,

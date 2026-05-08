@@ -17,7 +17,7 @@ class CommentsApi {
 
   CommentsApi(this._client);
 
-  /// Post a new comment to a movie, show, season, episode, or list.
+  /// [🔒 OAuth Required] Post a new comment to a movie, show, season, episode, or list.
   Future<TraktComment> post({
     required String comment,
     TraktMovie? movie,
@@ -38,6 +38,7 @@ class CommentsApi {
         if (episode != null) 'episode': {'ids': episode.ids?.toJson()},
         if (list != null) 'list': {'ids': list.ids?.toJson()},
       },
+      authenticated: true,
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
     );
@@ -52,21 +53,23 @@ class CommentsApi {
     );
   }
 
-  /// Update an existing comment.
+  /// [🔒 OAuth Required] Update an existing comment.
   Future<TraktComment> update(int id,
       {required String comment, bool spoiler = false}) async {
     return _client.put(
       '/comments/$id',
       body: {'comment': comment, 'spoiler': spoiler},
+      authenticated: true,
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// Delete a comment.
+  /// [🔒 OAuth Required] Delete a comment.
   Future<void> delete(int id) async {
     await _client.delete(
       '/comments/$id',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
@@ -81,12 +84,13 @@ class CommentsApi {
     );
   }
 
-  /// Post a reply to a comment.
+  /// [🔒 OAuth Required] Post a reply to a comment.
   Future<TraktComment> postReply(int id,
       {required String comment, bool spoiler = false}) async {
     return _client.post(
       '/comments/$id/replies',
       body: {'comment': comment, 'spoiler': spoiler},
+      authenticated: true,
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
     );
@@ -114,23 +118,25 @@ class CommentsApi {
     );
   }
 
-  /// Like a comment.
+  /// [🔒 OAuth Required] Like a comment.
   Future<void> like(int id) async {
     await _client.post(
       '/comments/$id/like',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// Remove a like from a comment.
+  /// [🔒 OAuth Required] Remove a like from a comment.
   Future<void> unlike(int id) async {
     await _client.delete(
       '/comments/$id/like',
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// Report a comment for inappropriate content.
+  /// [🔒 OAuth Required] Report a comment for inappropriate content.
   Future<void> report(int id,
       {required TraktReportReason reason, String? notes}) async {
     await _client.post(
@@ -139,6 +145,7 @@ class CommentsApi {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
+      authenticated: true,
       mapper: (body, headers) => null,
     );
   }

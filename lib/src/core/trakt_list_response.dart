@@ -4,7 +4,7 @@ class TraktPagination {
   final int limit;
   final int currentPage;
 
-  const TraktPagination({
+  TraktPagination({
     required this.itemCount,
     required this.pageCount,
     required this.limit,
@@ -30,7 +30,7 @@ class TraktListResponse<T> {
   final List<T> data;
   final TraktPagination? pagination;
 
-  const TraktListResponse({
+  TraktListResponse({
     required this.data,
     this.pagination,
   });
