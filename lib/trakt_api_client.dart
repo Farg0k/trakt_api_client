@@ -15,6 +15,7 @@ export 'src/core/trakt_media_type.dart';
 export 'src/core/trakt_media_class.dart';
 export 'src/core/trakt_sort_types.dart';
 export 'src/core/trakt_search_fields.dart';
+export 'src/core/trakt_search_utils.dart';
 export 'src/core/trakt_period.dart';
 export 'src/core/trakt_id_type.dart';
 export 'src/core/trakt_image_utils.dart';

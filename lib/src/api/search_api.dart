@@ -5,6 +5,7 @@ import '../core/trakt_id_type.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_search_fields.dart';
+import '../core/trakt_search_utils.dart';
 import '../models/trakt_search_result.dart';
 
 class SearchApi {
@@ -13,6 +14,9 @@ class SearchApi {
   SearchApi(this._client);
 
   /// Search by text query.
+  ///
+  /// If [escape] is true, special characters (+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \)
+  /// will be escaped with a backslash to be interpreted literally.
   Future<TraktListResponse<TraktSearchResult>> textQuery(
     String query, {
     List<TraktMediaType>? types,
@@ -21,12 +25,15 @@ class SearchApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
+    bool escape = false,
   }) async {
+    final processedQuery = escape ? TraktSearchUtils.escape(query) : query;
+    
     final typePath = types != null
         ? types.map((e) => e.singularValue).join(',')
         : 'movie,show,person,list';
     final queryParams = <String, String>{
-      'query': query,
+      'query': processedQuery,
       'page': page.toString(),
       'limit': limit.toString(),
       'extended': extended.value,
