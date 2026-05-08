@@ -18,6 +18,7 @@ export 'src/core/trakt_search_fields.dart';
 export 'src/core/trakt_search_utils.dart';
 export 'src/core/trakt_period.dart';
 export 'src/core/trakt_id_type.dart';
+export 'src/core/trakt_last_activity.dart';
 export 'src/core/trakt_image_utils.dart';
 export 'src/models/trakt_movie.dart';
 export 'src/models/trakt_movie_models.dart';

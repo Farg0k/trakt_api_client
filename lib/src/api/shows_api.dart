@@ -1,5 +1,22 @@
-import '../../trakt_api_client.dart';
+import '../core/trakt_api_client.dart';
+import '../core/trakt_extended_info.dart';
+import '../core/trakt_filters.dart';
+import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_period.dart';
+import '../core/trakt_report_reason.dart';
+import '../core/trakt_sort_types.dart';
+import '../models/trakt_comment.dart';
+import '../models/trakt_episode.dart';
+import '../models/trakt_list.dart';
+import '../models/trakt_media_certification.dart';
+import '../models/trakt_movie_models.dart';
+import '../models/trakt_show.dart';
+import '../models/trakt_show_models.dart';
+import '../models/trakt_studio.dart';
+import '../models/trakt_user.dart';
+import '../models/trakt_video.dart';
+import '../core/trakt_date_utils.dart';
 
 class ShowsApi {
   final TraktApiClient _client;
@@ -401,7 +418,6 @@ class ShowsApi {
     bool hidden = false,
     bool specials = false,
     bool countSpecials = false,
-    String lastActivity = 'aired',
   }) async {
     return _client.get(
       '/shows/$id/progress/collection',
@@ -409,7 +425,6 @@ class ShowsApi {
         'hidden': hidden.toString(),
         'specials': specials.toString(),
         'count_specials': countSpecials.toString(),
-        'last_activity': lastActivity,
       },
       mapper: (body, headers) =>
           TraktShowProgress.fromJson(body as Map<String, dynamic>),
@@ -422,7 +437,6 @@ class ShowsApi {
     bool hidden = false,
     bool specials = false,
     bool countSpecials = false,
-    String lastActivity = 'aired',
   }) async {
     return _client.get(
       '/shows/$id/progress/watched',
@@ -430,7 +444,6 @@ class ShowsApi {
         'hidden': hidden.toString(),
         'specials': specials.toString(),
         'count_specials': countSpecials.toString(),
-        'last_activity': lastActivity,
       },
       mapper: (body, headers) =>
           TraktShowProgress.fromJson(body as Map<String, dynamic>),
