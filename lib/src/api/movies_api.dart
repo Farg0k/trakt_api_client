@@ -1,4 +1,3 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
@@ -6,6 +5,7 @@ import '../core/trakt_list_type.dart';
 import '../core/trakt_period.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
+import '../core/trakt_pagination_params.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_movie.dart';
@@ -24,15 +24,13 @@ class MoviesApi extends TraktApiBase {
 
   /// Get trending movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getTrending({
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/trending',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -42,14 +40,12 @@ class MoviesApi extends TraktApiBase {
 
   /// Get popular movies.
   Future<TraktListResponse<TraktMovie>> getPopular({
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return getList(
       '/movies/popular',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: TraktMovie.fromJson,
     );
@@ -58,15 +54,13 @@ class MoviesApi extends TraktApiBase {
   /// Get recommended movies.
   Future<TraktListResponse<TraktMovie>> getRecommended({
     TraktPeriod? period,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/recommended${period != null ? '/${period.value}' : ''}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) => TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
@@ -76,15 +70,13 @@ class MoviesApi extends TraktApiBase {
   /// Get most played movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getPlayed({
     TraktPeriod? period,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/played${period != null ? '/${period.value}' : ''}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -95,15 +87,13 @@ class MoviesApi extends TraktApiBase {
   /// Get most watched movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getWatched({
     TraktPeriod? period,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/watched${period != null ? '/${period.value}' : ''}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -114,15 +104,13 @@ class MoviesApi extends TraktApiBase {
   /// Get most collected movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getCollected({
     TraktPeriod? period,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/collected${period != null ? '/${period.value}' : ''}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -132,15 +120,13 @@ class MoviesApi extends TraktApiBase {
 
   /// Get most anticipated movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getAnticipated({
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/anticipated',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -151,15 +137,13 @@ class MoviesApi extends TraktApiBase {
   /// Get most favorited movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getFavorited({
     TraktPeriod? period,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
     return getList(
       '/movies/favorited${period != null ? '/${period.value}' : ''}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       filters: filters,
       mapper: (json) =>
@@ -184,15 +168,13 @@ class MoviesApi extends TraktApiBase {
   /// Get recently updated movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getUpdates(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/movies/updates/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktMovie.fromJson, 'movie'),
@@ -202,14 +184,12 @@ class MoviesApi extends TraktApiBase {
   /// Get recently updated movie IDs.
   Future<TraktListResponse<int>> getUpdatedIds(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/movies/updates/id/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       mapper: (json) => json as int,
     );
   }
@@ -217,15 +197,13 @@ class MoviesApi extends TraktApiBase {
   /// Get recently deleted movies.
   Future<TraktListResponse<TraktMetadata<TraktMovie>>> getDeleted(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/movies/updates/deleted/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktMovie.fromJson, 'movie'),
@@ -315,14 +293,12 @@ class MoviesApi extends TraktApiBase {
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
     TraktCommentSort sort = TraktCommentSort.newest,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return getList(
       '/movies/$id/comments/${sort.value}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: TraktComment.fromJson,
     );
@@ -335,13 +311,11 @@ class MoviesApi extends TraktApiBase {
     String id, {
     TraktListType type = TraktListType.personal,
     TraktListSort sort = TraktListSort.popular,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     return getList(
       '/movies/$id/lists/${type.value}/${sort.value}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       mapper: TraktList.fromJson,
     );
   }
@@ -375,14 +349,12 @@ class MoviesApi extends TraktApiBase {
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktMovie>> getRelated(
     String id, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return getList(
       '/movies/$id/related',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: TraktMovie.fromJson,
     );

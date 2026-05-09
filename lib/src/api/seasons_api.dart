@@ -1,9 +1,9 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
+import '../core/trakt_pagination_params.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
@@ -78,14 +78,12 @@ class SeasonsApi extends TraktApiBase {
     String showId,
     int seasonNumber, {
     TraktCommentSort sort = TraktCommentSort.newest,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return getList(
       '/shows/$showId/seasons/$seasonNumber/comments/${sort.value}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: TraktComment.fromJson,
     );
@@ -99,13 +97,11 @@ class SeasonsApi extends TraktApiBase {
     int seasonNumber, {
     TraktListType type = TraktListType.personal,
     TraktListSort sort = TraktListSort.popular,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     return getList(
       '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/${sort.value}',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       mapper: TraktList.fromJson,
     );
   }
@@ -180,15 +176,13 @@ class SeasonsApi extends TraktApiBase {
   /// Get recently updated seasons.
   Future<TraktListResponse<TraktMetadata<TraktSeason>>> getUpdates(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/seasons/updates/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktSeason.fromJson, 'season'),
@@ -198,14 +192,12 @@ class SeasonsApi extends TraktApiBase {
   /// Get recently updated season IDs.
   Future<TraktListResponse<int>> getUpdatedIds(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/seasons/updates/id/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       mapper: (json) => json as int,
     );
   }
@@ -213,15 +205,13 @@ class SeasonsApi extends TraktApiBase {
   /// Get recently deleted seasons.
   Future<TraktListResponse<TraktMetadata<TraktSeason>>> getDeleted(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/seasons/updates/deleted/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktSeason.fromJson, 'season'),

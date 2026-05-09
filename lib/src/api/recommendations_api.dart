@@ -1,32 +1,29 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_pagination_params.dart';
 import '../models/trakt_media_entity.dart';
+import 'trakt_api_base.dart';
 
 /// Access to recommendation endpoints.
-class RecommendationsApi {
-
+class RecommendationsApi extends TraktApiBase {
   /// Creates a new [RecommendationsApi] instance.
-  RecommendationsApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
+  RecommendationsApi(super.client);
 
   /// [🔒 OAuth Required] Get movie recommendations.
   Future<TraktListResponse<TraktMediaEntity>> getMovies({
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     bool ignoreCollected = false,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getRecommendationsList('/recommendations/movies', page, limit,
+    return _getRecommendationsList('/recommendations/movies', pagination,
         ignoreCollected, extended, filters);
   }
 
   /// [🔒 OAuth Required] Hide a movie from recommendations.
   Future<void> hideMovie(String id) async {
-    await _client.delete(
+    await client.delete(
       '/recommendations/movies/$id',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -35,19 +32,18 @@ class RecommendationsApi {
 
   /// [🔒 OAuth Required] Get show recommendations.
   Future<TraktListResponse<TraktMediaEntity>> getShows({
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     bool ignoreCollected = false,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getRecommendationsList('/recommendations/shows', page, limit,
+    return _getRecommendationsList('/recommendations/shows', pagination,
         ignoreCollected, extended, filters);
   }
 
   /// [🔒 OAuth Required] Hide a show from recommendations.
   Future<void> hideShow(String id) async {
-    await _client.delete(
+    await client.delete(
       '/recommendations/shows/$id',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -58,33 +54,20 @@ class RecommendationsApi {
 
   Future<TraktListResponse<TraktMediaEntity>> _getRecommendationsList(
     String path,
-    int page,
-    int limit,
+    TraktPaginationParams? pagination,
     bool ignoreCollected,
     TraktExtendedInfo extended,
     TraktFilters? filters,
   ) async {
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'ignore_collected': ignoreCollected.toString(),
-      'extended': extended.value,
-    };
-    if (filters != null) queryParams.addAll(filters.toQueryParams());
-
-    return _client.get(
+    return getList(
       path,
-      authenticated: true,
-      queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
+      pagination: pagination,
+      extended: extended,
+      filters: filters,
+      queryParams: {
+        'ignore_collected': ignoreCollected.toString(),
       },
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 }

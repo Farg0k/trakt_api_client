@@ -21,8 +21,7 @@ void main() async {
     // 3. Public API Example: Get Trending Movies (Paginated)
     print('Fetching trending movies...');
     final trendingMovies = await client.movies.getTrending(
-      page: 1,
-      limit: 3,
+      pagination: const TraktPaginationParams(page: 1, limit: 3),
       extended: TraktExtendedInfo.full,
     );
 
@@ -34,6 +33,16 @@ void main() async {
       print(
         '  Rating: ${movie.rating?.toStringAsFixed(1)} (${movie.votes} votes)',
       );
+    }
+
+    // Example of using .nextPageParams
+    if (trendingMovies.hasNextPage) {
+      print('\nRequesting next page using .nextPageParams...');
+      final nextPage = await client.movies.getTrending(
+        pagination: trendingMovies.nextPageParams,
+        extended: TraktExtendedInfo.full,
+      );
+      print('Fetched ${nextPage.data.length} more movies.');
     }
 
     // 4. Search API with Advanced Filters
@@ -60,7 +69,7 @@ void main() async {
     try {
       final history = await client.sync.getHistory(
         type: TraktMediaType.movies,
-        limit: 5,
+        pagination: const TraktPaginationParams(limit: 5),
       );
       
       for (var entry in history.data) {

@@ -25,6 +25,7 @@ import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
 import 'trakt_rate_limit.dart';
 import 'trakt_list_response.dart';
+import 'trakt_pagination_params.dart';
 import '../models/trakt_auth_models.dart';
 
 /// The main entry point for the Trakt.tv API.
@@ -118,12 +119,19 @@ class TraktApiClient {
   Future<TraktListResponse<T>> getList<T>(
     String path, {
     Map<String, String>? queryParams,
+    TraktPaginationParams? pagination,
     bool authenticated = false,
     required T Function(Map<String, dynamic> json) mapper,
   }) async {
+    final effectiveQueryParams = <String, String>{};
+    if (queryParams != null) effectiveQueryParams.addAll(queryParams);
+    if (pagination != null) {
+      effectiveQueryParams.addAll(pagination.toQueryParams());
+    }
+
     return get(
       path,
-      queryParams: queryParams,
+      queryParams: effectiveQueryParams.isEmpty ? null : effectiveQueryParams,
       authenticated: authenticated,
       mapper: (body, headers) {
         final data = (body as List)
@@ -132,6 +140,7 @@ class TraktApiClient {
         return TraktListResponse(
           data: data,
           pagination: TraktPagination.fromHeaders(headers),
+          requestParams: pagination,
         );
       },
     );

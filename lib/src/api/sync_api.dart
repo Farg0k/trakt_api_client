@@ -1,7 +1,7 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
+import '../core/trakt_pagination_params.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_media_entity.dart';
 import '../models/trakt_media_state.dart';
@@ -9,18 +9,16 @@ import '../models/trakt_sync_models.dart';
 import '../models/trakt_movie.dart';
 import '../models/trakt_show.dart';
 import '../core/trakt_date_utils.dart';
+import 'trakt_api_base.dart';
 
 /// Access to sync endpoints.
-class SyncApi {
+class SyncApi extends TraktApiBase {
   /// Creates a new [SyncApi] instance.
-  SyncApi(this._client);
-
-  /// Internal client reference.
-  final TraktApiClient _client;
+  SyncApi(super.client);
 
   /// [🔒 OAuth Required] Get the last activities for the authenticated user.
   Future<TraktLastActivities> getLastActivities() async {
-    return _client.get(
+    return client.get(
       '/sync/last_activities',
       authenticated: true,
       mapper: (body, headers) =>
@@ -39,7 +37,7 @@ class SyncApi {
     if (type != null) queryParams['type'] = type.singularValue;
     if (limit != null) queryParams['limit'] = limit.toString();
 
-    return _client.get(
+    return client.get(
       '/sync/playback',
       queryParams: queryParams,
       authenticated: true,
@@ -51,7 +49,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Get a specific playback progress item.
   Future<TraktSyncPlayback?> getPlaybackItem(int id) async {
-    return _client.get(
+    return client.get(
       '/sync/playback/$id',
       authenticated: true,
       mapper: (body, headers) => body == null
@@ -62,7 +60,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Remove a playback progress item.
   Future<void> removePlaybackProgress(int id) async {
-    await _client.delete(
+    await client.delete(
       '/sync/playback/$id',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -76,7 +74,7 @@ class SyncApi {
     required TraktMediaType type,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/sync/collection/${type.value}',
       queryParams: {'extended': extended.value},
       authenticated: true,
@@ -98,7 +96,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Add items to the user's collection.
   Future<TraktSyncResponse> addToCollection(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/collection',
       body: request.toJson(),
       authenticated: true,
@@ -110,7 +108,7 @@ class SyncApi {
   /// [🔒 OAuth Required] Remove items from the user's collection.
   Future<TraktSyncResponse> removeFromCollection(
       TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/collection/remove',
       body: request.toJson(),
       authenticated: true,
@@ -126,7 +124,7 @@ class SyncApi {
     required TraktMediaType type,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/sync/watched/${type.value}',
       queryParams: {'extended': extended.value},
       authenticated: true,
@@ -154,8 +152,7 @@ class SyncApi {
     int? id,
     DateTime? startAt,
     DateTime? endAt,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     var path = '/sync/history';
@@ -164,11 +161,7 @@ class SyncApi {
       if (id != null) path += '/$id';
     }
 
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'extended': extended.value,
-    };
+    final queryParams = <String, String>{};
     if (startAt != null) {
       queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
     }
@@ -176,25 +169,19 @@ class SyncApi {
       queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
     }
 
-    return _client.get(
+    return getList(
       path,
-      queryParams: queryParams,
       authenticated: true,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktSyncHistory.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktSyncHistory.fromJson(json),
     );
   }
 
+
   /// [🔒 OAuth Required] Add items to the user's watch history.
   Future<TraktSyncResponse> addToHistory(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/history',
       body: request.toJson(),
       authenticated: true,
@@ -205,7 +192,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Remove items from the user's watch history.
   Future<TraktSyncResponse> removeFromHistory(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/history/remove',
       body: request.toJson(),
       authenticated: true,
@@ -225,7 +212,7 @@ class SyncApi {
     var path = '/sync/ratings/${type.value}';
     if (rating != null) path += '/$rating';
 
-    return _client.get(
+    return client.get(
       path,
       queryParams: {'extended': extended.value},
       authenticated: true,
@@ -237,7 +224,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Add ratings to items.
   Future<TraktSyncResponse> addRatings(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/ratings',
       body: request.toJson(),
       authenticated: true,
@@ -248,7 +235,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Remove ratings from items.
   Future<TraktSyncResponse> removeRatings(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/ratings/remove',
       body: request.toJson(),
       authenticated: true,
@@ -263,36 +250,24 @@ class SyncApi {
   Future<TraktListResponse<TraktMediaEntity>> getWatchlist({
     TraktMediaType? type,
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final path =
         '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
 
-    return _client.get(
+    return getList(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
       authenticated: true,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 
   /// [🔒 OAuth Required] Add items to the user's watchlist.
   Future<TraktSyncResponse> addToWatchlist(TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/watchlist',
       body: request.toJson(),
       authenticated: true,
@@ -304,7 +279,7 @@ class SyncApi {
   /// [🔒 OAuth Required] Remove items from the user's watchlist.
   Future<TraktSyncResponse> removeFromWatchlist(
       TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/sync/watchlist/remove',
       body: request.toJson(),
       authenticated: true,
@@ -315,7 +290,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Reorder items in the user's watchlist.
   Future<void> reorderWatchlist(List<int> rank) async {
-    await _client.post(
+    await client.post(
       '/sync/watchlist/reorder',
       body: {'rank': rank},
       authenticated: true,
@@ -328,29 +303,18 @@ class SyncApi {
   /// [🔒 OAuth Required] Get the user's hidden recommendations.
   Future<TraktListResponse<TraktMediaEntity>> getRecommendations({
     TraktMediaType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final path = '/sync/recommendations${type != null ? '/${type.value}' : ''}';
 
-    return _client.get(
+    return getList(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
       authenticated: true,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 }
+

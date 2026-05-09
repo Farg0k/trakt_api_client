@@ -1,7 +1,6 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
-import '../models/trakt_comment.dart';
+import '../core/trakt_pagination_params.dart';
 import '../models/trakt_media_models.dart';
 import '../models/trakt_generic_models.dart';
 import '../models/trakt_person.dart';
@@ -74,15 +73,13 @@ class PeopleApi extends TraktApiBase {
   /// Get recently updated people.
   Future<TraktListResponse<TraktMetadata<TraktPerson>>> getUpdates(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/people/updates/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktPerson.fromJson, 'person'),
@@ -92,14 +89,12 @@ class PeopleApi extends TraktApiBase {
   /// Get recently updated person IDs.
   Future<TraktListResponse<int>> getUpdatedIds(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/people/updates/id/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       mapper: (json) => json as int,
     );
   }
@@ -107,15 +102,13 @@ class PeopleApi extends TraktApiBase {
   /// Get recently deleted people.
   Future<TraktListResponse<TraktMetadata<TraktPerson>>> getDeleted(
     DateTime startDate, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return getList(
       '/people/updates/deleted/$dateStr',
-      page: page,
-      limit: limit,
+      pagination: pagination,
       extended: extended,
       mapper: (json) =>
           TraktMetadata.fromJson(json, TraktPerson.fromJson, 'person'),

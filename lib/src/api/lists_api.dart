@@ -1,70 +1,42 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_list_type.dart';
+import '../core/trakt_pagination_params.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_user.dart';
+import 'trakt_api_base.dart';
 
 /// Access to list endpoints.
-class ListsApi {
-
+class ListsApi extends TraktApiBase {
   /// Creates a new [ListsApi] instance.
-  ListsApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
+  ListsApi(super.client);
 
   /// Get trending lists.
   Future<TraktListResponse<TraktList>> getTrending({
     TraktListType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     final path = '/lists/trending${type != null ? '/${type.value}' : ''}';
-    return _client.get(
+    return getList(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) =>
-                TraktList.fromJson(item['list'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      mapper: (json) => TraktList.fromJson(json['list'] as Map<String, dynamic>),
     );
   }
 
   /// Get popular lists.
   Future<TraktListResponse<TraktList>> getPopular({
     TraktListType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
     final path = '/lists/popular${type != null ? '/${type.value}' : ''}';
-    return _client.get(
+    return getList(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) =>
-                TraktList.fromJson(item['list'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      mapper: (json) => TraktList.fromJson(json['list'] as Map<String, dynamic>),
     );
   }
 
@@ -72,9 +44,10 @@ class ListsApi {
   ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktList> getSummary(String id) async {
-    return _client.get(
+    return client.get(
       '/lists/$id',
-      mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktList.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -84,26 +57,14 @@ class ListsApi {
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
     TraktCommentSort sort = TraktCommentSort.newest,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return getList(
       '/lists/$id/comments/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -118,7 +79,7 @@ class ListsApi {
     final queryParams = <String, String>{'extended': extended.value};
     if (type != null) queryParams['type'] = type;
 
-    return _client.get(
+    return client.get(
       '/lists/$id/items',
       queryParams: queryParams,
       mapper: (body, headers) => (body as List)
@@ -132,25 +93,12 @@ class ListsApi {
   /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktListResponse<TraktUser>> getLikes(
     String id, {
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
-    return _client.get(
+    return getList(
       '/lists/$id/likes',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) =>
-                TraktUser.fromJson(item['user'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      mapper: (json) => TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
@@ -158,7 +106,7 @@ class ListsApi {
   ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> like(String id) async {
-    await _client.post(
+    await client.post(
       '/lists/$id/like',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -169,7 +117,7 @@ class ListsApi {
   ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> unlike(String id) async {
-    await _client.delete(
+    await client.delete(
       '/lists/$id/like',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -181,7 +129,7 @@ class ListsApi {
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> report(String id,
       {required TraktReportReason reason, String? notes}) async {
-    await _client.post(
+    await client.post(
       '/lists/$id/report',
       body: {
         'reason': reason.value,
@@ -192,3 +140,4 @@ class ListsApi {
     );
   }
 }
+

@@ -1,20 +1,18 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
+import '../core/trakt_pagination_params.dart';
 import '../core/trakt_media_type.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_media_entity.dart';
 import '../models/trakt_sharing.dart';
 import '../models/trakt_user.dart';
+import 'trakt_api_base.dart';
 
 /// Access to comment endpoints.
-class CommentsApi {
+class CommentsApi extends TraktApiBase {
   /// Creates a new [CommentsApi] instance.
-  CommentsApi(this._client);
-
-  /// Internal client reference.
-  final TraktApiClient _client;
+  CommentsApi(super.client);
 
   // --- ACTIONS ---
 
@@ -25,7 +23,7 @@ class CommentsApi {
     TraktSharing? sharing,
     TraktMediaEntity? item,
   }) async {
-    return _client.post(
+    return client.post(
       '/comments',
       authenticated: true,
       body: {
@@ -41,7 +39,7 @@ class CommentsApi {
 
   /// Get a single comment by its ID.
   Future<TraktComment> get(int id) async {
-    return _client.get(
+    return client.get(
       '/comments/$id',
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
@@ -51,7 +49,7 @@ class CommentsApi {
   /// [🔒 OAuth Required] Update an existing comment.
   Future<TraktComment> update(int id, String comment,
       {bool spoiler = false}) async {
-    return _client.put(
+    return client.put(
       '/comments/$id',
       authenticated: true,
       body: {
@@ -65,7 +63,7 @@ class CommentsApi {
 
   /// [🔒 OAuth Required] Delete a comment.
   Future<void> delete(int id) async {
-    await _client.delete(
+    await client.delete(
       '/comments/$id',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -76,7 +74,7 @@ class CommentsApi {
 
   /// Get replies for a comment.
   Future<List<TraktComment>> getReplies(int id) async {
-    return _client.get(
+    return client.get(
       '/comments/$id/replies',
       mapper: (body, headers) => (body as List)
           .map((e) => TraktComment.fromJson(e as Map<String, dynamic>))
@@ -88,7 +86,7 @@ class CommentsApi {
 
   /// [🔒 OAuth Required] Like a comment.
   Future<void> like(int id) async {
-    await _client.post(
+    await client.post(
       '/comments/$id/like',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -97,7 +95,7 @@ class CommentsApi {
 
   /// [🔒 OAuth Required] Remove a like from a comment.
   Future<void> unlike(int id) async {
-    await _client.delete(
+    await client.delete(
       '/comments/$id/like',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -105,23 +103,14 @@ class CommentsApi {
   }
 
   /// Get users who liked a comment.
-  Future<TraktListResponse<TraktUser>> getLikes(int id,
-      {int page = 1, int limit = 10}) async {
-    return _client.get(
+  Future<TraktListResponse<TraktUser>> getLikes(
+    int id, {
+    TraktPaginationParams? pagination,
+  }) async {
+    return getList(
       '/comments/$id/likes',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktUser.fromJson(e['user'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      mapper: (json) => TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
@@ -132,28 +121,18 @@ class CommentsApi {
     TraktCommentType commentType = TraktCommentType.all,
     TraktMediaType type = TraktMediaType.all,
     bool includeReplies = false,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.getList(
       '/comments/trending/${commentType.value}/${type.value}',
+      pagination: pagination,
       queryParams: {
         'include_replies': includeReplies.toString(),
-        'page': page.toString(),
-        'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) =>
-                TraktComment.fromJson(e['comment'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktComment.fromJson(json['comment'] as Map<String, dynamic>),
     );
   }
 
@@ -162,28 +141,18 @@ class CommentsApi {
     TraktCommentType commentType = TraktCommentType.all,
     TraktMediaType type = TraktMediaType.all,
     bool includeReplies = false,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.getList(
       '/comments/recent/${commentType.value}/${type.value}',
+      pagination: pagination,
       queryParams: {
         'include_replies': includeReplies.toString(),
-        'page': page.toString(),
-        'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) =>
-                TraktComment.fromJson(e['comment'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktComment.fromJson(json['comment'] as Map<String, dynamic>),
     );
   }
 
@@ -192,28 +161,18 @@ class CommentsApi {
     TraktCommentType commentType = TraktCommentType.all,
     TraktMediaType type = TraktMediaType.all,
     bool includeReplies = false,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.getList(
       '/comments/updates/${commentType.value}/${type.value}',
+      pagination: pagination,
       queryParams: {
         'include_replies': includeReplies.toString(),
-        'page': page.toString(),
-        'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) =>
-                TraktComment.fromJson(e['comment'] as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktComment.fromJson(json['comment'] as Map<String, dynamic>),
     );
   }
 
@@ -223,8 +182,7 @@ class CommentsApi {
   Future<TraktListResponse<TraktComment>> getItemComments(
     TraktMediaEntity item, {
     TraktCommentSort sort = TraktCommentSort.newest,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     String path = '';
@@ -243,22 +201,11 @@ class CommentsApi {
         path = '/lists/${item.list?.ids?.trakt}/comments';
     }
 
-    return _client.get(
+    return getList(
       '$path/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktComment.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -271,3 +218,4 @@ class CommentsApi {
     return null;
   }
 }
+

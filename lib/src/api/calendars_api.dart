@@ -1,165 +1,141 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_date_utils.dart';
-import '../core/trakt_extended_info.dart';
-import '../core/trakt_filters.dart';
-import '../models/trakt_calendar_movie.dart';
-import '../models/trakt_calendar_show.dart';
+import '../models/trakt_episode.dart';
+import '../models/trakt_show.dart';
+import '../models/trakt_movie.dart';
+import 'trakt_api_base.dart';
 
 /// Access to calendar endpoints.
-class CalendarsApi {
+class CalendarsApi extends TraktApiBase {
   /// Creates a new [CalendarsApi] instance.
-  CalendarsApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
+  CalendarsApi(super.client);
 
-  // --- MY CALENDARS (OAuth Required) ---
-
-  /// [🔒 OAuth Required] Get my show calendar.
-  Future<List<TraktCalendarShow>> getMyShows({
+  /// Get movie calendar entries.
+  Future<List<TraktCalendarMovie>> getMovies({
     DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
+    int? days,
+    bool authenticated = false,
   }) async {
-    return _getCalendarList(
-        '/calendars/my/shows', startDate, days, extended, filters, true,
-        (json) => TraktCalendarShow.fromJson(json));
+    final path = _buildPath('/calendars/movies', startDate, days, authenticated);
+    return client.get(
+      path,
+      authenticated: authenticated,
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktCalendarMovie.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
-  /// [🔒 OAuth Required] Get my new show calendar.
-  Future<List<TraktCalendarShow>> getMyNewShows({
+  /// Get show calendar entries.
+  Future<List<TraktCalendarShow>> getShows({
     DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
+    int? days,
+    bool authenticated = false,
   }) async {
-    return _getCalendarList(
-        '/calendars/my/shows/new', startDate, days, extended, filters, true,
-        (json) => TraktCalendarShow.fromJson(json));
+    final path = _buildPath('/calendars/shows', startDate, days, authenticated);
+    return client.get(
+      path,
+      authenticated: authenticated,
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktCalendarShow.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
-  /// [🔒 OAuth Required] Get my show premiere calendar.
-  Future<List<TraktCalendarShow>> getMyPremieres({
+  /// Get new show calendar entries.
+  Future<List<TraktCalendarShow>> getNewShows({
     DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
+    int? days,
+    bool authenticated = false,
   }) async {
-    return _getCalendarList('/calendars/my/shows/premieres', startDate, days,
-        extended, filters, true, (json) => TraktCalendarShow.fromJson(json));
+    final path =
+        _buildPath('/calendars/shows/new', startDate, days, authenticated);
+    return client.get(
+      path,
+      authenticated: authenticated,
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktCalendarShow.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
-  /// [🔒 OAuth Required] Get my movie calendar.
-  Future<List<TraktCalendarMovie>> getMyMovies({
+  /// Get premiere show calendar entries.
+  Future<List<TraktCalendarShow>> getPremieres({
     DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
+    int? days,
+    bool authenticated = false,
   }) async {
-    return _getCalendarList(
-        '/calendars/my/movies', startDate, days, extended, filters, true,
-        (json) => TraktCalendarMovie.fromJson(json));
-  }
-
-  /// [🔒 OAuth Required] Get my dvd calendar.
-  Future<List<TraktCalendarMovie>> getMyDvd({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList(
-        '/calendars/my/dvd', startDate, days, extended, filters, true,
-        (json) => TraktCalendarMovie.fromJson(json));
-  }
-
-  // --- ALL CALENDARS (Public) ---
-
-  /// Get all show calendar.
-  Future<List<TraktCalendarShow>> getAllShows({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList(
-        '/calendars/all/shows', startDate, days, extended, filters, false,
-        (json) => TraktCalendarShow.fromJson(json));
-  }
-
-  /// Get all new show calendar.
-  Future<List<TraktCalendarShow>> getAllNewShows({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList(
-        '/calendars/all/shows/new', startDate, days, extended, filters, false,
-        (json) => TraktCalendarShow.fromJson(json));
-  }
-
-  /// Get all show premiere calendar.
-  Future<List<TraktCalendarShow>> getAllPremieres({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList('/calendars/all/shows/premieres', startDate, days,
-        extended, filters, false, (json) => TraktCalendarShow.fromJson(json));
-  }
-
-  /// Get all movie calendar.
-  Future<List<TraktCalendarMovie>> getAllMovies({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList(
-        '/calendars/all/movies', startDate, days, extended, filters, false,
-        (json) => TraktCalendarMovie.fromJson(json));
-  }
-
-  /// Get all dvd calendar.
-  Future<List<TraktCalendarMovie>> getAllDvd({
-    DateTime? startDate,
-    int days = 7,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-    TraktFilters? filters,
-  }) async {
-    return _getCalendarList(
-        '/calendars/all/dvd', startDate, days, extended, filters, false,
-        (json) => TraktCalendarMovie.fromJson(json));
+    final path = _buildPath(
+        '/calendars/shows/premieres', startDate, days, authenticated);
+    return client.get(
+      path,
+      authenticated: authenticated,
+      mapper: (body, headers) => (body as List)
+          .map((e) => TraktCalendarShow.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
   // --- HELPERS ---
 
-  Future<List<T>> _getCalendarList<T>(
-    String path,
-    DateTime? startDate,
-    int days,
-    TraktExtendedInfo extended,
-    TraktFilters? filters,
-    bool authenticated,
-    T Function(Map<String, dynamic> json) itemMapper,
-  ) async {
-    final startStr = startDate != null
-        ? '/${TraktDateUtils.formatPathDate(startDate)}'
-        : '';
-    final fullPath = '$path$startStr/$days';
+  String _buildPath(
+      String base, DateTime? startDate, int? days, bool authenticated) {
+    var path = base;
+    if (authenticated) path = path.replaceFirst('/calendars', '/calendars/my');
+    if (startDate != null) {
+      path += '/${TraktDateUtils.formatPathDate(startDate)}';
+      if (days != null) path += '/$days';
+    }
+    return path;
+  }
+}
 
-    final queryParams = <String, String>{'extended': extended.value};
-    if (filters != null) queryParams.addAll(filters.toQueryParams());
+/// Represents a movie entry in a calendar.
+class TraktCalendarMovie {
+  /// Creates a new [TraktCalendarMovie] instance.
+  TraktCalendarMovie({
+    required this.released,
+    required this.movie,
+  });
 
-    return _client.get(
-      fullPath,
-      queryParams: queryParams,
-      authenticated: authenticated,
-      mapper: (body, headers) => (body as List)
-          .map((item) => itemMapper(item as Map<String, dynamic>))
-          .toList(),
+  /// Creates a [TraktCalendarMovie] from a JSON map.
+  factory TraktCalendarMovie.fromJson(Map<String, dynamic> json) {
+    return TraktCalendarMovie(
+      released: TraktDateUtils.parse(json['released']) ?? DateTime.now(),
+      movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }
+
+  /// Date when the movie is released.
+  final DateTime released;
+
+  /// The movie object.
+  final TraktMovie movie;
+}
+
+/// Represents a show entry in a calendar.
+class TraktCalendarShow {
+  /// Creates a new [TraktCalendarShow] instance.
+  TraktCalendarShow({
+    required this.firstAired,
+    required this.episode,
+    required this.show,
+  });
+
+  /// Creates a [TraktCalendarShow] from a JSON map.
+  factory TraktCalendarShow.fromJson(Map<String, dynamic> json) {
+    return TraktCalendarShow(
+      firstAired: TraktDateUtils.parse(json['first_aired']) ?? DateTime.now(),
+      episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
+      show: TraktShow.fromJson(json['show'] as Map<String, dynamic>),
+    );
+  }
+
+  /// Date when the episode airs.
+  final DateTime firstAired;
+
+  /// The episode object.
+  final TraktEpisode episode;
+
+  /// The show object.
+  final TraktShow show;
 }

@@ -1,9 +1,9 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_comment_types.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
+import '../core/trakt_pagination_params.dart';
 import '../core/trakt_report_reason.dart';
 import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
@@ -17,20 +17,18 @@ import '../models/trakt_media_state.dart';
 import '../models/trakt_sync_models.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_user_models.dart';
+import 'trakt_api_base.dart';
 
 /// Access to user endpoints.
-class UsersApi {
+class UsersApi extends TraktApiBase {
   /// Creates a new [UsersApi] instance.
-  UsersApi(this._client);
-
-  /// Internal client reference.
-  final TraktApiClient _client;
+  UsersApi(super.client);
 
   // --- SETTINGS & FILTERS ---
 
   /// [🔒 OAuth Required] Get the user's settings.
   Future<TraktUserSettings> getSettings() async {
-    return _client.get(
+    return client.get(
       '/users/settings',
       authenticated: true,
       mapper: (body, headers) =>
@@ -40,7 +38,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Get saved filters.
   Future<List<Map<String, dynamic>>> getSavedFilters({String? section}) async {
-    return _client.get(
+    return client.get(
       '/users/saved_filters${section != null ? '/$section' : ''}',
       authenticated: true,
       mapper: (body, headers) => List<Map<String, dynamic>>.from(body as List),
@@ -51,7 +49,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Get follower requests.
   Future<List<TraktFollowRequest>> getFollowRequests() async {
-    return _client.get(
+    return client.get(
       '/users/requests',
       authenticated: true,
       mapper: (body, headers) => (body as List)
@@ -62,7 +60,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Approve a follower request.
   Future<TraktUserConnection> approveFollowRequest(int requestId) async {
-    return _client.post(
+    return client.post(
       '/users/requests/$requestId',
       authenticated: true,
       mapper: (body, headers) =>
@@ -72,7 +70,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Deny a follower request.
   Future<void> denyFollowRequest(int requestId) async {
-    await _client.delete(
+    await client.delete(
       '/users/requests/$requestId',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -85,37 +83,25 @@ class UsersApi {
   Future<TraktListResponse<TraktMediaEntity>> getHiddenItems(
     String section, {
     TraktMediaType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'extended': extended.value,
-    };
+    final queryParams = <String, String>{};
     if (type != null) queryParams['type'] = type.value;
 
-    return _client.get(
+    return getList(
       '/users/hidden/$section',
-      queryParams: queryParams,
-      authenticated: true,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      queryParams: queryParams.isEmpty ? null : queryParams,
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 
   /// [🔒 OAuth Required] Add items to hidden list.
   Future<TraktSyncResponse> addHiddenItems(
       String section, TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/users/hidden/$section',
       body: request.toJson(),
       authenticated: true,
@@ -127,7 +113,7 @@ class UsersApi {
   /// [🔒 OAuth Required] Remove items from hidden list.
   Future<TraktSyncResponse> removeHiddenItems(
       String section, TraktSyncRequest request) async {
-    return _client.post(
+    return client.post(
       '/users/hidden/$section/remove',
       body: request.toJson(),
       authenticated: true,
@@ -144,29 +130,17 @@ class UsersApi {
   Future<TraktListResponse<dynamic>> getLikes(
     String username, {
     required String type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
   }) async {
-    return _client.get(
+    return getList(
       '/users/$username/likes/$type',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List).map((e) {
-          final json = e as Map<String, dynamic>;
-          if (type == 'comments') {
-            return TraktComment.fromJson(
-                json['comment'] as Map<String, dynamic>);
-          } else {
-            return TraktList.fromJson(json['list'] as Map<String, dynamic>);
-          }
-        }).toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
+      pagination: pagination,
+      mapper: (json) {
+        if (type == 'comments') {
+          return TraktComment.fromJson(json['comment'] as Map<String, dynamic>);
+        } else {
+          return TraktList.fromJson(json['list'] as Map<String, dynamic>);
+        }
       },
     );
   }
@@ -178,7 +152,7 @@ class UsersApi {
   /// [username] can be a username or UUID.
   Future<TraktUser> getProfile(String username,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return _client.get(
+    return client.get(
       '/users/$username',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
@@ -191,7 +165,7 @@ class UsersApi {
   /// [username] can be a username or UUID.
   Future<dynamic> getWatching(String username,
       {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return _client.get(
+    return client.get(
       '/users/$username/watching',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
@@ -216,26 +190,14 @@ class UsersApi {
     String username, {
     TraktCommentType commentType = TraktCommentType.all,
     TraktMediaType type = TraktMediaType.all,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return getList(
       '/users/$username/comments/${commentType.value}/${type.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktComment.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -245,30 +207,16 @@ class UsersApi {
   Future<TraktListResponse<TraktNote>> getNotes(
     String username, {
     TraktMediaType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'extended': extended.value,
-    };
-    if (filters != null) queryParams.addAll(filters.toQueryParams());
-
-    return _client.get(
+    return getList(
       '/users/$username/notes${type != null ? '/${type.value}' : ''}',
-      queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktNote.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      filters: filters,
+      mapper: (json) => TraktNote.fromJson(json),
     );
   }
 
@@ -280,7 +228,7 @@ class UsersApi {
   Future<List<TraktMediaState<T>>> getCollection<T>(String username,
       {required TraktMediaType type,
       TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return _client.get(
+    return client.get(
       '/users/$username/collection/${type.value}',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
@@ -306,8 +254,7 @@ class UsersApi {
     String username, {
     TraktMediaType? type,
     int? id,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     var path = '/users/$username/history';
@@ -316,22 +263,11 @@ class UsersApi {
       if (id != null) path += '/$id';
     }
 
-    return _client.get(
+    return getList(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktSyncHistory.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktSyncHistory.fromJson(json),
     );
   }
 
@@ -341,7 +277,7 @@ class UsersApi {
   Future<List<TraktMediaState<T>>> getWatched<T>(String username,
       {required TraktMediaType type,
       TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return _client.get(
+    return client.get(
       '/users/$username/watched/${type.value}',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
@@ -367,26 +303,14 @@ class UsersApi {
     String username, {
     TraktMediaType? type,
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return getList(
       '/users/$username/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 
@@ -397,26 +321,14 @@ class UsersApi {
     String username, {
     TraktMediaType? type,
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return getList(
       '/users/$username/favorites${type != null ? '/${type.value}' : ''}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      extended: extended,
+      mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }
 
@@ -426,7 +338,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<List<TraktList>> getLists(String username) async {
-    return _client.get(
+    return client.get(
       '/users/$username/lists',
       mapper: (body, headers) => (body as List)
           .map((e) => TraktList.fromJson(e as Map<String, dynamic>))
@@ -438,7 +350,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<TraktList> createList(String username, TraktList list) async {
-    return _client.post(
+    return client.post(
       '/users/$username/lists',
       body: list.toJson(),
       authenticated: true,
@@ -451,7 +363,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<void> reorderLists(String username, List<int> rank) async {
-    await _client.post(
+    await client.post(
       '/users/$username/lists/reorder',
       body: {'rank': rank},
       authenticated: true,
@@ -471,7 +383,7 @@ class UsersApi {
     final queryParams = <String, String>{'extended': extended.value};
     if (type != null) queryParams['type'] = type.value;
 
-    return _client.get(
+    return client.get(
       '/users/$username/lists/$listId/items',
       queryParams: queryParams,
       mapper: (body, headers) => (body as List)
@@ -485,7 +397,7 @@ class UsersApi {
   /// [username] can be a username or UUID.
   Future<void> reorderListItems(
       String username, String listId, List<int> rank) async {
-    await _client.post(
+    await client.post(
       '/users/$username/lists/$listId/items/reorder',
       body: {'rank': rank},
       authenticated: true,
@@ -499,7 +411,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<TraktUserConnection> follow(String username) async {
-    return _client.post(
+    return client.post(
       '/users/$username/follow',
       authenticated: true,
       mapper: (body, headers) =>
@@ -511,7 +423,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<void> unfollow(String username) async {
-    await _client.delete(
+    await client.delete(
       '/users/$username/follow',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -522,7 +434,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<List<TraktUserConnection>> getFriends(String username) async {
-    return _client.get(
+    return client.get(
       '/users/$username/friends',
       mapper: (body, headers) => (body as List)
           .map((e) => TraktUserConnection.fromJson(e as Map<String, dynamic>))
@@ -534,7 +446,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Get blocked users.
   Future<List<TraktUser>> getBlockedUsers() async {
-    return _client.get(
+    return client.get(
       '/users/block',
       authenticated: true,
       mapper: (body, headers) => (body as List)
@@ -547,7 +459,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<void> block(String username) async {
-    await _client.post(
+    await client.post(
       '/users/$username/block',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -558,7 +470,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<void> unblock(String username) async {
-    await _client.delete(
+    await client.delete(
       '/users/$username/block',
       authenticated: true,
       mapper: (body, headers) => null,
@@ -571,7 +483,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<TraktUserStats> getStats(String username) async {
-    return _client.get(
+    return client.get(
       '/users/$username/stats',
       mapper: (body, headers) =>
           TraktUserStats.fromJson(body as Map<String, dynamic>),
@@ -583,7 +495,7 @@ class UsersApi {
   /// [username] can be a username or UUID.
   Future<void> report(String username,
       {required TraktReportReason reason, String? notes}) async {
-    await _client.post(
+    await client.post(
       '/users/$username/report',
       body: {
         'reason': reason.value,

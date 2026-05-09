@@ -1,4 +1,3 @@
-import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_id_type.dart';
@@ -6,15 +5,14 @@ import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_search_fields.dart';
 import '../core/trakt_search_utils.dart';
+import '../core/trakt_pagination_params.dart';
 import '../models/trakt_media_entity.dart';
+import 'trakt_api_base.dart';
 
 /// Access to search endpoints.
-class SearchApi {
-
+class SearchApi extends TraktApiBase {
   /// Creates a new [SearchApi] instance.
-  SearchApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
+  SearchApi(super.client);
 
   /// Search by text query.
   ///
@@ -24,8 +22,7 @@ class SearchApi {
     String query, {
     List<TraktMediaType>? types,
     List<TraktSearchField>? fields,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
     bool escape = false,
@@ -37,28 +34,18 @@ class SearchApi {
         : 'movie,show,person,list';
     final queryParams = <String, String>{
       'query': processedQuery,
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'extended': extended.value,
     };
     if (fields != null) {
       queryParams['fields'] = fields.map((e) => e.value).join(',');
     }
-    if (filters != null) queryParams.addAll(filters.toQueryParams());
 
-    return _client.get(
+    return getList(
       '/search/$typePath',
+      pagination: pagination,
       queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) =>
-                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      extended: extended,
+      filters: filters,
+      mapper: TraktMediaEntity.fromJson,
     );
   }
 
@@ -69,30 +56,18 @@ class SearchApi {
     String id, {
     required TraktIdType idType,
     TraktMediaType? type,
-    int page = 1,
-    int limit = 10,
+    TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final queryParams = <String, String>{
-      'page': page.toString(),
-      'limit': limit.toString(),
-      'extended': extended.value,
-    };
+    final queryParams = <String, String>{};
     if (type != null) queryParams['type'] = type.singularValue;
 
-    return _client.get(
+    return getList(
       '/search/${idType.value}/$id',
-      queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) =>
-                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      pagination: pagination,
+      queryParams: queryParams.isEmpty ? null : queryParams,
+      extended: extended,
+      mapper: TraktMediaEntity.fromJson,
     );
   }
 }
