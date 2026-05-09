@@ -2,14 +2,6 @@ import '../core/trakt_date_utils.dart';
 
 /// Generic model for user's watched/collected items.
 class TraktMediaState<T> {
-  final int? plays;
-  final DateTime? lastWatchedAt;
-  final DateTime? lastCollectedAt;
-  final DateTime lastUpdatedAt;
-  final T item;
-  final List<TraktSeasonState>? seasons;
-  final Map<String, dynamic>? metadata;
-
   const TraktMediaState({
     this.plays,
     this.lastWatchedAt,
@@ -21,31 +13,38 @@ class TraktMediaState<T> {
   });
 
   factory TraktMediaState.fromJson(
-      Map<String, dynamic> json, T Function(Map<String, dynamic>) fromJsonT, String itemKey) {
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJsonT,
+    String itemKey,
+  ) {
     return TraktMediaState(
       plays: json['plays'] as int?,
       lastWatchedAt: TraktDateUtils.parse(json['last_watched_at']),
       lastCollectedAt: TraktDateUtils.parse(json['last_collected_at']),
-      lastUpdatedAt: TraktDateUtils.parse(json['last_updated_at']) ?? DateTime.now(),
+      lastUpdatedAt:
+          TraktDateUtils.parse(json['last_updated_at']) ?? DateTime.now(),
       item: fromJsonT(json[itemKey] as Map<String, dynamic>),
       metadata: json['metadata'] as Map<String, dynamic>?,
       seasons: json['seasons'] != null
           ? (json['seasons'] as List)
-              .map((e) => TraktSeasonState.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .map(
+                  (e) => TraktSeasonState.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
           : null,
     );
   }
+  final int? plays;
+  final DateTime? lastWatchedAt;
+  final DateTime? lastCollectedAt;
+  final DateTime lastUpdatedAt;
+  final T item;
+  final List<TraktSeasonState>? seasons;
+  final Map<String, dynamic>? metadata;
 }
 
 class TraktSeasonState {
-  final int number;
-  final List<TraktEpisodeState> episodes;
-
-  const TraktSeasonState({
-    required this.number,
-    required this.episodes,
-  });
+  const TraktSeasonState({required this.number, required this.episodes});
 
   factory TraktSeasonState.fromJson(Map<String, dynamic> json) {
     return TraktSeasonState(
@@ -55,15 +54,11 @@ class TraktSeasonState {
           .toList(),
     );
   }
+  final int number;
+  final List<TraktEpisodeState> episodes;
 }
 
 class TraktEpisodeState {
-  final int number;
-  final int? plays;
-  final DateTime? lastWatchedAt;
-  final DateTime? collectedAt;
-  final Map<String, dynamic>? metadata;
-
   const TraktEpisodeState({
     required this.number,
     this.plays,
@@ -81,4 +76,9 @@ class TraktEpisodeState {
       metadata: json['metadata'] as Map<String, dynamic>?,
     );
   }
+  final int number;
+  final int? plays;
+  final DateTime? lastWatchedAt;
+  final DateTime? collectedAt;
+  final Map<String, dynamic>? metadata;
 }

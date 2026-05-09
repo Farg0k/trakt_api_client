@@ -3,12 +3,6 @@ import 'trakt_movie.dart';
 import 'trakt_show.dart';
 
 class TraktScrobbleRequest {
-  final TraktMovie? movie;
-  final TraktEpisode? episode;
-  final double progress;
-  final String? appVersion;
-  final String? appDate;
-
   const TraktScrobbleRequest({
     this.movie,
     this.episode,
@@ -16,6 +10,11 @@ class TraktScrobbleRequest {
     this.appVersion,
     this.appDate,
   });
+  final TraktMovie? movie;
+  final TraktEpisode? episode;
+  final double progress;
+  final String? appVersion;
+  final String? appDate;
 
   Map<String, dynamic> toJson() {
     return {
@@ -29,13 +28,6 @@ class TraktScrobbleRequest {
 }
 
 class TraktScrobbleResponse {
-  final int id;
-  final String action;
-  final double progress;
-  final TraktMovie? movie;
-  final TraktShow? show;
-  final TraktEpisode? episode;
-
   const TraktScrobbleResponse({
     required this.id,
     required this.action,
@@ -61,4 +53,10 @@ class TraktScrobbleResponse {
           : null,
     );
   }
+  final int id;
+  final String action;
+  final double progress;
+  final TraktMovie? movie;
+  final TraktShow? show;
+  final TraktEpisode? episode;
 }

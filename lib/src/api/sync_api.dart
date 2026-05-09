@@ -11,16 +11,16 @@ import '../models/trakt_show.dart';
 import '../core/trakt_date_utils.dart';
 
 class SyncApi {
-  final TraktApiClient _client;
-
   SyncApi(this._client);
+  final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Get the last activities for the authenticated user.
   Future<TraktLastActivities> getLastActivities() async {
     return _client.get(
       '/sync/last_activities',
       authenticated: true,
-      mapper: (body, headers) => TraktLastActivities.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktLastActivities.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -50,7 +50,9 @@ class SyncApi {
     return _client.get(
       '/sync/playback/$id',
       authenticated: true,
-      mapper: (body, headers) => body == null ? null : TraktSyncPlayback.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => body == null
+          ? null
+          : TraktSyncPlayback.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -79,9 +81,19 @@ class SyncApi {
         return list.map((e) {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
-            return TraktMediaState<TraktMovie>.fromJson(json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+            return TraktMediaState<TraktMovie>.fromJson(
+                  json,
+                  TraktMovie.fromJson,
+                  'movie',
+                )
+                as TraktMediaState<T>;
           } else {
-            return TraktMediaState<TraktShow>.fromJson(json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
+            return TraktMediaState<TraktShow>.fromJson(
+                  json,
+                  TraktShow.fromJson,
+                  'show',
+                )
+                as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -94,17 +106,21 @@ class SyncApi {
       '/sync/collection',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// [🔒 OAuth Required] Remove items from the user's collection.
-  Future<TraktSyncResponse> removeFromCollection(TraktSyncRequest request) async {
+  Future<TraktSyncResponse> removeFromCollection(
+    TraktSyncRequest request,
+  ) async {
     return _client.post(
       '/sync/collection/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -124,9 +140,19 @@ class SyncApi {
         return list.map((e) {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
-            return TraktMediaState<TraktMovie>.fromJson(json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+            return TraktMediaState<TraktMovie>.fromJson(
+                  json,
+                  TraktMovie.fromJson,
+                  'movie',
+                )
+                as TraktMediaState<T>;
           } else {
-            return TraktMediaState<TraktShow>.fromJson(json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
+            return TraktMediaState<TraktShow>.fromJson(
+                  json,
+                  TraktShow.fromJson,
+                  'show',
+                )
+                as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -156,8 +182,10 @@ class SyncApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (startAt != null) queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
-    if (endAt != null) queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
+    if (startAt != null)
+      queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
+    if (endAt != null)
+      queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
 
     return _client.get(
       path,
@@ -181,7 +209,8 @@ class SyncApi {
       '/sync/history',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -191,7 +220,8 @@ class SyncApi {
       '/sync/history/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -222,7 +252,8 @@ class SyncApi {
       '/sync/ratings',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -232,7 +263,8 @@ class SyncApi {
       '/sync/ratings/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -246,7 +278,8 @@ class SyncApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
+    final path =
+        '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
 
     return _client.get(
       path,
@@ -274,17 +307,21 @@ class SyncApi {
       '/sync/watchlist',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// [🔒 OAuth Required] Remove items from the user's watchlist.
-  Future<TraktSyncResponse> removeFromWatchlist(TraktSyncRequest request) async {
+  Future<TraktSyncResponse> removeFromWatchlist(
+    TraktSyncRequest request,
+  ) async {
     return _client.post(
       '/sync/watchlist/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) => TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
     );
   }
 

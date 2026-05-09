@@ -3,9 +3,8 @@ import '../core/trakt_media_class.dart';
 import '../models/trakt_media_models.dart';
 
 class CountriesApi {
-  final TraktApiClient _client;
-
   CountriesApi(this._client);
+  final TraktApiClient _client;
 
   /// Get all countries for movies or shows.
   Future<List<TraktCountry>> getCountries(TraktMediaClass type) async {

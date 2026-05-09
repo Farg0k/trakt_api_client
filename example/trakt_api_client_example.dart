@@ -31,7 +31,9 @@ void main() async {
       final movie = trending.item;
       print('- ${movie.title} (${movie.year})');
       print('  Watchers: ${trending.watchers}');
-      print('  Rating: ${movie.rating?.toStringAsFixed(1)} (${movie.votes} votes)');
+      print(
+        '  Rating: ${movie.rating?.toStringAsFixed(1)} (${movie.votes} votes)',
+      );
     }
 
     // 4. Search API with Advanced Filters
@@ -39,17 +41,16 @@ void main() async {
     final searchResults = await client.search.textQuery(
       'Spider-man',
       types: [TraktMediaType.movies],
-      filters: TraktFilters(
-        genres: ['action'],
-        years: '2023',
-      ),
+      filters: TraktFilters(genres: ['action'], years: '2023'),
       escape: true, // Automatically escape special characters in query
     );
 
     for (var result in searchResults.data) {
       final movie = result.movie;
       if (movie != null) {
-        print('- Found: ${movie.title} (${movie.year}) [TMDB ID: ${movie.ids?.tmdb}]');
+        print(
+          '- Found: ${movie.title} (${movie.year}) [TMDB ID: ${movie.ids?.tmdb}]',
+        );
       }
     }
 
@@ -71,7 +72,6 @@ void main() async {
       }
     }
     */
-
   } on TraktApiException catch (e) {
     print('API Error: ${e.message} (Status: ${e.statusCode})');
   } finally {

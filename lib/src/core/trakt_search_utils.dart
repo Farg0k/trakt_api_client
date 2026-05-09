@@ -11,7 +11,25 @@ class TraktSearchUtils {
     // Characters to escape: \ + - && || ! ( ) { } [ ] ^ " ~ * ? : /
     // Note: \ must be first to avoid double escaping
     final specialChars = [
-      '\\', '+', '-', '&&', '||', '!', '(', ')', '{', '}', '[', ']', '^', '"', '~', '*', '?', ':', '/'
+      '\\',
+      '+',
+      '-',
+      '&&',
+      '||',
+      '!',
+      '(',
+      ')',
+      '{',
+      '}',
+      '[',
+      ']',
+      '^',
+      '"',
+      '~',
+      '*',
+      '?',
+      ':',
+      '/',
     ];
 
     var escapedQuery = query;

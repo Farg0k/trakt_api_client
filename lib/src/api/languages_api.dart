@@ -3,9 +3,8 @@ import '../core/trakt_media_class.dart';
 import '../models/trakt_media_models.dart';
 
 class LanguagesApi {
-  final TraktApiClient _client;
-
   LanguagesApi(this._client);
+  final TraktApiClient _client;
 
   /// Get all languages for movies or shows.
   Future<List<TraktLanguage>> getLanguages(TraktMediaClass type) async {

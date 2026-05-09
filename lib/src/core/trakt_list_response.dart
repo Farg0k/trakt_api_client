@@ -1,9 +1,4 @@
 class TraktPagination {
-  final int itemCount;
-  final int pageCount;
-  final int limit;
-  final int currentPage;
-
   TraktPagination({
     required this.itemCount,
     required this.pageCount,
@@ -19,6 +14,10 @@ class TraktPagination {
       currentPage: int.tryParse(headers['X-Pagination-Page'] ?? '') ?? 1,
     );
   }
+  final int itemCount;
+  final int pageCount;
+  final int limit;
+  final int currentPage;
 
   @override
   String toString() {
@@ -27,11 +26,7 @@ class TraktPagination {
 }
 
 class TraktListResponse<T> {
+  TraktListResponse({required this.data, this.pagination});
   final List<T> data;
   final TraktPagination? pagination;
-
-  TraktListResponse({
-    required this.data,
-    this.pagination,
-  });
 }

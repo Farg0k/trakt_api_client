@@ -13,9 +13,8 @@ import '../models/trakt_list.dart';
 import '../models/trakt_user.dart';
 
 class CommentsApi {
-  final TraktApiClient _client;
-
   CommentsApi(this._client);
+  final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Post a new comment to a movie, show, season, episode, or list.
   Future<TraktComment> post({
@@ -54,8 +53,11 @@ class CommentsApi {
   }
 
   /// [🔒 OAuth Required] Update an existing comment.
-  Future<TraktComment> update(int id,
-      {required String comment, bool spoiler = false}) async {
+  Future<TraktComment> update(
+    int id, {
+    required String comment,
+    bool spoiler = false,
+  }) async {
     return _client.put(
       '/comments/$id',
       body: {'comment': comment, 'spoiler': spoiler},
@@ -85,8 +87,11 @@ class CommentsApi {
   }
 
   /// [🔒 OAuth Required] Post a reply to a comment.
-  Future<TraktComment> postReply(int id,
-      {required String comment, bool spoiler = false}) async {
+  Future<TraktComment> postReply(
+    int id, {
+    required String comment,
+    bool spoiler = false,
+  }) async {
     return _client.post(
       '/comments/$id/replies',
       body: {'comment': comment, 'spoiler': spoiler},
@@ -97,18 +102,20 @@ class CommentsApi {
   }
 
   /// Get users who liked a comment.
-  Future<TraktListResponse<TraktUser>> getLikes(int id,
-      {int page = 1, int limit = 10}) async {
+  Future<TraktListResponse<TraktUser>> getLikes(
+    int id, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     return _client.get(
       '/comments/$id/likes',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) =>
-                TraktUser.fromJson(item['user'] as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  TraktUser.fromJson(item['user'] as Map<String, dynamic>),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -137,14 +144,15 @@ class CommentsApi {
   }
 
   /// [🔒 OAuth Required] Report a comment for inappropriate content.
-  Future<void> report(int id,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    int id, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await _client.post(
       '/comments/$id/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );
@@ -159,7 +167,13 @@ class CommentsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
-        '/comments/trending', commentType, type, page, limit, extended);
+      '/comments/trending',
+      commentType,
+      type,
+      page,
+      limit,
+      extended,
+    );
   }
 
   /// Get recent comments.
@@ -171,7 +185,13 @@ class CommentsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
-        '/comments/recent', commentType, type, page, limit, extended);
+      '/comments/recent',
+      commentType,
+      type,
+      page,
+      limit,
+      extended,
+    );
   }
 
   /// Get recently updated comments.
@@ -183,15 +203,23 @@ class CommentsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     return _getCommentList(
-        '/comments/updates', commentType, type, page, limit, extended);
+      '/comments/updates',
+      commentType,
+      type,
+      page,
+      limit,
+      extended,
+    );
   }
 
   /// Get the object the comment is attached to.
   ///
   /// Returns a dynamic object which can be [TraktMovie], [TraktShow],
   /// [TraktSeason], [TraktEpisode], or [TraktList].
-  Future<dynamic> getAttachedMedia(int id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+  Future<dynamic> getAttachedMedia(
+    int id, {
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+  }) async {
     return _client.get(
       '/comments/$id/attached_media',
       queryParams: {'extended': extended.value},

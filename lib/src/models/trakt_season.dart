@@ -3,18 +3,6 @@ import 'trakt_episode.dart';
 import 'trakt_ids.dart';
 
 class TraktSeason {
-  final int number;
-  final TraktIds? ids;
-  final double? rating;
-  final int? votes;
-  final int? episodeCount;
-  final int? airedEpisodes;
-  final String? title;
-  final String? overview;
-  final DateTime? firstAired;
-  final String? network;
-  final List<TraktEpisode>? episodes;
-
   const TraktSeason({
     required this.number,
     this.ids,
@@ -45,11 +33,22 @@ class TraktSeason {
       network: json['network'] as String?,
       episodes: json['episodes'] != null
           ? (json['episodes'] as List)
-              .map((e) => TraktEpisode.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .map((e) => TraktEpisode.fromJson(e as Map<String, dynamic>))
+                .toList()
           : null,
     );
   }
+  final int number;
+  final TraktIds? ids;
+  final double? rating;
+  final int? votes;
+  final int? episodeCount;
+  final int? airedEpisodes;
+  final String? title;
+  final String? overview;
+  final DateTime? firstAired;
+  final String? network;
+  final List<TraktEpisode>? episodes;
 
   Map<String, dynamic> toJson() {
     return {

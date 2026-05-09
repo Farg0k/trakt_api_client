@@ -21,73 +21,99 @@ import '../api/seasons_api.dart';
 import '../api/shows_api.dart';
 import '../api/sync_api.dart';
 import '../api/users_api.dart';
-import '../models/trakt_auth_models.dart';
 import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
 import 'trakt_rate_limit.dart';
+import '../models/trakt_auth_models.dart';
 
+/// The main entry point for the Trakt.tv API.
+///
+/// This client provides access to all Trakt API modules.
 class TraktApiClient {
+  /// The configuration for this client.
   TraktApiClientConfig config;
+
+  /// Callback triggered when an OAuth token is refreshed.
+  final void Function(TraktOAuthToken token)? onTokenRefreshed;
+
   final http.Client _client;
-  final void Function(TraktRateLimit)? onRateLimitChanged;
-  final void Function(TraktOAuthToken)? onTokenRefreshed;
-
-  TraktRateLimit? _lastRateLimit;
-  TraktRateLimit? get lastRateLimit => _lastRateLimit;
-
   bool _isRefreshing = false;
+  TraktRateLimit? _lastRateLimit;
 
-  late final AuthenticationApi auth;
-  late final MoviesApi movies;
-  late final ShowsApi shows;
-  late final SeasonsApi seasons;
-  late final EpisodesApi episodes;
-  late final CalendarsApi calendars;
-  late final CheckinApi checkin;
-  late final CommentsApi comments;
-  late final CertificationsApi certifications;
-  late final CountriesApi countries;
-  late final GenresApi genres;
-  late final LanguagesApi languages;
-  late final ListsApi lists;
-  late final NetworksApi networks;
-  late final NotesApi notes;
-  late final PeopleApi people;
-  late final RecommendationsApi recommendations;
-  late final ScrobbleApi scrobble;
-  late final SearchApi search;
-  late final SyncApi sync;
-  late final UsersApi users;
-
+  /// Creates a new Trakt API client.
   TraktApiClient({
     required this.config,
-    http.Client? client,
-    this.onRateLimitChanged,
     this.onTokenRefreshed,
-  }) : _client = client ?? http.Client() {
-    auth = AuthenticationApi(this);
-    movies = MoviesApi(this);
-    shows = ShowsApi(this);
-    seasons = SeasonsApi(this);
-    episodes = EpisodesApi(this);
-    calendars = CalendarsApi(this);
-    checkin = CheckinApi(this);
-    comments = CommentsApi(this);
-    certifications = CertificationsApi(this);
-    countries = CountriesApi(this);
-    genres = GenresApi(this);
-    languages = LanguagesApi(this);
-    lists = ListsApi(this);
-    networks = NetworksApi(this);
-    notes = NotesApi(this);
-    people = PeopleApi(this);
-    recommendations = RecommendationsApi(this);
-    scrobble = ScrobbleApi(this);
-    search = SearchApi(this);
-    sync = SyncApi(this);
-    users = UsersApi(this);
-  }
+    http.Client? httpClient,
+  }) : _client = httpClient ?? http.Client();
 
+  /// Access to authentication endpoints.
+  AuthenticationApi get auth => AuthenticationApi(this);
+
+  /// Access to calendar endpoints.
+  CalendarsApi get calendars => CalendarsApi(this);
+
+  /// Access to certification endpoints.
+  CertificationsApi get certifications => CertificationsApi(this);
+
+  /// Access to checkin endpoints.
+  CheckinApi get checkin => CheckinApi(this);
+
+  /// Access to comment endpoints.
+  CommentsApi get comments => CommentsApi(this);
+
+  /// Access to country endpoints.
+  CountriesApi get countries => CountriesApi(this);
+
+  /// Access to episode endpoints.
+  EpisodesApi get episodes => EpisodesApi(this);
+
+  /// Access to genre endpoints.
+  GenresApi get genres => GenresApi(this);
+
+  /// Access to language endpoints.
+  LanguagesApi get languages => LanguagesApi(this);
+
+  /// Access to list endpoints.
+  ListsApi get lists => ListsApi(this);
+
+  /// Access to movie endpoints.
+  MoviesApi get movies => MoviesApi(this);
+
+  /// Access to network endpoints.
+  NetworksApi get networks => NetworksApi(this);
+
+  /// Access to note endpoints.
+  NotesApi get notes => NotesApi(this);
+
+  /// Access to people endpoints.
+  PeopleApi get people => PeopleApi(this);
+
+  /// Access to recommendation endpoints.
+  RecommendationsApi get recommendations => RecommendationsApi(this);
+
+  /// Access to scrobble endpoints.
+  ScrobbleApi get scrobble => ScrobbleApi(this);
+
+  /// Access to search endpoints.
+  SearchApi get search => SearchApi(this);
+
+  /// Access to season endpoints.
+  SeasonsApi get seasons => SeasonsApi(this);
+
+  /// Access to show endpoints.
+  ShowsApi get shows => ShowsApi(this);
+
+  /// Access to sync endpoints.
+  SyncApi get sync => SyncApi(this);
+
+  /// Access to user endpoints.
+  UsersApi get users => UsersApi(this);
+
+  /// Returns the rate limit information from the last request.
+  TraktRateLimit? get lastRateLimit => _lastRateLimit;
+
+  /// Performs a GET request.
   Future<T> get<T>(
     String path, {
     Map<String, String>? queryParams,
@@ -96,7 +122,9 @@ class TraktApiClient {
   }) async {
     return _performRequest(
       (headers) => _client.get(
-        Uri.parse('${config.baseUrl}$path').replace(queryParameters: queryParams),
+        Uri.parse(
+          '${config.baseUrl}$path',
+        ).replace(queryParameters: queryParams),
         headers: headers,
       ),
       mapper,
@@ -104,6 +132,7 @@ class TraktApiClient {
     );
   }
 
+  /// Performs a POST request.
   Future<T> post<T>(
     String path, {
     dynamic body,
@@ -121,6 +150,7 @@ class TraktApiClient {
     );
   }
 
+  /// Performs a PUT request.
   Future<T> put<T>(
     String path, {
     dynamic body,
@@ -138,16 +168,15 @@ class TraktApiClient {
     );
   }
 
+  /// Performs a DELETE request.
   Future<T> delete<T>(
     String path, {
     bool authenticated = false,
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      (headers) => _client.delete(
-        Uri.parse('${config.baseUrl}$path'),
-        headers: headers,
-      ),
+      (headers) =>
+          _client.delete(Uri.parse('${config.baseUrl}$path'), headers: headers),
       mapper,
       authenticated: authenticated,
     );
@@ -168,12 +197,11 @@ class TraktApiClient {
     var response = await request(config.headers);
 
     try {
-      return _handleResponse(response, mapper);
-    } catch (e) {
-      if (e is TraktApiException &&
-          e.statusCode == 401 &&
+      _updateRateLimit(response.headers);
+
+      if (response.statusCode == 401 &&
+          authenticated &&
           config.refreshToken != null &&
-          config.clientSecret != null &&
           !_isRefreshing) {
         _isRefreshing = true;
         try {
@@ -183,17 +211,17 @@ class TraktApiClient {
             refreshToken: newToken.refreshToken,
           );
           onTokenRefreshed?.call(newToken);
-
           // Retry the request with new headers
           response = await request(config.headers);
-          return _handleResponse(response, mapper);
-        } catch (_) {
-          rethrow;
         } finally {
           _isRefreshing = false;
         }
       }
-      rethrow;
+
+      return _handleResponse(response, mapper);
+    } catch (e) {
+      if (e is TraktApiException) rethrow;
+      throw TraktApiException('Request failed: $e');
     }
   }
 
@@ -201,84 +229,57 @@ class TraktApiClient {
     http.Response response,
     T Function(dynamic body, Map<String, String> headers) mapper,
   ) {
-    _updateRateLimit(response.headers);
-
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final dynamic body =
-          response.body.isEmpty ? null : jsonDecode(response.body);
+      final body = response.body.isEmpty ? null : jsonDecode(response.body);
       return mapper(body, response.headers);
     }
 
-    final String message;
-    switch (response.statusCode) {
-      case 400:
-        message = 'Bad Request - request couldn\'t be parsed';
-        break;
-      case 401:
-        message = 'Unauthorized - OAuth must be provided';
-        break;
-      case 403:
-        message = 'Forbidden - invalid API key or unapproved app';
-        break;
-      case 404:
-        message = 'Not Found - method exists, but no record found';
-        break;
-      case 405:
-        message = 'Method Not Found - method doesn\'t exist';
-        break;
-      case 409:
-        message = 'Conflict - resource already created or already approved';
-        break;
-      case 410:
-        message = 'Account Deactivated or Token Expired - restart the process';
-        break;
-      case 412:
-        message = 'Precondition Failed - use application/json';
-        break;
-      case 418:
-        message = 'Denied - user explicitly denied this code';
-        break;
-      case 420:
-        message = 'Account Limit Exceeded - list count, item count, etc';
-        break;
-      case 422:
-        message = 'Unprocessable Entity - validation errors';
-        break;
-      case 423:
-        message = 'Locked User Account - have the user contact support';
-        break;
-      case 426:
-        message = 'VIP Only - user must upgrade to VIP';
-        break;
-      case 429:
-        message = 'Rate Limit Exceeded';
-        break;
-      case 500:
-        message = 'Server Error';
-        break;
-      case 503:
-      case 504:
-        message = 'Service Unavailable - server overloaded (try again later)';
-        break;
-      default:
-        message = 'Request failed with status: ${response.statusCode}';
-    }
-
     throw TraktApiException(
-      message,
+      _getErrorMessage(response.statusCode),
       statusCode: response.statusCode,
       responseBody: response.body,
       rateLimit: _lastRateLimit,
     );
   }
 
-  void _updateRateLimit(Map<String, String> headers) {
-    if (headers.containsKey('X-Ratelimit-Limit')) {
-      _lastRateLimit = TraktRateLimit.fromHeaders(headers);
-      onRateLimitChanged?.call(_lastRateLimit!);
+  String _getErrorMessage(int statusCode) {
+    switch (statusCode) {
+      case 400:
+        return 'Bad Request - request parameters are invalid';
+      case 401:
+        return 'Unauthorized - OAuth must be provided';
+      case 403:
+        return 'Forbidden - invalid API key or unapproved app';
+      case 404:
+        return 'Not Found - method exists, but no record found';
+      case 405:
+        return 'Method Not Allowed - method doesn\'t exist';
+      case 409:
+        return 'Conflict - resource already exists';
+      case 422:
+        return 'Unprocessable Entity - validation errors';
+      case 423:
+        return 'Locked - user has a locked account';
+      case 429:
+        return 'Rate Limit Exceeded';
+      case 500:
+        return 'Server Error';
+      case 503:
+        return 'Service Unavailable - server overloaded';
+      case 504:
+        return 'Service Unavailable - server overloaded';
+      default:
+        return 'HTTP Error $statusCode';
     }
   }
 
+  void _updateRateLimit(Map<String, String> headers) {
+    if (headers.containsKey('X-Ratelimit-Limit')) {
+      _lastRateLimit = TraktRateLimit.fromHeaders(headers);
+    }
+  }
+
+  /// Closes the underlying HTTP client.
   void close() {
     _client.close();
   }

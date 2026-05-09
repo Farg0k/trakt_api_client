@@ -1,19 +1,6 @@
 import '../core/trakt_date_utils.dart';
 
 class TraktUser {
-  final String? username;
-  final bool? private;
-  final String? name;
-  final bool? vip;
-  final bool? vipEp;
-  final TraktUserIds? ids;
-  final DateTime? joinedAt;
-  final String? location;
-  final String? about;
-  final String? gender;
-  final int? age;
-  final String? images;
-
   const TraktUser({
     this.username,
     this.private,
@@ -44,9 +31,23 @@ class TraktUser {
       about: json['about'] as String?,
       gender: json['gender'] as String?,
       age: json['age'] as int?,
-      images: (json['images'] as Map<String, dynamic>?)?['avatar']?['full'] as String?,
+      images:
+          (json['images'] as Map<String, dynamic>?)?['avatar']?['full']
+              as String?,
     );
   }
+  final String? username;
+  final bool? private;
+  final String? name;
+  final bool? vip;
+  final bool? vipEp;
+  final TraktUserIds? ids;
+  final DateTime? joinedAt;
+  final String? location;
+  final String? about;
+  final String? gender;
+  final int? age;
+  final String? images;
 
   Map<String, dynamic> toJson() {
     return {
@@ -66,9 +67,6 @@ class TraktUser {
 }
 
 class TraktUserIds {
-  final String slug;
-  final String? uuid;
-
   const TraktUserIds({required this.slug, this.uuid});
 
   factory TraktUserIds.fromJson(Map<String, dynamic> json) {
@@ -77,11 +75,10 @@ class TraktUserIds {
       uuid: json['uuid'] as String?,
     );
   }
+  final String slug;
+  final String? uuid;
 
   Map<String, dynamic> toJson() {
-    return {
-      'slug': slug,
-      'uuid': uuid,
-    };
+    return {'slug': slug, 'uuid': uuid};
   }
 }

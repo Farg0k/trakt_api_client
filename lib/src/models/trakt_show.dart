@@ -3,28 +3,6 @@ import 'trakt_airs.dart';
 import 'trakt_ids.dart';
 
 class TraktShow {
-  final String title;
-  final int? year;
-  final TraktIds? ids;
-  final String? overview;
-  final DateTime? firstAired;
-  final TraktAirs? airs;
-  final int? runtime;
-  final String? certification;
-  final String? network;
-  final String? country;
-  final String? trailer;
-  final String? homepage;
-  final String? status;
-  final double? rating;
-  final int? votes;
-  final int? commentCount;
-  final DateTime? updatedAt;
-  final String? language;
-  final List<String>? availableTranslations;
-  final List<String>? genres;
-  final int? airedEpisodes;
-
   const TraktShow({
     required this.title,
     this.year,
@@ -80,6 +58,27 @@ class TraktShow {
       airedEpisodes: json['aired_episodes'] as int?,
     );
   }
+  final String title;
+  final int? year;
+  final TraktIds? ids;
+  final String? overview;
+  final DateTime? firstAired;
+  final TraktAirs? airs;
+  final int? runtime;
+  final String? certification;
+  final String? network;
+  final String? country;
+  final String? trailer;
+  final String? homepage;
+  final String? status;
+  final double? rating;
+  final int? votes;
+  final int? commentCount;
+  final DateTime? updatedAt;
+  final String? language;
+  final List<String>? availableTranslations;
+  final List<String>? genres;
+  final int? airedEpisodes;
 
   Map<String, dynamic> toJson() {
     return {

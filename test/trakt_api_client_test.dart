@@ -57,7 +57,10 @@ void main() {
       final rateLimit = TraktRateLimit.fromHeaders(headers);
       expect(rateLimit.limit, 1000);
       expect(rateLimit.remaining, 999);
-      expect(rateLimit.reset, DateTime.fromMillisecondsSinceEpoch(1442171122 * 1000));
+      expect(
+        rateLimit.reset,
+        DateTime.fromMillisecondsSinceEpoch(1442171122 * 1000),
+      );
       expect(rateLimit.retryAfter?.inSeconds, 30);
     });
   });

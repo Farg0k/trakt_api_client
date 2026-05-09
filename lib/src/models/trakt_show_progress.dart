@@ -2,14 +2,6 @@ import 'trakt_episode.dart';
 import '../core/trakt_date_utils.dart';
 
 class TraktShowProgress {
-  final int aired;
-  final int completed;
-  final DateTime? lastWatchedAt;
-  final DateTime? lastCollectedAt;
-  final List<TraktSeasonProgress> seasons;
-  final TraktEpisode? nextEpisode;
-  final TraktEpisode? lastEpisode;
-
   const TraktShowProgress({
     required this.aired,
     required this.completed,
@@ -37,15 +29,16 @@ class TraktShowProgress {
           : null,
     );
   }
+  final int aired;
+  final int completed;
+  final DateTime? lastWatchedAt;
+  final DateTime? lastCollectedAt;
+  final List<TraktSeasonProgress> seasons;
+  final TraktEpisode? nextEpisode;
+  final TraktEpisode? lastEpisode;
 }
 
 class TraktSeasonProgress {
-  final int number;
-  final int aired;
-  final int completed;
-  final String? title;
-  final List<TraktEpisodeProgress> episodes;
-
   const TraktSeasonProgress({
     required this.number,
     required this.aired,
@@ -65,14 +58,14 @@ class TraktSeasonProgress {
           .toList(),
     );
   }
+  final int number;
+  final int aired;
+  final int completed;
+  final String? title;
+  final List<TraktEpisodeProgress> episodes;
 }
 
 class TraktEpisodeProgress {
-  final int number;
-  final bool completed;
-  final DateTime? watchedAt;
-  final DateTime? collectedAt;
-
   const TraktEpisodeProgress({
     required this.number,
     required this.completed,
@@ -88,4 +81,8 @@ class TraktEpisodeProgress {
       collectedAt: TraktDateUtils.parse(json['collected_at']),
     );
   }
+  final int number;
+  final bool completed;
+  final DateTime? watchedAt;
+  final DateTime? collectedAt;
 }

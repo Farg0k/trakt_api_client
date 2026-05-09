@@ -1,11 +1,4 @@
 class TraktVideo {
-  final String name;
-  final String site;
-  final String key;
-  final String type;
-  final int size;
-  final int traktId;
-
   const TraktVideo({
     required this.name,
     required this.site,
@@ -25,6 +18,12 @@ class TraktVideo {
       traktId: json['ids']['trakt'] as int,
     );
   }
+  final String name;
+  final String site;
+  final String key;
+  final String type;
+  final int size;
+  final int traktId;
 
   Map<String, dynamic> toJson() {
     return {

@@ -1,5 +1,17 @@
 /// Common filters that can be applied to many Trakt API endpoints.
 class TraktFilters {
+  TraktFilters({
+    this.query,
+    this.years,
+    this.genres,
+    this.languages,
+    this.countries,
+    this.certifications,
+    this.networks,
+    this.runtimes,
+    this.ratings,
+  });
+
   /// Search query to filter by title or description.
   final String? query;
 
@@ -27,25 +39,14 @@ class TraktFilters {
   /// Filter by rating range (e.g., '70-100').
   final String? ratings;
 
-  TraktFilters({
-    this.query,
-    this.years,
-    this.genres,
-    this.languages,
-    this.countries,
-    this.certifications,
-    this.networks,
-    this.runtimes,
-    this.ratings,
-  });
-
   /// Converts the filters to a map of query parameters.
   Map<String, String> toQueryParams() {
     final params = <String, String>{};
 
     if (query != null) params['query'] = query!;
     if (years != null) params['years'] = years!;
-    if (genres != null && genres!.isNotEmpty) params['genres'] = genres!.join(',');
+    if (genres != null && genres!.isNotEmpty)
+      params['genres'] = genres!.join(',');
     if (languages != null && languages!.isNotEmpty) {
       params['languages'] = languages!.join(',');
     }

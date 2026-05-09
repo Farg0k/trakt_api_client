@@ -15,12 +15,11 @@ import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
 
 class EpisodesApi {
+  EpisodesApi(this._client);
   final TraktApiClient _client;
 
-  EpisodesApi(this._client);
-
   /// Get detailed episode information.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktEpisode> getSummary(
     String showId,
@@ -37,7 +36,7 @@ class EpisodesApi {
   }
 
   /// Get all translations for an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(
     String showId,
@@ -48,13 +47,15 @@ class EpisodesApi {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
 
   /// Get all comments for an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktComment>> getComments(
     String showId,
@@ -85,7 +86,7 @@ class EpisodesApi {
   }
 
   /// Get all lists that contain this episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String showId,
@@ -98,10 +99,7 @@ class EpisodesApi {
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/lists/${type.value}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -115,7 +113,7 @@ class EpisodesApi {
   }
 
   /// Get cast and crew for an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktCredits> getPeople(
     String showId,
@@ -132,7 +130,7 @@ class EpisodesApi {
   }
 
   /// Get rating distribution for an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(
     String showId,
@@ -147,7 +145,7 @@ class EpisodesApi {
   }
 
   /// Get episode stats.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktStats> getStats(
     String showId,
@@ -162,7 +160,7 @@ class EpisodesApi {
   }
 
   /// Get users currently watching an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktUser>> getWatching(
     String showId,
@@ -180,7 +178,7 @@ class EpisodesApi {
   }
 
   /// Get all videos for an episode.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(
     String showId,
@@ -212,8 +210,13 @@ class EpisodesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) =>
-                TraktUpdate<TraktEpisode>.fromJson(item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
+            .map(
+              (item) => TraktUpdate<TraktEpisode>.fromJson(
+                item as Map<String, dynamic>,
+                TraktEpisode.fromJson,
+                'episode',
+              ),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -232,10 +235,7 @@ class EpisodesApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/episodes/updates/id/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -263,8 +263,13 @@ class EpisodesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) =>
-                TraktDeleted<TraktEpisode>.fromJson(item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
+            .map(
+              (item) => TraktDeleted<TraktEpisode>.fromJson(
+                item as Map<String, dynamic>,
+                TraktEpisode.fromJson,
+                'episode',
+              ),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -275,7 +280,7 @@ class EpisodesApi {
   }
 
   /// [🔒 OAuth Required] Report an episode for inappropriate content.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(
     String showId,
@@ -286,17 +291,15 @@ class EpisodesApi {
   }) async {
     await _client.post(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   /// Refresh an episode to get the latest metadata from TMDB.
-  /// 
+  ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> refresh(
     String showId,

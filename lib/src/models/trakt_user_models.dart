@@ -1,11 +1,6 @@
 import 'trakt_user.dart';
 
 class TraktUserSocialIds {
-  final String? twitter;
-  final String? facebook;
-  final String? instagram;
-  final String? tumblr;
-
   const TraktUserSocialIds({
     this.twitter,
     this.facebook,
@@ -21,6 +16,10 @@ class TraktUserSocialIds {
       tumblr: json['tumblr'] as String?,
     );
   }
+  final String? twitter;
+  final String? facebook;
+  final String? instagram;
+  final String? tumblr;
 
   Map<String, dynamic> toJson() {
     return {
@@ -33,11 +32,6 @@ class TraktUserSocialIds {
 }
 
 class TraktUserSettings {
-  final TraktUser user;
-  final TraktAccountSettings account;
-  final TraktConnectionsSettings connections;
-  final TraktSharingTextSettings sharingText;
-
   const TraktUserSettings({
     required this.user,
     required this.account,
@@ -48,19 +42,24 @@ class TraktUserSettings {
   factory TraktUserSettings.fromJson(Map<String, dynamic> json) {
     return TraktUserSettings(
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
-      account: TraktAccountSettings.fromJson(json['account'] as Map<String, dynamic>),
-      connections: TraktConnectionsSettings.fromJson(json['connections'] as Map<String, dynamic>),
-      sharingText: TraktSharingTextSettings.fromJson(json['sharing_text'] as Map<String, dynamic>),
+      account: TraktAccountSettings.fromJson(
+        json['account'] as Map<String, dynamic>,
+      ),
+      connections: TraktConnectionsSettings.fromJson(
+        json['connections'] as Map<String, dynamic>,
+      ),
+      sharingText: TraktSharingTextSettings.fromJson(
+        json['sharing_text'] as Map<String, dynamic>,
+      ),
     );
   }
+  final TraktUser user;
+  final TraktAccountSettings account;
+  final TraktConnectionsSettings connections;
+  final TraktSharingTextSettings sharingText;
 }
 
 class TraktAccountSettings {
-  final String timezone;
-  final bool time24hr;
-  final String coverImage;
-  final String token;
-
   const TraktAccountSettings({
     required this.timezone,
     required this.time24hr,
@@ -76,15 +75,13 @@ class TraktAccountSettings {
       token: json['token'] as String,
     );
   }
+  final String timezone;
+  final bool time24hr;
+  final String coverImage;
+  final String token;
 }
 
 class TraktConnectionsSettings {
-  final bool facebook;
-  final bool twitter;
-  final bool google;
-  final bool tumblr;
-  final bool slack;
-
   const TraktConnectionsSettings({
     required this.facebook,
     required this.twitter,
@@ -102,12 +99,14 @@ class TraktConnectionsSettings {
       slack: json['slack'] as bool,
     );
   }
+  final bool facebook;
+  final bool twitter;
+  final bool google;
+  final bool tumblr;
+  final bool slack;
 }
 
 class TraktSharingTextSettings {
-  final String watching;
-  final String watched;
-
   const TraktSharingTextSettings({
     required this.watching,
     required this.watched,
@@ -119,16 +118,11 @@ class TraktSharingTextSettings {
       watched: json['watched'] as String,
     );
   }
+  final String watching;
+  final String watched;
 }
 
 class TraktUserStats {
-  final TraktMovieStatsSummary movies;
-  final TraktShowStatsSummary shows;
-  final TraktSeasonStatsSummary seasons;
-  final TraktEpisodeStatsSummary episodes;
-  final TraktNetworkStatsSummary networks;
-  final TraktRatingStatsSummary ratings;
-
   const TraktUserStats({
     required this.movies,
     required this.shows,
@@ -140,24 +134,35 @@ class TraktUserStats {
 
   factory TraktUserStats.fromJson(Map<String, dynamic> json) {
     return TraktUserStats(
-      movies: TraktMovieStatsSummary.fromJson(json['movies'] as Map<String, dynamic>),
-      shows: TraktShowStatsSummary.fromJson(json['shows'] as Map<String, dynamic>),
-      seasons: TraktSeasonStatsSummary.fromJson(json['seasons'] as Map<String, dynamic>),
-      episodes: TraktEpisodeStatsSummary.fromJson(json['episodes'] as Map<String, dynamic>),
-      networks: TraktNetworkStatsSummary.fromJson(json['networks'] as Map<String, dynamic>),
-      ratings: TraktRatingStatsSummary.fromJson(json['ratings'] as Map<String, dynamic>),
+      movies: TraktMovieStatsSummary.fromJson(
+        json['movies'] as Map<String, dynamic>,
+      ),
+      shows: TraktShowStatsSummary.fromJson(
+        json['shows'] as Map<String, dynamic>,
+      ),
+      seasons: TraktSeasonStatsSummary.fromJson(
+        json['seasons'] as Map<String, dynamic>,
+      ),
+      episodes: TraktEpisodeStatsSummary.fromJson(
+        json['episodes'] as Map<String, dynamic>,
+      ),
+      networks: TraktNetworkStatsSummary.fromJson(
+        json['networks'] as Map<String, dynamic>,
+      ),
+      ratings: TraktRatingStatsSummary.fromJson(
+        json['ratings'] as Map<String, dynamic>,
+      ),
     );
   }
+  final TraktMovieStatsSummary movies;
+  final TraktShowStatsSummary shows;
+  final TraktSeasonStatsSummary seasons;
+  final TraktEpisodeStatsSummary episodes;
+  final TraktNetworkStatsSummary networks;
+  final TraktRatingStatsSummary ratings;
 }
 
 class TraktMovieStatsSummary {
-  final int plays;
-  final int watched;
-  final int minutes;
-  final int collectors;
-  final int ratings;
-  final int comments;
-
   const TraktMovieStatsSummary({
     required this.plays,
     required this.watched,
@@ -177,15 +182,16 @@ class TraktMovieStatsSummary {
       comments: json['comments'] as int,
     );
   }
+  final int plays;
+  final int watched;
+  final int minutes;
+  final int collectors;
+  final int ratings;
+  final int comments;
 }
 
 // Simplified summaries for brevity but maintaining all data
 class TraktShowStatsSummary {
-  final int watched;
-  final int collectors;
-  final int ratings;
-  final int comments;
-
   const TraktShowStatsSummary({
     required this.watched,
     required this.collectors,
@@ -201,13 +207,17 @@ class TraktShowStatsSummary {
       comments: json['comments'] as int,
     );
   }
+  final int watched;
+  final int collectors;
+  final int ratings;
+  final int comments;
 }
 
 class TraktSeasonStatsSummary {
-  final int ratings;
-  final int comments;
-
-  const TraktSeasonStatsSummary({required this.ratings, required this.comments});
+  const TraktSeasonStatsSummary({
+    required this.ratings,
+    required this.comments,
+  });
 
   factory TraktSeasonStatsSummary.fromJson(Map<String, dynamic> json) {
     return TraktSeasonStatsSummary(
@@ -215,15 +225,11 @@ class TraktSeasonStatsSummary {
       comments: json['comments'] as int,
     );
   }
+  final int ratings;
+  final int comments;
 }
 
 class TraktEpisodeStatsSummary {
-  final int plays;
-  final int watched;
-  final int minutes;
-  final int ratings;
-  final int comments;
-
   const TraktEpisodeStatsSummary({
     required this.plays,
     required this.watched,
@@ -241,25 +247,27 @@ class TraktEpisodeStatsSummary {
       comments: json['comments'] as int,
     );
   }
+  final int plays;
+  final int watched;
+  final int minutes;
+  final int ratings;
+  final int comments;
 }
 
 class TraktNetworkStatsSummary {
-  final int count;
-
   const TraktNetworkStatsSummary({required this.count});
 
   factory TraktNetworkStatsSummary.fromJson(Map<String, dynamic> json) {
-    return TraktNetworkStatsSummary(
-      count: json['count'] as int,
-    );
+    return TraktNetworkStatsSummary(count: json['count'] as int);
   }
+  final int count;
 }
 
 class TraktRatingStatsSummary {
-  final int total;
-  final Map<String, int> distribution;
-
-  const TraktRatingStatsSummary({required this.total, required this.distribution});
+  const TraktRatingStatsSummary({
+    required this.total,
+    required this.distribution,
+  });
 
   factory TraktRatingStatsSummary.fromJson(Map<String, dynamic> json) {
     return TraktRatingStatsSummary(
@@ -267,13 +275,11 @@ class TraktRatingStatsSummary {
       distribution: Map<String, int>.from(json['distribution'] as Map),
     );
   }
+  final int total;
+  final Map<String, int> distribution;
 }
 
 class TraktFollowRequest {
-  final int id;
-  final DateTime requestedAt;
-  final TraktUser user;
-
   const TraktFollowRequest({
     required this.id,
     required this.requestedAt,
@@ -287,12 +293,12 @@ class TraktFollowRequest {
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
+  final int id;
+  final DateTime requestedAt;
+  final TraktUser user;
 }
 
 class TraktUserConnection {
-  final DateTime followedAt;
-  final TraktUser user;
-
   const TraktUserConnection({required this.followedAt, required this.user});
 
   factory TraktUserConnection.fromJson(Map<String, dynamic> json) {
@@ -301,4 +307,6 @@ class TraktUserConnection {
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
+  final DateTime followedAt;
+  final TraktUser user;
 }

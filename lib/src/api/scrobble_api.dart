@@ -2,9 +2,8 @@ import '../core/trakt_api_client.dart';
 import '../models/trakt_scrobble_models.dart';
 
 class ScrobbleApi {
-  final TraktApiClient _client;
-
   ScrobbleApi(this._client);
+  final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Start scrobbling a movie or episode.
   ///

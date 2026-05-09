@@ -2,16 +2,6 @@ import '../core/trakt_date_utils.dart';
 import 'trakt_user.dart';
 
 class TraktComment {
-  final int id;
-  final String comment;
-  final bool spoiler;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final int? replies;
-  final int? likes;
-  final int? userRating;
-  final TraktUser? user;
-
   TraktComment({
     required this.id,
     required this.comment,
@@ -39,6 +29,15 @@ class TraktComment {
           : null,
     );
   }
+  final int id;
+  final String comment;
+  final bool spoiler;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? replies;
+  final int? likes;
+  final int? userRating;
+  final TraktUser? user;
 
   Map<String, dynamic> toJson() {
     return {

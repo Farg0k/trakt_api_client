@@ -9,9 +9,8 @@ import '../models/trakt_list.dart';
 import '../models/trakt_user.dart';
 
 class ListsApi {
-  final TraktApiClient _client;
-
   ListsApi(this._client);
+  final TraktApiClient _client;
 
   /// Get trending lists.
   Future<TraktListResponse<TraktList>> getTrending({
@@ -22,13 +21,13 @@ class ListsApi {
     final path = '/lists/trending${type != null ? '/${type.value}' : ''}';
     return _client.get(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktList.fromJson(item['list'] as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  TraktList.fromJson(item['list'] as Map<String, dynamic>),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -47,13 +46,13 @@ class ListsApi {
     final path = '/lists/popular${type != null ? '/${type.value}' : ''}';
     return _client.get(
       path,
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktList.fromJson(item['list'] as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  TraktList.fromJson(item['list'] as Map<String, dynamic>),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -64,17 +63,18 @@ class ListsApi {
   }
 
   /// Get a single list by its ID.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktList> getSummary(String id) async {
     return _client.get(
       '/lists/$id',
-      mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) =>
+          TraktList.fromJson(body as Map<String, dynamic>),
     );
   }
 
   /// Get comments for a list.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktListResponse<TraktComment>> getComments(
     String id, {
@@ -103,7 +103,7 @@ class ListsApi {
   }
 
   /// Get items for a list.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<List<TraktListItem>> getItems(
     String id, {
@@ -123,7 +123,7 @@ class ListsApi {
   }
 
   /// Get users who liked a list.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<TraktListResponse<TraktUser>> getLikes(
     String id, {
@@ -132,13 +132,13 @@ class ListsApi {
   }) async {
     return _client.get(
       '/lists/$id/likes',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) => TraktUser.fromJson(item['user'] as Map<String, dynamic>))
+            .map(
+              (item) =>
+                  TraktUser.fromJson(item['user'] as Map<String, dynamic>),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -149,7 +149,7 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Like a list.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> like(String id) async {
     await _client.post(
@@ -160,7 +160,7 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Remove a like from a list.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> unlike(String id) async {
     await _client.delete(
@@ -171,16 +171,17 @@ class ListsApi {
   }
 
   /// [🔒 OAuth Required] Report a list for inappropriate content.
-  /// 
+  ///
   /// [id] can be a Trakt ID or Trakt slug.
-  Future<void> report(String id,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    String id, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await _client.post(
       '/lists/$id/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

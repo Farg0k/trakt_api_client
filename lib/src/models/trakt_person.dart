@@ -2,17 +2,6 @@ import 'trakt_ids.dart';
 import 'trakt_user_models.dart';
 
 class TraktPerson {
-  final String? name;
-  final TraktIds? ids;
-  final String? biography;
-  final DateTime? birthday;
-  final DateTime? death;
-  final String? birthplace;
-  final String? homepage;
-  final String? gender;
-  final String? knownForDepartment;
-  final TraktUserSocialIds? socialIds;
-
   const TraktPerson({
     this.name,
     this.ids,
@@ -44,10 +33,22 @@ class TraktPerson {
       gender: json['gender'] as String?,
       knownForDepartment: json['known_for_department'] as String?,
       socialIds: json['social_ids'] != null
-          ? TraktUserSocialIds.fromJson(json['social_ids'] as Map<String, dynamic>)
+          ? TraktUserSocialIds.fromJson(
+              json['social_ids'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
+  final String? name;
+  final TraktIds? ids;
+  final String? biography;
+  final DateTime? birthday;
+  final DateTime? death;
+  final String? birthplace;
+  final String? homepage;
+  final String? gender;
+  final String? knownForDepartment;
+  final TraktUserSocialIds? socialIds;
 
   Map<String, dynamic> toJson() {
     return {

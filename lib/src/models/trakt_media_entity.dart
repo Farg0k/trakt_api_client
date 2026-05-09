@@ -6,17 +6,9 @@ import 'trakt_person.dart';
 import 'trakt_list.dart';
 
 /// A universal container for any Trakt media object.
-/// 
+///
 /// Used to avoid duplication in search results, list items, sync items, etc.
 class TraktMediaEntity {
-  final String type;
-  final TraktMovie? movie;
-  final TraktShow? show;
-  final TraktSeason? season;
-  final TraktEpisode? episode;
-  final TraktPerson? person;
-  final TraktList? list;
-
   const TraktMediaEntity({
     required this.type,
     this.movie,
@@ -51,6 +43,13 @@ class TraktMediaEntity {
           : null,
     );
   }
+  final String type;
+  final TraktMovie? movie;
+  final TraktShow? show;
+  final TraktSeason? season;
+  final TraktEpisode? episode;
+  final TraktPerson? person;
+  final TraktList? list;
 
   Map<String, dynamic> toJson() {
     return {

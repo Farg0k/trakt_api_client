@@ -11,12 +11,11 @@ import '../models/trakt_generic_models.dart';
 import '../core/trakt_date_utils.dart';
 
 class PeopleApi {
+  PeopleApi(this._client);
   final TraktApiClient _client;
 
-  PeopleApi(this._client);
-
   /// Get detailed person information.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktPerson> getSummary(
     String id, {
@@ -31,7 +30,7 @@ class PeopleApi {
   }
 
   /// Get movie credits for a person.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktPersonMovieCredits> getMovies(
     String id, {
@@ -46,7 +45,7 @@ class PeopleApi {
   }
 
   /// Get show credits for a person.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktPersonShowCredits> getShows(
     String id, {
@@ -61,7 +60,7 @@ class PeopleApi {
   }
 
   /// Get all lists that contain this person.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktListResponse<TraktList>> getLists(
     String id, {
@@ -72,10 +71,7 @@ class PeopleApi {
   }) async {
     return _client.get(
       '/people/$id/lists/${type.value}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -105,8 +101,13 @@ class PeopleApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) =>
-                TraktUpdate<TraktPerson>.fromJson(item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
+            .map(
+              (item) => TraktUpdate<TraktPerson>.fromJson(
+                item as Map<String, dynamic>,
+                TraktPerson.fromJson,
+                'person',
+              ),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -125,10 +126,7 @@ class PeopleApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/people/updates/id/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      queryParams: {'page': page.toString(), 'limit': limit.toString()},
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -156,8 +154,13 @@ class PeopleApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map((item) =>
-                TraktDeleted<TraktPerson>.fromJson(item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
+            .map(
+              (item) => TraktDeleted<TraktPerson>.fromJson(
+                item as Map<String, dynamic>,
+                TraktPerson.fromJson,
+                'person',
+              ),
+            )
             .toList();
         return TraktListResponse(
           data: data,
@@ -168,23 +171,24 @@ class PeopleApi {
   }
 
   /// [🔒 OAuth Required] Report a person for inappropriate content.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(String id,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    String id, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await _client.post(
       '/people/$id/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
   /// [🔒 OAuth Required] Refresh a person to get the latest metadata from TMDB.
-  /// 
+  ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   ///
   /// Note: This is a VIP only method.

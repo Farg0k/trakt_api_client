@@ -1,17 +1,16 @@
 import 'trakt_rate_limit.dart';
 
 class TraktApiException implements Exception {
-  final String message;
-  final int? statusCode;
-  final String? responseBody;
-  final TraktRateLimit? rateLimit;
-
   TraktApiException(
     this.message, {
     this.statusCode,
     this.responseBody,
     this.rateLimit,
   });
+  final String message;
+  final int? statusCode;
+  final String? responseBody;
+  final TraktRateLimit? rateLimit;
 
   @override
   String toString() {

@@ -1,14 +1,14 @@
 class TraktDateUtils {
   /// Safely parses a date string from the API.
-  /// 
-  /// Trakt sometimes returns null or malformed strings for dates 
+  ///
+  /// Trakt sometimes returns null or malformed strings for dates
   /// (e.g. "0000-00-00" in some edge cases or empty strings).
   static DateTime? parse(dynamic value) {
     if (value == null || value is! String || value.isEmpty) return null;
-    
-    // Handle edge case where Trakt might return "0000-00-00" 
+
+    // Handle edge case where Trakt might return "0000-00-00"
     if (value.startsWith('0000')) return null;
-    
+
     return DateTime.tryParse(value);
   }
 

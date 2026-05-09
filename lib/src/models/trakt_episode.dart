@@ -2,20 +2,6 @@ import '../core/trakt_date_utils.dart';
 import 'trakt_ids.dart';
 
 class TraktEpisode {
-  final int season;
-  final int number;
-  final String title;
-  final TraktIds? ids;
-  final int? numberAbs;
-  final String? overview;
-  final DateTime? firstAired;
-  final DateTime? updatedAt;
-  final double? rating;
-  final int? votes;
-  final int? commentCount;
-  final List<String>? availableTranslations;
-  final int? runtime;
-
   const TraktEpisode({
     required this.season,
     required this.number,
@@ -53,6 +39,19 @@ class TraktEpisode {
       runtime: json['runtime'] as int?,
     );
   }
+  final int season;
+  final int number;
+  final String title;
+  final TraktIds? ids;
+  final int? numberAbs;
+  final String? overview;
+  final DateTime? firstAired;
+  final DateTime? updatedAt;
+  final double? rating;
+  final int? votes;
+  final int? commentCount;
+  final List<String>? availableTranslations;
+  final int? runtime;
 
   Map<String, dynamic> toJson() {
     return {

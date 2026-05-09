@@ -10,13 +10,14 @@ import '../models/trakt_season.dart';
 import '../models/trakt_show.dart';
 
 class NotesApi {
+  NotesApi(this._client);
   final TraktApiClient _client;
 
-  NotesApi(this._client);
-
   /// Get a single note by its ID.
-  Future<TraktNote> get(int id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+  Future<TraktNote> get(
+    int id, {
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+  }) async {
     return _client.get(
       '/notes/$id',
       queryParams: {'extended': extended.value},
@@ -62,10 +63,7 @@ class NotesApi {
   }) async {
     return _client.put(
       '/notes/$id',
-      body: {
-        'note': note,
-        'privacy': privacy.value,
-      },
+      body: {'note': note, 'privacy': privacy.value},
       authenticated: true,
       mapper: (body, headers) =>
           TraktNote.fromJson(body as Map<String, dynamic>),
@@ -86,7 +84,9 @@ class NotesApi {
     return _client.get(
       '/notes/$id/items',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }

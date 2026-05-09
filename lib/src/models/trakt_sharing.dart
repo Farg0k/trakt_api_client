@@ -1,21 +1,5 @@
 class TraktSharing {
-  final bool? twitter;
-  final bool? mastodon;
-  final bool? tumblr;
-
-  const TraktSharing({
-    this.twitter,
-    this.mastodon,
-    this.tumblr,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (twitter != null) 'twitter': twitter,
-      if (mastodon != null) 'mastodon': mastodon,
-      if (tumblr != null) 'tumblr': tumblr,
-    };
-  }
+  const TraktSharing({this.twitter, this.mastodon, this.tumblr});
 
   factory TraktSharing.fromJson(Map<String, dynamic> json) {
     return TraktSharing(
@@ -23,5 +7,16 @@ class TraktSharing {
       mastodon: json['mastodon'] as bool?,
       tumblr: json['tumblr'] as bool?,
     );
+  }
+  final bool? twitter;
+  final bool? mastodon;
+  final bool? tumblr;
+
+  Map<String, dynamic> toJson() {
+    return {
+      if (twitter != null) 'twitter': twitter,
+      if (mastodon != null) 'mastodon': mastodon,
+      if (tumblr != null) 'tumblr': tumblr,
+    };
   }
 }

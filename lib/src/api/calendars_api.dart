@@ -5,9 +5,8 @@ import '../models/trakt_calendar_movie.dart';
 import '../models/trakt_calendar_show.dart';
 
 class CalendarsApi {
-  final TraktApiClient _client;
-
   CalendarsApi(this._client);
+  final TraktApiClient _client;
 
   // --- MY CALENDARS (Authenticated) ---
 
@@ -18,9 +17,15 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/my/shows', startDate, days, extended,
-        filters, (json) => TraktCalendarShow.fromJson(json),
-        authenticated: true);
+    return _getCalendarList(
+      '/calendars/my/shows',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+      authenticated: true,
+    );
   }
 
   /// [🔒 OAuth Required] Get my new shows calendar.
@@ -30,9 +35,15 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/my/shows/new', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json),
-        authenticated: true);
+    return _getCalendarList(
+      '/calendars/my/shows/new',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+      authenticated: true,
+    );
   }
 
   /// [🔒 OAuth Required] Get my premieres calendar.
@@ -42,9 +53,15 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/my/shows/premieres', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json),
-        authenticated: true);
+    return _getCalendarList(
+      '/calendars/my/shows/premieres',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+      authenticated: true,
+    );
   }
 
   /// [🔒 OAuth Required] Get my movies calendar.
@@ -54,9 +71,15 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/my/movies', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json),
-        authenticated: true);
+    return _getCalendarList(
+      '/calendars/my/movies',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarMovie.fromJson(json),
+      authenticated: true,
+    );
   }
 
   /// [🔒 OAuth Required] Get my DVD movies calendar.
@@ -66,9 +89,15 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/my/dvd', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json),
-        authenticated: true);
+    return _getCalendarList(
+      '/calendars/my/dvd',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarMovie.fromJson(json),
+      authenticated: true,
+    );
   }
 
   // --- ALL CALENDARS (Public) ---
@@ -80,8 +109,14 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/all/shows', startDate, days, extended,
-        filters, (json) => TraktCalendarShow.fromJson(json));
+    return _getCalendarList(
+      '/calendars/all/shows',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+    );
   }
 
   /// Get all new shows calendar.
@@ -91,8 +126,14 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/all/shows/new', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+    return _getCalendarList(
+      '/calendars/all/shows/new',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+    );
   }
 
   /// Get all premieres calendar.
@@ -102,8 +143,14 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/all/shows/premieres', startDate, days,
-        extended, filters, (json) => TraktCalendarShow.fromJson(json));
+    return _getCalendarList(
+      '/calendars/all/shows/premieres',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarShow.fromJson(json),
+    );
   }
 
   /// Get all movies calendar.
@@ -113,8 +160,14 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/all/movies', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json));
+    return _getCalendarList(
+      '/calendars/all/movies',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarMovie.fromJson(json),
+    );
   }
 
   /// Get all DVD movies calendar.
@@ -124,8 +177,14 @@ class CalendarsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarList('/calendars/all/dvd', startDate, days, extended,
-        filters, (json) => TraktCalendarMovie.fromJson(json));
+    return _getCalendarList(
+      '/calendars/all/dvd',
+      startDate,
+      days,
+      extended,
+      filters,
+      (json) => TraktCalendarMovie.fromJson(json),
+    );
   }
 
   // --- HELPERS ---

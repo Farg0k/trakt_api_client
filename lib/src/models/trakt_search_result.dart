@@ -5,14 +5,6 @@ import 'trakt_person.dart';
 import 'trakt_show.dart';
 
 class TraktSearchResult {
-  final String type;
-  final double? score;
-  final TraktMovie? movie;
-  final TraktShow? show;
-  final TraktEpisode? episode;
-  final TraktPerson? person;
-  final TraktList? list;
-
   const TraktSearchResult({
     required this.type,
     this.score,
@@ -45,6 +37,13 @@ class TraktSearchResult {
           : null,
     );
   }
+  final String type;
+  final double? score;
+  final TraktMovie? movie;
+  final TraktShow? show;
+  final TraktEpisode? episode;
+  final TraktPerson? person;
+  final TraktList? list;
 
   Map<String, dynamic> toJson() {
     return {

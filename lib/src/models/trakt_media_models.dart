@@ -4,10 +4,6 @@ import 'trakt_movie.dart';
 import '../core/trakt_date_utils.dart';
 
 class TraktRating {
-  final double rating;
-  final int votes;
-  final Map<String, int> distribution;
-
   const TraktRating({
     required this.rating,
     required this.votes,
@@ -21,12 +17,12 @@ class TraktRating {
       distribution: Map<String, int>.from(json['distribution'] as Map? ?? {}),
     );
   }
+  final double rating;
+  final int votes;
+  final Map<String, int> distribution;
 }
 
 class TraktCredits {
-  final List<TraktCast>? cast;
-  final Map<String, List<TraktCrew>>? crew;
-
   const TraktCredits({this.cast, this.crew});
 
   factory TraktCredits.fromJson(Map<String, dynamic> json) {
@@ -44,26 +40,26 @@ class TraktCredits {
       ),
     );
   }
+  final List<TraktCast>? cast;
+  final Map<String, List<TraktCrew>>? crew;
 }
 
 class TraktCast {
-  final List<String>? characters;
-  final TraktPerson person;
-
   const TraktCast({this.characters, required this.person});
 
   factory TraktCast.fromJson(Map<String, dynamic> json) {
     return TraktCast(
-      characters: (json['characters'] as List?)?.map((e) => e as String).toList(),
+      characters: (json['characters'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
       person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
     );
   }
+  final List<String>? characters;
+  final TraktPerson person;
 }
 
 class TraktCrew {
-  final String job;
-  final TraktPerson person;
-
   const TraktCrew({required this.job, required this.person});
 
   factory TraktCrew.fromJson(Map<String, dynamic> json) {
@@ -72,16 +68,12 @@ class TraktCrew {
       person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
     );
   }
+  final String job;
+  final TraktPerson person;
 }
 
 class TraktMediaAlias {
-  final String title;
-  final String country;
-
-  const TraktMediaAlias({
-    required this.title,
-    required this.country,
-  });
+  const TraktMediaAlias({required this.title, required this.country});
 
   factory TraktMediaAlias.fromJson(Map<String, dynamic> json) {
     return TraktMediaAlias(
@@ -89,15 +81,11 @@ class TraktMediaAlias {
       country: json['country'] as String? ?? '',
     );
   }
+  final String title;
+  final String country;
 }
 
 class TraktTranslation {
-  final String title;
-  final String? overview;
-  final String? tagline;
-  final String language;
-  final String? country;
-
   const TraktTranslation({
     required this.title,
     this.overview,
@@ -115,13 +103,14 @@ class TraktTranslation {
       country: json['country'] as String?,
     );
   }
+  final String title;
+  final String? overview;
+  final String? tagline;
+  final String language;
+  final String? country;
 }
 
 class TraktCertification {
-  final String name;
-  final String slug;
-  final String description;
-
   const TraktCertification({
     required this.name,
     required this.slug,
@@ -135,12 +124,12 @@ class TraktCertification {
       description: json['description'] as String? ?? '',
     );
   }
+  final String name;
+  final String slug;
+  final String description;
 }
 
 class TraktMediaCertification {
-  final String certification;
-  final String country;
-
   const TraktMediaCertification({
     required this.certification,
     required this.country,
@@ -152,12 +141,11 @@ class TraktMediaCertification {
       country: json['country'] as String? ?? '',
     );
   }
+  final String certification;
+  final String country;
 }
 
 class TraktCountry {
-  final String name;
-  final String code;
-
   const TraktCountry({required this.name, required this.code});
 
   factory TraktCountry.fromJson(Map<String, dynamic> json) {
@@ -166,12 +154,11 @@ class TraktCountry {
       code: json['code'] as String? ?? '',
     );
   }
+  final String name;
+  final String code;
 }
 
 class TraktGenre {
-  final String name;
-  final String slug;
-
   const TraktGenre({required this.name, required this.slug});
 
   factory TraktGenre.fromJson(Map<String, dynamic> json) {
@@ -180,12 +167,11 @@ class TraktGenre {
       slug: json['slug'] as String? ?? '',
     );
   }
+  final String name;
+  final String slug;
 }
 
 class TraktLanguage {
-  final String name;
-  final String code;
-
   const TraktLanguage({required this.name, required this.code});
 
   factory TraktLanguage.fromJson(Map<String, dynamic> json) {
@@ -194,43 +180,36 @@ class TraktLanguage {
       code: json['code'] as String? ?? '',
     );
   }
+  final String name;
+  final String code;
 }
 
 class TraktNetwork {
-  final String name;
   const TraktNetwork({required this.name});
   factory TraktNetwork.fromJson(Map<String, dynamic> json) {
     return TraktNetwork(name: json['name'] as String? ?? '');
   }
+  final String name;
 }
 
 class TraktStudio {
-  final String name;
-  final String? country;
-  final TraktIds? ids;
-
-  const TraktStudio({
-    required this.name,
-    this.country,
-    this.ids,
-  });
+  const TraktStudio({required this.name, this.country, this.ids});
 
   factory TraktStudio.fromJson(Map<String, dynamic> json) {
     return TraktStudio(
       name: json['name'] as String? ?? '',
       country: json['country'] as String?,
-      ids: json['ids'] != null ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>) : null,
+      ids: json['ids'] != null
+          ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
+          : null,
     );
   }
+  final String name;
+  final String? country;
+  final TraktIds? ids;
 }
 
 class TraktMovieRelease {
-  final String country;
-  final DateTime? releaseDate;
-  final String releaseType;
-  final String note;
-  final String certification;
-
   const TraktMovieRelease({
     required this.country,
     this.releaseDate,
@@ -248,16 +227,15 @@ class TraktMovieRelease {
       certification: json['certification'] as String? ?? '',
     );
   }
+  final String country;
+  final DateTime? releaseDate;
+  final String releaseType;
+  final String note;
+  final String certification;
 }
 
 class TraktBoxOfficeMovie {
-  final int revenue;
-  final TraktMovie movie;
-
-  const TraktBoxOfficeMovie({
-    required this.revenue,
-    required this.movie,
-  });
+  const TraktBoxOfficeMovie({required this.revenue, required this.movie});
 
   factory TraktBoxOfficeMovie.fromJson(Map<String, dynamic> json) {
     return TraktBoxOfficeMovie(
@@ -265,4 +243,6 @@ class TraktBoxOfficeMovie {
       movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }
+  final int revenue;
+  final TraktMovie movie;
 }

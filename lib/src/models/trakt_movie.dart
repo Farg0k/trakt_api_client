@@ -2,26 +2,6 @@ import '../core/trakt_date_utils.dart';
 import 'trakt_ids.dart';
 
 class TraktMovie {
-  final String title;
-  final int year;
-  final TraktIds? ids;
-  final String? tagline;
-  final String? overview;
-  final DateTime? released;
-  final int? runtime;
-  final String? country;
-  final DateTime? updatedAt;
-  final String? trailer;
-  final String? homepage;
-  final int? status;
-  final double? rating;
-  final int? votes;
-  final int? commentCount;
-  final String? language;
-  final List<String>? availableTranslations;
-  final List<String>? genres;
-  final String? certification;
-
   const TraktMovie({
     required this.title,
     required this.year,
@@ -71,6 +51,25 @@ class TraktMovie {
       certification: json['certification'] as String?,
     );
   }
+  final String title;
+  final int year;
+  final TraktIds? ids;
+  final String? tagline;
+  final String? overview;
+  final DateTime? released;
+  final int? runtime;
+  final String? country;
+  final DateTime? updatedAt;
+  final String? trailer;
+  final String? homepage;
+  final int? status;
+  final double? rating;
+  final int? votes;
+  final int? commentCount;
+  final String? language;
+  final List<String>? availableTranslations;
+  final List<String>? genres;
+  final String? certification;
 
   Map<String, dynamic> toJson() {
     return {

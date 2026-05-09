@@ -5,14 +5,6 @@ import 'trakt_sharing.dart';
 import 'trakt_show.dart';
 
 class TraktCheckinRequest {
-  final TraktMovie? movie;
-  final TraktEpisode? episode;
-  final TraktShow? show;
-  final String? message;
-  final TraktSharing? sharing;
-  final String? appVersion;
-  final String? appDate;
-
   const TraktCheckinRequest({
     this.movie,
     this.episode,
@@ -22,6 +14,13 @@ class TraktCheckinRequest {
     this.appVersion,
     this.appDate,
   });
+  final TraktMovie? movie;
+  final TraktEpisode? episode;
+  final TraktShow? show;
+  final String? message;
+  final TraktSharing? sharing;
+  final String? appVersion;
+  final String? appDate;
 
   Map<String, dynamic> toJson() {
     return {
@@ -37,12 +36,6 @@ class TraktCheckinRequest {
 }
 
 class TraktCheckinResponse {
-  final DateTime? watchedAt;
-  final DateTime? expiresAt;
-  final TraktMovie? movie;
-  final TraktShow? show;
-  final TraktEpisode? episode;
-
   const TraktCheckinResponse({
     this.watchedAt,
     this.expiresAt,
@@ -66,4 +59,9 @@ class TraktCheckinResponse {
           : null,
     );
   }
+  final DateTime? watchedAt;
+  final DateTime? expiresAt;
+  final TraktMovie? movie;
+  final TraktShow? show;
+  final TraktEpisode? episode;
 }

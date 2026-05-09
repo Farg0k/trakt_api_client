@@ -2,9 +2,8 @@ import '../core/trakt_api_client.dart';
 import '../models/trakt_checkin_models.dart';
 
 class CheckinApi {
-  final TraktApiClient _client;
-
   CheckinApi(this._client);
+  final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Check into a movie or episode.
   ///

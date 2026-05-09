@@ -1,12 +1,4 @@
 class TraktStats {
-  final int watchers;
-  final int plays;
-  final int collectors;
-  final int? collectedEpisodes;
-  final int comments;
-  final int lists;
-  final int votes;
-
   const TraktStats({
     required this.watchers,
     required this.plays,
@@ -28,6 +20,13 @@ class TraktStats {
       votes: json['votes'] as int? ?? 0,
     );
   }
+  final int watchers;
+  final int plays;
+  final int collectors;
+  final int? collectedEpisodes;
+  final int comments;
+  final int lists;
+  final int votes;
 
   Map<String, dynamic> toJson() {
     return {

@@ -1,9 +1,4 @@
 class TraktRateLimit {
-  final int? limit;
-  final int? remaining;
-  final DateTime? reset;
-  final Duration? retryAfter;
-
   const TraktRateLimit({
     this.limit,
     this.remaining,
@@ -28,6 +23,10 @@ class TraktRateLimit {
           : null,
     );
   }
+  final int? limit;
+  final int? remaining;
+  final DateTime? reset;
+  final Duration? retryAfter;
 
   @override
   String toString() {

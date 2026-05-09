@@ -1,10 +1,4 @@
 class TraktDeviceCode {
-  final String deviceCode;
-  final String userCode;
-  final String verificationUrl;
-  final int expiresIn;
-  final int interval;
-
   const TraktDeviceCode({
     required this.deviceCode,
     required this.userCode,
@@ -22,16 +16,14 @@ class TraktDeviceCode {
       interval: json['interval'] as int,
     );
   }
+  final String deviceCode;
+  final String userCode;
+  final String verificationUrl;
+  final int expiresIn;
+  final int interval;
 }
 
 class TraktOAuthToken {
-  final String accessToken;
-  final String tokenType;
-  final int expiresIn;
-  final String refreshToken;
-  final String scope;
-  final int createdAt;
-
   const TraktOAuthToken({
     required this.accessToken,
     required this.tokenType,
@@ -51,6 +43,12 @@ class TraktOAuthToken {
       createdAt: json['created_at'] as int,
     );
   }
+  final String accessToken;
+  final String tokenType;
+  final int expiresIn;
+  final String refreshToken;
+  final String scope;
+  final int createdAt;
 
   Map<String, dynamic> toJson() {
     return {

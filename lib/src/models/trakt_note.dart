@@ -2,13 +2,6 @@ import '../core/trakt_privacy.dart';
 import 'trakt_user.dart';
 
 class TraktNote {
-  final int id;
-  final String note;
-  final TraktPrivacy privacy;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final TraktUser? user;
-
   const TraktNote({
     required this.id,
     required this.note,
@@ -30,6 +23,12 @@ class TraktNote {
           : null,
     );
   }
+  final int id;
+  final String note;
+  final TraktPrivacy privacy;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final TraktUser? user;
 
   Map<String, dynamic> toJson() {
     return {

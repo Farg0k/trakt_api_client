@@ -6,9 +6,8 @@ import '../models/trakt_movie.dart';
 import '../models/trakt_show.dart';
 
 class RecommendationsApi {
-  final TraktApiClient _client;
-
   RecommendationsApi(this._client);
+  final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Get personalized movie recommendations.
   Future<TraktListResponse<TraktMovie>> getMovies({

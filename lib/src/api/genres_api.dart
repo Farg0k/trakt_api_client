@@ -3,9 +3,8 @@ import '../core/trakt_media_class.dart';
 import '../models/trakt_media_models.dart';
 
 class GenresApi {
-  final TraktApiClient _client;
-
   GenresApi(this._client);
+  final TraktApiClient _client;
 
   /// Get all genres for movies or shows.
   Future<List<TraktGenre>> getGenres(TraktMediaClass type) async {

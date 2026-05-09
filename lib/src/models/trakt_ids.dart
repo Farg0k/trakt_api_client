@@ -1,12 +1,4 @@
 class TraktIds {
-  final int? trakt;
-  final String? slug;
-  final String? imdb;
-  final int? tmdb;
-  final int? tvdb;
-  final int? tvrage;
-  final String? uuid;
-
   TraktIds({
     this.trakt,
     this.slug,
@@ -28,6 +20,13 @@ class TraktIds {
       uuid: json['uuid'] as String?,
     );
   }
+  final int? trakt;
+  final String? slug;
+  final String? imdb;
+  final int? tmdb;
+  final int? tvdb;
+  final int? tvrage;
+  final String? uuid;
 
   Map<String, dynamic> toJson() {
     return {

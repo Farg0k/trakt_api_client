@@ -1,3 +1,9 @@
+/// A comprehensive, type-safe, and highly optimized Dart/Flutter client for the Trakt.tv API.
+///
+/// This library provides access to all documented Trakt.tv API endpoints,
+/// including Movies, Shows, Seasons, Episodes, Users, Sync, Search, and more.
+/// It features automatic OAuth2 token management, advanced filtering, and
+/// a robust data model architecture.
 library;
 
 export 'src/core/trakt_api_client.dart';

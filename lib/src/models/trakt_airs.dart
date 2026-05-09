@@ -1,8 +1,4 @@
 class TraktAirs {
-  final String? day;
-  final String? time;
-  final String? timezone;
-
   TraktAirs({this.day, this.time, this.timezone});
 
   factory TraktAirs.fromJson(Map<String, dynamic> json) {
@@ -12,12 +8,11 @@ class TraktAirs {
       timezone: json['timezone'] as String?,
     );
   }
+  final String? day;
+  final String? time;
+  final String? timezone;
 
   Map<String, dynamic> toJson() {
-    return {
-      'day': day,
-      'time': time,
-      'timezone': timezone,
-    };
+    return {'day': day, 'time': time, 'timezone': timezone};
   }
 }

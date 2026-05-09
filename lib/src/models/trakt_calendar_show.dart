@@ -3,10 +3,6 @@ import 'trakt_episode.dart';
 import 'trakt_show.dart';
 
 class TraktCalendarShow {
-  final DateTime firstAired;
-  final TraktShow show;
-  final TraktEpisode episode;
-
   const TraktCalendarShow({
     required this.firstAired,
     required this.show,
@@ -20,4 +16,7 @@ class TraktCalendarShow {
       episode: TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>),
     );
   }
+  final DateTime firstAired;
+  final TraktShow show;
+  final TraktEpisode episode;
 }
