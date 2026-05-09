@@ -4,18 +4,18 @@
 [![package publisher](https://img.shields.io/pub/publisher/trakt_api_client.svg)](https://pub.dev/packages/trakt_api_client/publisher)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive, type-safe, and highly optimized Dart/Flutter client for the [Trakt.tv API](https://trakt.docs.apiary.io/). Designed to provide a seamless development experience with full coverage of the Trakt ecosystem.
+A comprehensive, type-safe, and highly optimized Dart/Flutter client for the [Trakt.tv API](https://trakt.docs.apiary.io/). Designed to provide a premium development experience with advanced features like automated pagination and unified model architecture.
 
 ---
 
 ## Features
 
 - **🚀 100% API Coverage**: Complete implementation of all Trakt.tv modules including Movies, Shows, Seasons, Episodes, Users, Sync, Search, and more.
-- **🛡️ Strict Type Safety**: Full use of Dart enums for all categorical parameters (Sorting, Filtering, Reporting) to eliminate runtime errors.
-- **🔐 Advanced Auth Management**: Robust OAuth2 support with automatic silent refresh and state synchronization.
-- **🏗️ Refined Model Architecture**: Clean, polymorphic models with standardized ISO 8601 date handling and pagination support.
-- **🔍 Smart Search**: Intelligent search engine with automatic character escaping and advanced filtering.
-- **⚡ Performance Optimized**: Minimal external dependencies and lightweight manual serialization for maximum speed.
+- **🛡️ Strict Type Safety**: Full use of Dart enums for all categorical parameters to eliminate runtime errors and ensure IDE autocomplete support.
+- **🔐 Pro OAuth2 Management**: Robust authentication with synchronized token refreshing. Parallel requests wait for a single refresh task to avoid race conditions.
+- **📄 Smart Pagination System**: Unified `TraktPaginationParams` and the elegant `nextPageParams` helper for effortless sequential data fetching.
+- **🏗️ Refined Model Architecture**: Clean, polymorphic models using `TraktMetadata<T>` and standardized ISO 8601 date handling.
+- **🔍 Intelligent Search**: Advanced search engine with automatic character escaping and multi-categorical filtering.
 
 ---
 
@@ -40,7 +40,7 @@ dart pub add trakt_api_client
 
 ### 1. Initialization
 
-Initialize the `TraktApiClient` with your credentials and an optional callback for token persistence.
+Initialize the `TraktApiClient` with your credentials and a callback for token persistence.
 
 ```dart
 import 'package:trakt_api_client/trakt_api_client.dart';
@@ -49,46 +49,35 @@ final client = TraktApiClient(
   config: TraktApiClientConfig(
     clientId: 'YOUR_CLIENT_ID',
     clientSecret: 'YOUR_CLIENT_SECRET',
-    // Optional: provide existing tokens
     accessToken: '...', 
     refreshToken: '...',
   ),
   onTokenRefreshed: (token) {
-    // Automatically called when a token is refreshed.
-    // Use this to save tokens to secure storage.
+    // Save these new tokens to your secure storage
     print('New Access Token: ${token.accessToken}');
   },
 );
 ```
 
-### 2. Authentication (OAuth2)
+### 2. Smart Pagination
 
-Trakt uses OAuth2 for authenticated requests. You can handle the authorization flow manually or use the built-in methods.
+The library features an advanced pagination system. You can easily fetch subsequent pages using the `nextPageParams` property.
 
 ```dart
-// Generate Device Codes for login
-final deviceCode = await client.auth.generateDeviceCode();
-print('Authorize at: ${deviceCode.verificationUrl}');
-print('User Code: ${deviceCode.userCode}');
+// Fetch the first page
+final trending = await client.movies.getTrending(
+  pagination: const TraktPaginationParams(page: 1, limit: 10),
+);
 
-// Poll for token - updates client state automatically on success
-final token = await client.auth.pollForDeviceToken(deviceCode.deviceCode);
+// Effortlessly fetch the next page if it exists
+if (trending.hasNextPage) {
+  final nextPage = await client.movies.getTrending(
+    pagination: trending.nextPageParams,
+  );
+}
 ```
 
 ### 3. Usage Examples
-
-#### Fetching Trending Movies
-```dart
-final trending = await client.movies.getTrending(
-  page: 1,
-  limit: 10,
-  extended: TraktExtendedInfo.full,
-);
-
-for (var entry in trending.data) {
-  print('${entry.item.title} has ${entry.watchers} active watchers');
-}
-```
 
 #### Searching with Advanced Filters
 ```dart
@@ -102,15 +91,14 @@ final results = await client.search.textQuery(
 );
 ```
 
-#### Syncing User Collection (Authenticated)
-```dart
-// [🔒 OAuth Required]
-final collection = await client.sync.getCollection<TraktMovie>(
-  type: TraktMediaType.movies,
-);
+#### Synchronized Metadata
+All list-based endpoints return metadata-rich items wrapped in `TraktMetadata<T>`.
 
-for (var entry in collection) {
-  print('In Collection: ${entry.item.title}');
+```dart
+final updates = await client.movies.getUpdates(DateTime.now().subtract(const Duration(days: 7)));
+
+for (var metadata in updates.data) {
+  print('Updated: ${metadata.item.title} at ${metadata.updatedAt}');
 }
 ```
 
@@ -118,23 +106,23 @@ for (var entry in collection) {
 
 ## Architecture & Design
 
-### Unified Model System
-The library uses a polymorphic approach for media entities. Whether you are searching, fetching trending items, or accessing a user's collection, the data structures remain consistent and intuitive.
+### Silent Refresh & Synchronization
+When a `401 Unauthorized` error occurs, the client automatically starts a refresh task. If multiple parallel requests fail simultaneously, they all synchronize and wait for a **single** refresh operation to complete before retrying.
 
-### Safe Date Parsing
-All date fields are automatically parsed into `DateTime` objects, handling Trakt's specific string formats and ensuring UTC consistency across your application.
+### Unified Generic Models
+Redundant wrapper classes have been replaced with a unified `TraktMetadata<T>` system. This ensures a consistent API surface whether you're handling trending items, search results, or collection states.
 
 ### Rate Limit Awareness
-The client automatically tracks rate limit headers from Trakt responses, accessible via `client.lastRateLimit`.
+Track your API usage in real-time via `client.lastRateLimit`. The client handles Trakt's rate limit headers automatically.
 
 ---
 
 ## Documentation
 
-Every public member is documented with detailed DartDoc comments. You can find:
+Every public member is documented with detailed DartDoc comments, including:
 - Expected ID formats (Trakt ID, Slug, IMDB).
 - Authentication requirements (marked with `🔒 OAuth Required`).
-- Comprehensive parameter descriptions.
+- Comprehensive parameter descriptions and default values.
 
 ---
 

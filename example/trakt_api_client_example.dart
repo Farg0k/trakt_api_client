@@ -18,34 +18,34 @@ void main() async {
   );
 
   try {
-    // 3. Public API Example: Get Trending Movies (Paginated)
-    print('Fetching trending movies...');
+    // 3. Smart Pagination Example
+    print('Fetching trending movies (Page 1)...');
     final trendingMovies = await client.movies.getTrending(
       pagination: const TraktPaginationParams(page: 1, limit: 3),
       extended: TraktExtendedInfo.full,
     );
 
     print('\nTop Trending Movies:');
-    for (var trending in trendingMovies.data) {
-      final movie = trending.item;
+    for (var metadata in trendingMovies.data) {
+      final movie = metadata.item;
       print('- ${movie.title} (${movie.year})');
-      print('  Watchers: ${trending.watchers}');
+      print('  Watchers: ${metadata.watchers}');
       print(
         '  Rating: ${movie.rating?.toStringAsFixed(1)} (${movie.votes} votes)',
       );
     }
 
-    // Example of using .nextPageParams
+    // 4. Automated Next Page Logic
     if (trendingMovies.hasNextPage) {
-      print('\nRequesting next page using .nextPageParams...');
+      print('\n--- Requesting next page using .nextPageParams ---');
       final nextPage = await client.movies.getTrending(
         pagination: trendingMovies.nextPageParams,
         extended: TraktExtendedInfo.full,
       );
-      print('Fetched ${nextPage.data.length} more movies.');
+      print('Fetched ${nextPage.data.length} more movies for page ${nextPage.pagination?.currentPage}.');
     }
 
-    // 4. Search API with Advanced Filters
+    // 5. Search API with Advanced Filters
     print('\nSearching for Action movies from 2023...');
     final searchResults = await client.search.textQuery(
       'Spider-man',
@@ -63,11 +63,12 @@ void main() async {
       }
     }
 
-    // 5. Authenticated API Example (Commented out as it requires a real token)
+    // 6. Authenticated API Example (Commented out as it requires a real token)
     /*
     print('\nFetching user watched history...');
     try {
-      final history = await client.sync.getHistory(
+      final history = await client.users.getHistory(
+        'me',
         type: TraktMediaType.movies,
         pagination: const TraktPaginationParams(limit: 5),
       );
@@ -82,7 +83,7 @@ void main() async {
     }
     */
   } on TraktApiException catch (e) {
-    print('API Error: ${e.message} (Status: ${e.statusCode})');
+    print('API Error: ${e.detailedMessage} (Status: ${e.statusCode})');
   } finally {
     // Always close the client to release resources
     client.close();
