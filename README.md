@@ -1,22 +1,23 @@
-# Trakt.tv API Client for Dart & Flutter
+# Trakt API Client for Dart & Flutter
 
-A comprehensive, type-safe, and highly optimized Dart/Flutter client for the [Trakt.tv API](https://trakt.docs.apiary.io/). Designed to be consistent, robust, and developer-friendly.
+[![pub package](https://img.shields.io/pub/v/trakt_api_client.svg)](https://pub.dev/packages/trakt_api_client)
+[![package publisher](https://img.shields.io/pub/publisher/trakt_api_client.svg)](https://pub.dev/packages/trakt_api_client/publisher)
+[![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive, type-safe, and highly optimized Dart/Flutter client for the [Trakt.tv API](https://trakt.docs.apiary.io/). Designed to provide a seamless development experience with full coverage of the Trakt ecosystem.
+
+---
 
 ## Features
 
-- **100% API Coverage**: Implementation of all documented Trakt endpoints (Movies, Shows, Seasons, Episodes, Users, Sync, Search, Checkin, Scrobble, etc.).
-- **Strict Type Safety**: Extensive use of Enums for all categorical parameters (Sorting, Reporting, Privacy, Media Types, Extended Info) to prevent runtime errors.
-- **Advanced Auth Management**:
-  - Full OAuth2 support (Authorization Code and Device flows).
-  - **Silent Refresh**: Automatic token refreshing with a built-in retry mechanism.
-  - **State Sync**: The client automatically updates its internal configuration upon successful authentication or refresh.
-- **Refined Model Architecture**:
-  - **Polymorphic Entities**: Unified `TraktMediaEntity` for search results and list items.
-  - **Generic Wrappers**: Clean data access using structures like `TraktTrending<T>` or `TraktMediaState<T>`.
-  - **Robust Parsing**: Safe `DateTime` parsing and standardized ISO 8601 UTC compliance.
-- **Smart Search**: Automatic escaping of special characters for the Trakt search engine.
-- **Rate Limit Aware**: Built-in tracking of Trakt rate limit headers.
-- **Zero External Code Gen**: Manual JSON serialization to keep the package lightweight and fast.
+- **🚀 100% API Coverage**: Complete implementation of all Trakt.tv modules including Movies, Shows, Seasons, Episodes, Users, Sync, Search, and more.
+- **🛡️ Strict Type Safety**: Full use of Dart enums for all categorical parameters (Sorting, Filtering, Reporting) to eliminate runtime errors.
+- **🔐 Advanced Auth Management**: Robust OAuth2 support with automatic silent refresh and state synchronization.
+- **🏗️ Refined Model Architecture**: Clean, polymorphic models with standardized ISO 8601 date handling and pagination support.
+- **🔍 Smart Search**: Intelligent search engine with automatic character escaping and advanced filtering.
+- **⚡ Performance Optimized**: Minimal external dependencies and lightweight manual serialization for maximum speed.
+
+---
 
 ## Installation
 
@@ -27,9 +28,19 @@ dependencies:
   trakt_api_client: ^1.0.0
 ```
 
+Or install it via terminal:
+
+```bash
+dart pub add trakt_api_client
+```
+
+---
+
 ## Getting Started
 
 ### 1. Initialization
+
+Initialize the `TraktApiClient` with your credentials and an optional callback for token persistence.
 
 ```dart
 import 'package:trakt_api_client/trakt_api_client.dart';
@@ -38,35 +49,36 @@ final client = TraktApiClient(
   config: TraktApiClientConfig(
     clientId: 'YOUR_CLIENT_ID',
     clientSecret: 'YOUR_CLIENT_SECRET',
-    // Optional initial tokens
+    // Optional: provide existing tokens
     accessToken: '...', 
     refreshToken: '...',
   ),
   onTokenRefreshed: (token) {
-    // Automatically called when a token is refreshed or acquired.
-    // Save these to your secure storage.
+    // Automatically called when a token is refreshed.
+    // Use this to save tokens to secure storage.
     print('New Access Token: ${token.accessToken}');
   },
 );
 ```
 
-### 2. Authentication (Device Flow)
+### 2. Authentication (OAuth2)
+
+Trakt uses OAuth2 for authenticated requests. You can handle the authorization flow manually or use the built-in methods.
 
 ```dart
-// 1. Generate codes
+// Generate Device Codes for login
 final deviceCode = await client.auth.generateDeviceCode();
 print('Authorize at: ${deviceCode.verificationUrl}');
-print('Code: ${deviceCode.userCode}');
+print('User Code: ${deviceCode.userCode}');
 
-// 2. Poll for token
-// The client will automatically update its config and trigger onTokenRefreshed upon success.
+// Poll for token - updates client state automatically on success
 final token = await client.auth.pollForDeviceToken(deviceCode.deviceCode);
 ```
 
-### 3. Fetching Data
+### 3. Usage Examples
 
+#### Fetching Trending Movies
 ```dart
-// Get Trending Movies with stats and full metadata
 final trending = await client.movies.getTrending(
   page: 1,
   limit: 10,
@@ -74,49 +86,61 @@ final trending = await client.movies.getTrending(
 );
 
 for (var entry in trending.data) {
-  print('${entry.item.title} - ${entry.watchers} people watching');
+  print('${entry.item.title} has ${entry.watchers} active watchers');
 }
 ```
 
-### 4. Searching with Filters
-
+#### Searching with Advanced Filters
 ```dart
 final results = await client.search.textQuery(
   'Spider-man',
   types: [TraktMediaType.movies],
   filters: TraktFilters(
     genres: ['action', 'adventure'],
-    years: '2021-2024',
+    years: '2023',
   ),
-  escape: true, // Auto-escape special characters like ":" or "-"
 );
 ```
 
-### 5. Syncing (Authenticated)
-
+#### Syncing User Collection (Authenticated)
 ```dart
-// [🔒 OAuth Required] - Requires valid accessToken in config
-final watched = await client.sync.getWatched<TraktMovie>(
+// [🔒 OAuth Required]
+final collection = await client.sync.getCollection<TraktMovie>(
   type: TraktMediaType.movies,
 );
 
-for (var state in watched) {
-  print('Watched: ${state.item.title} (Plays: ${state.plays})');
+for (var entry in collection) {
+  print('In Collection: ${entry.item.title}');
 }
 ```
 
-## Image Handling
+---
 
-**Important Note**: Consistent with Trakt.tv's API design, this package **does not return direct image URLs**. Trakt provides stable IDs (TMDB, TVDB, IMDB). 
+## Architecture & Design
 
-To display images, you should use the IDs provided in our models (e.g., `movie.ids.tmdb`) in conjunction with a specialized image provider or another API client like `tmdb_api`.
+### Unified Model System
+The library uses a polymorphic approach for media entities. Whether you are searching, fetching trending items, or accessing a user's collection, the data structures remain consistent and intuitive.
+
+### Safe Date Parsing
+All date fields are automatically parsed into `DateTime` objects, handling Trakt's specific string formats and ensuring UTC consistency across your application.
+
+### Rate Limit Awareness
+The client automatically tracks rate limit headers from Trakt responses, accessible via `client.lastRateLimit`.
+
+---
 
 ## Documentation
 
-Every method and model is documented using DartDoc. Simply hover over a method in your IDE to see:
-- Valid ID formats (Trakt ID, Slug, IMDB).
+Every public member is documented with detailed DartDoc comments. You can find:
+- Expected ID formats (Trakt ID, Slug, IMDB).
 - Authentication requirements (marked with `🔒 OAuth Required`).
-- Descriptions of parameters and return types.
+- Comprehensive parameter descriptions.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request or open an issue for bugs and feature requests.
 
 ## License
 
