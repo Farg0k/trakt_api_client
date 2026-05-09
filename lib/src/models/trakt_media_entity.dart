@@ -1,29 +1,35 @@
-import 'trakt_episode.dart';
 import 'trakt_movie.dart';
-import 'trakt_person.dart';
-import 'trakt_season.dart';
 import 'trakt_show.dart';
+import 'trakt_season.dart';
+import 'trakt_episode.dart';
+import 'trakt_person.dart';
+import 'trakt_list.dart';
 
-class TraktNoteItem {
+/// A universal container for any Trakt media object.
+/// 
+/// Used to avoid duplication in search results, list items, sync items, etc.
+class TraktMediaEntity {
   final String type;
   final TraktMovie? movie;
   final TraktShow? show;
   final TraktSeason? season;
   final TraktEpisode? episode;
   final TraktPerson? person;
+  final TraktList? list;
 
-  const TraktNoteItem({
+  const TraktMediaEntity({
     required this.type,
     this.movie,
     this.show,
     this.season,
     this.episode,
     this.person,
+    this.list,
   });
 
-  factory TraktNoteItem.fromJson(Map<String, dynamic> json) {
+  factory TraktMediaEntity.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
-    return TraktNoteItem(
+    return TraktMediaEntity(
       type: type,
       movie: type == 'movie' && json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
@@ -40,6 +46,21 @@ class TraktNoteItem {
       person: type == 'person' && json['person'] != null
           ? TraktPerson.fromJson(json['person'] as Map<String, dynamic>)
           : null,
+      list: type == 'list' && json['list'] != null
+          ? TraktList.fromJson(json['list'] as Map<String, dynamic>)
+          : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      if (movie != null) 'movie': movie!.toJson(),
+      if (show != null) 'show': show!.toJson(),
+      if (season != null) 'season': season!.toJson(),
+      if (episode != null) 'episode': episode!.toJson(),
+      if (person != null) 'person': person!.toJson(),
+      if (list != null) 'list': list!.toJson(),
+    };
   }
 }

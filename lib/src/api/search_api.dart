@@ -6,7 +6,7 @@ import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_search_fields.dart';
 import '../core/trakt_search_utils.dart';
-import '../models/trakt_search_result.dart';
+import '../models/trakt_media_entity.dart';
 
 class SearchApi {
   final TraktApiClient _client;
@@ -17,7 +17,7 @@ class SearchApi {
   ///
   /// If [escape] is true, special characters (+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \)
   /// will be escaped with a backslash to be interpreted literally.
-  Future<TraktListResponse<TraktSearchResult>> textQuery(
+  Future<TraktListResponse<TraktMediaEntity>> textQuery(
     String query, {
     List<TraktMediaType>? types,
     List<TraktSearchField>? fields,
@@ -47,7 +47,7 @@ class SearchApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktSearchResult.fromJson(item as Map<String, dynamic>))
+                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -60,7 +60,7 @@ class SearchApi {
   /// Lookup items by their ID.
   /// 
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktListResponse<TraktSearchResult>> idLookup(
+  Future<TraktListResponse<TraktMediaEntity>> idLookup(
     String id, {
     required TraktIdType idType,
     TraktMediaType? type,
@@ -81,7 +81,7 @@ class SearchApi {
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) =>
-                TraktSearchResult.fromJson(item as Map<String, dynamic>))
+                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,

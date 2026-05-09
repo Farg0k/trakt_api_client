@@ -1,7 +1,7 @@
 import '../core/trakt_api_client.dart';
 import '../core/trakt_extended_info.dart';
 import '../models/trakt_note.dart';
-import '../models/trakt_note_item.dart';
+import '../models/trakt_media_entity.dart';
 import '../core/trakt_privacy.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_movie.dart';
@@ -41,7 +41,7 @@ class NotesApi {
       '/notes',
       body: {
         'note': note,
-        'privacy': privacy.name,
+        'privacy': privacy.value,
         if (movie != null) 'movie': {'ids': movie.ids?.toJson()},
         if (show != null) 'show': {'ids': show.ids?.toJson()},
         if (season != null) 'season': {'ids': season.ids?.toJson()},
@@ -64,7 +64,7 @@ class NotesApi {
       '/notes/$id',
       body: {
         'note': note,
-        'privacy': privacy.name,
+        'privacy': privacy.value,
       },
       authenticated: true,
       mapper: (body, headers) =>
@@ -82,11 +82,11 @@ class NotesApi {
   }
 
   /// Get all items attached to a note.
-  Future<List<TraktNoteItem>> getItems(int id) async {
+  Future<List<TraktMediaEntity>> getItems(int id) async {
     return _client.get(
       '/notes/$id/items',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktNoteItem.fromJson(item as Map<String, dynamic>))
+          .map((item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }

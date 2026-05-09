@@ -9,9 +9,9 @@ import '../core/trakt_sort_types.dart';
 import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_movie.dart';
-import '../models/trakt_movie_models.dart';
 import '../models/trakt_media_models.dart';
 import '../models/trakt_generic_models.dart';
+import '../models/trakt_stats.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
@@ -436,10 +436,11 @@ class MoviesApi {
   /// Get movie stats.
   /// 
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<Map<String, dynamic>> getStats(String id) async {
+  Future<TraktStats> getStats(String id) async {
     return _client.get(
       '/movies/$id/stats',
-      mapper: (body, headers) => body as Map<String, dynamic>,
+      mapper: (body, headers) =>
+          TraktStats.fromJson(body as Map<String, dynamic>),
     );
   }
 

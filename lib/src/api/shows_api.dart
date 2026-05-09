@@ -10,9 +10,10 @@ import '../models/trakt_comment.dart';
 import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_show.dart';
-import '../models/trakt_show_models.dart';
+import '../models/trakt_show_progress.dart';
 import '../models/trakt_media_models.dart';
 import '../models/trakt_generic_models.dart';
+import '../models/trakt_stats.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
@@ -164,7 +165,7 @@ class ShowsApi {
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
-      '/shows/updates/$dateStr',
+      '/shows/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
@@ -409,11 +410,11 @@ class ShowsApi {
   /// Get show stats.
   /// 
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktShowStats> getStats(String id) async {
+  Future<TraktStats> getStats(String id) async {
     return _client.get(
       '/shows/$id/stats',
       mapper: (body, headers) =>
-          TraktShowStats.fromJson(body as Map<String, dynamic>),
+          TraktStats.fromJson(body as Map<String, dynamic>),
     );
   }
 

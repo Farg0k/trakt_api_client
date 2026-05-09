@@ -9,7 +9,7 @@ import '../models/trakt_episode.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_media_models.dart';
 import '../models/trakt_generic_models.dart';
-import '../models/trakt_show_models.dart';
+import '../models/trakt_stats.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
@@ -149,7 +149,7 @@ class EpisodesApi {
   /// Get episode stats.
   /// 
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktShowStats> getStats(
+  Future<TraktStats> getStats(
     String showId,
     int seasonNumber,
     int episodeNumber,
@@ -157,7 +157,7 @@ class EpisodesApi {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/stats',
       mapper: (body, headers) =>
-          TraktShowStats.fromJson(body as Map<String, dynamic>),
+          TraktStats.fromJson(body as Map<String, dynamic>),
     );
   }
 

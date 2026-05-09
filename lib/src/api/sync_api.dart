@@ -3,10 +3,11 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_media_type.dart';
 import '../core/trakt_sort_types.dart';
-import '../models/trakt_collected_item.dart';
-import '../models/trakt_search_result.dart';
+import '../models/trakt_media_entity.dart';
+import '../models/trakt_media_state.dart';
 import '../models/trakt_sync_models.dart';
-import '../models/trakt_watched_item.dart';
+import '../models/trakt_movie.dart';
+import '../models/trakt_show.dart';
 import '../core/trakt_date_utils.dart';
 
 class SyncApi {
@@ -65,7 +66,7 @@ class SyncApi {
   // --- COLLECTION ---
 
   /// [🔒 OAuth Required] Get the user's collection.
-  Future<List<T>> getCollection<T>({
+  Future<List<TraktMediaState<T>>> getCollection<T>({
     required TraktMediaType type,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
@@ -78,11 +79,10 @@ class SyncApi {
         return list.map((e) {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
-            return TraktCollectedMovie.fromJson(json) as T;
-          } else if (type == TraktMediaType.shows) {
-            return TraktCollectedShow.fromJson(json) as T;
+            return TraktMediaState<TraktMovie>.fromJson(json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+          } else {
+            return TraktMediaState<TraktShow>.fromJson(json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
-          return json as T;
         }).toList();
       },
     );
@@ -111,7 +111,7 @@ class SyncApi {
   // --- WATCHED ---
 
   /// [🔒 OAuth Required] Get the user's watched items.
-  Future<List<T>> getWatched<T>({
+  Future<List<TraktMediaState<T>>> getWatched<T>({
     required TraktMediaType type,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
@@ -124,11 +124,10 @@ class SyncApi {
         return list.map((e) {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
-            return TraktWatchedMovie.fromJson(json) as T;
-          } else if (type == TraktMediaType.shows) {
-            return TraktWatchedShow.fromJson(json) as T;
+            return TraktMediaState<TraktMovie>.fromJson(json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+          } else {
+            return TraktMediaState<TraktShow>.fromJson(json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
-          return json as T;
         }).toList();
       },
     );
@@ -240,7 +239,7 @@ class SyncApi {
   // --- WATCHLIST ---
 
   /// [🔒 OAuth Required] Get the user's watchlist.
-  Future<TraktListResponse<TraktSearchResult>> getWatchlist({
+  Future<TraktListResponse<TraktMediaEntity>> getWatchlist({
     TraktMediaType? type,
     TraktWatchlistSort sort = TraktWatchlistSort.rank,
     int page = 1,
@@ -259,7 +258,7 @@ class SyncApi {
       authenticated: true,
       mapper: (body, headers) {
         final data = (body as List)
-            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
+            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -302,7 +301,7 @@ class SyncApi {
   // --- RECOMMENDATIONS (Sync specific) ---
 
   /// [🔒 OAuth Required] Get the user's hidden recommendations.
-  Future<TraktListResponse<TraktSearchResult>> getRecommendations({
+  Future<TraktListResponse<TraktMediaEntity>> getRecommendations({
     TraktMediaType? type,
     int page = 1,
     int limit = 10,
@@ -320,7 +319,7 @@ class SyncApi {
       authenticated: true,
       mapper: (body, headers) {
         final data = (body as List)
-            .map((e) => TraktSearchResult.fromJson(e as Map<String, dynamic>))
+            .map((e) => TraktMediaEntity.fromJson(e as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
