@@ -10,8 +10,12 @@ import '../models/trakt_person_models.dart';
 import '../models/trakt_generic_models.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Access to people endpoints.
 class PeopleApi {
+
+  /// Creates a new [PeopleApi] instance.
   PeopleApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Get detailed person information.
@@ -71,7 +75,10 @@ class PeopleApi {
   }) async {
     return _client.get(
       '/people/$id/lists/${type.value}/${sort.value}',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -101,13 +108,8 @@ class PeopleApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktUpdate<TraktPerson>.fromJson(
-                item as Map<String, dynamic>,
-                TraktPerson.fromJson,
-                'person',
-              ),
-            )
+            .map((item) => TraktUpdate<TraktPerson>.fromJson(
+                item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -126,7 +128,10 @@ class PeopleApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/people/updates/id/$dateStr',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -154,13 +159,8 @@ class PeopleApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktDeleted<TraktPerson>.fromJson(
-                item as Map<String, dynamic>,
-                TraktPerson.fromJson,
-                'person',
-              ),
-            )
+            .map((item) => TraktDeleted<TraktPerson>.fromJson(
+                item as Map<String, dynamic>, TraktPerson.fromJson, 'person'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -173,15 +173,14 @@ class PeopleApi {
   /// [🔒 OAuth Required] Report a person for inappropriate content.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(
-    String id, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
+  Future<void> report(String id,
+      {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/people/$id/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

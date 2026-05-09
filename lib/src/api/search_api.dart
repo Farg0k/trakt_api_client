@@ -8,8 +8,12 @@ import '../core/trakt_search_fields.dart';
 import '../core/trakt_search_utils.dart';
 import '../models/trakt_media_entity.dart';
 
+/// Access to search endpoints.
 class SearchApi {
+
+  /// Creates a new [SearchApi] instance.
   SearchApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Search by text query.
@@ -37,8 +41,9 @@ class SearchApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (fields != null)
+    if (fields != null) {
       queryParams['fields'] = fields.map((e) => e.value).join(',');
+    }
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
     return _client.get(
@@ -46,9 +51,8 @@ class SearchApi {
       queryParams: queryParams,
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>),
-            )
+            .map((item) =>
+                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -81,9 +85,8 @@ class SearchApi {
       queryParams: queryParams,
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>),
-            )
+            .map((item) =>
+                TraktMediaEntity.fromJson(item as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,

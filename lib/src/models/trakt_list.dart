@@ -8,7 +8,9 @@ import 'trakt_season.dart';
 import 'trakt_episode.dart';
 import 'trakt_person.dart';
 
+/// Represents a Trakt list.
 class TraktList {
+  /// Creates a new [TraktList] instance.
   const TraktList({
     required this.name,
     this.description,
@@ -26,6 +28,7 @@ class TraktList {
     this.user,
   });
 
+  /// Creates a [TraktList] from a JSON map.
   factory TraktList.fromJson(Map<String, dynamic> json) {
     return TraktList(
       name: json['name'] as String? ?? '',
@@ -48,21 +51,50 @@ class TraktList {
           : null,
     );
   }
+
+  /// Name of the list.
   final String name;
+
+  /// Optional description.
   final String? description;
+
+  /// Privacy setting.
   final TraktPrivacy privacy;
+
+  /// Whether to display item numbers.
   final bool displayNumbers;
+
+  /// Whether to allow comments.
   final bool allowComments;
+
+  /// Current sort field.
   final String? sortBy;
+
+  /// Current sort direction.
   final String? sortHow;
+
+  /// When the list was created.
   final DateTime? createdAt;
+
+  /// When the list was last updated.
   final DateTime? updatedAt;
+
+  /// Number of items in the list.
   final int? itemCount;
+
+  /// Number of comments.
   final int? commentCount;
+
+  /// Number of likes.
   final int? likes;
+
+  /// IDs for the list.
   final TraktIds? ids;
+
+  /// The owner of the list.
   final TraktUser? user;
 
+  /// Converts this list to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -76,7 +108,9 @@ class TraktList {
   }
 }
 
+/// Represents an item within a Trakt list.
 class TraktListItem {
+  /// Creates a new [TraktListItem] instance.
   const TraktListItem({
     this.rank,
     required this.id,
@@ -90,6 +124,7 @@ class TraktListItem {
     this.person,
   });
 
+  /// Creates a [TraktListItem] from a JSON map.
   factory TraktListItem.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
     return TraktListItem(
@@ -115,17 +150,38 @@ class TraktListItem {
           : null,
     );
   }
+
+  /// Rank of the item in the list.
   final int? rank;
+
+  /// Unique ID of the list item.
   final int id;
+
+  /// When the item was added to the list.
   final DateTime? listedAt;
+
+  /// Optional user notes.
   final String? notes;
+
+  /// Type of the item.
   final String type;
+
+  /// Movie object (if type is movie).
   final TraktMovie? movie;
+
+  /// Show object (if type is show).
   final TraktShow? show;
+
+  /// Season object (if type is season).
   final TraktSeason? season;
+
+  /// Episode object (if type is episode).
   final TraktEpisode? episode;
+
+  /// Person object (if type is person).
   final TraktPerson? person;
 
+  /// Converts this list item to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'rank': rank,

@@ -30,6 +30,13 @@ import '../models/trakt_auth_models.dart';
 ///
 /// This client provides access to all Trakt API modules.
 class TraktApiClient {
+  /// Creates a new Trakt API client.
+  TraktApiClient({
+    required this.config,
+    this.onTokenRefreshed,
+    http.Client? httpClient,
+  }) : _client = httpClient ?? http.Client();
+
   /// The configuration for this client.
   TraktApiClientConfig config;
 
@@ -39,13 +46,6 @@ class TraktApiClient {
   final http.Client _client;
   bool _isRefreshing = false;
   TraktRateLimit? _lastRateLimit;
-
-  /// Creates a new Trakt API client.
-  TraktApiClient({
-    required this.config,
-    this.onTokenRefreshed,
-    http.Client? httpClient,
-  }) : _client = httpClient ?? http.Client();
 
   /// Access to authentication endpoints.
   AuthenticationApi get auth => AuthenticationApi(this);
@@ -122,9 +122,8 @@ class TraktApiClient {
   }) async {
     return _performRequest(
       (headers) => _client.get(
-        Uri.parse(
-          '${config.baseUrl}$path',
-        ).replace(queryParameters: queryParams),
+        Uri.parse('${config.baseUrl}$path')
+            .replace(queryParameters: queryParams),
         headers: headers,
       ),
       mapper,
@@ -175,8 +174,10 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      (headers) =>
-          _client.delete(Uri.parse('${config.baseUrl}$path'), headers: headers),
+      (headers) => _client.delete(
+        Uri.parse('${config.baseUrl}$path'),
+        headers: headers,
+      ),
       mapper,
       authenticated: authenticated,
     );
@@ -188,7 +189,7 @@ class TraktApiClient {
     bool authenticated = false,
   }) async {
     if (authenticated && config.accessToken == null) {
-      throw TraktApiException(
+      throw const TraktApiException(
         'OAuth required for this endpoint. Please provide an accessToken in config.',
         statusCode: 401,
       );

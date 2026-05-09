@@ -1,14 +1,31 @@
+/// Supported media types in Trakt.
 enum TraktMediaType {
+  /// All media types.
   all('all'),
+
+  /// Movies only.
   movies('movies'),
+
+  /// TV shows only.
   shows('shows'),
+
+  /// Seasons only.
   seasons('seasons'),
+
+  /// Episodes only.
   episodes('episodes'),
+
+  /// Lists only.
   lists('lists'),
+
+  /// People only.
   people('people');
 
-  final String value;
+  /// Creates a new [TraktMediaType] instance.
   const TraktMediaType(this.value);
+
+  /// The value used in API requests.
+  final String value;
 
   /// Returns the singular form required by some endpoints (like Search).
   String get singularValue {

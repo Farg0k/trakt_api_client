@@ -1,17 +1,10 @@
 import 'trakt_episode.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Progress information for a TV show.
 class TraktShowProgress {
-  const TraktShowProgress({
-    required this.aired,
-    required this.completed,
-    this.lastWatchedAt,
-    this.lastCollectedAt,
-    required this.seasons,
-    this.nextEpisode,
-    this.lastEpisode,
-  });
 
+  /// Creates a [TraktShowProgress] from a JSON map.
   factory TraktShowProgress.fromJson(Map<String, dynamic> json) {
     return TraktShowProgress(
       aired: json['aired'] as int? ?? 0,
@@ -29,24 +22,43 @@ class TraktShowProgress {
           : null,
     );
   }
+  /// Creates a new [TraktShowProgress] instance.
+  const TraktShowProgress({
+    required this.aired,
+    required this.completed,
+    this.lastWatchedAt,
+    this.lastCollectedAt,
+    required this.seasons,
+    this.nextEpisode,
+    this.lastEpisode,
+  });
+
+  /// Number of aired episodes.
   final int aired;
+
+  /// Number of completed episodes.
   final int completed;
+
+  /// When the last episode was watched.
   final DateTime? lastWatchedAt;
+
+  /// When the last episode was collected.
   final DateTime? lastCollectedAt;
+
+  /// Progress by season.
   final List<TraktSeasonProgress> seasons;
+
+  /// The next episode to air.
   final TraktEpisode? nextEpisode;
+
+  /// The last episode to air.
   final TraktEpisode? lastEpisode;
 }
 
+/// Progress information for a single season.
 class TraktSeasonProgress {
-  const TraktSeasonProgress({
-    required this.number,
-    required this.aired,
-    required this.completed,
-    this.title,
-    required this.episodes,
-  });
 
+  /// Creates a [TraktSeasonProgress] from a JSON map.
   factory TraktSeasonProgress.fromJson(Map<String, dynamic> json) {
     return TraktSeasonProgress(
       number: json['number'] as int? ?? 0,
@@ -58,21 +70,35 @@ class TraktSeasonProgress {
           .toList(),
     );
   }
+  /// Creates a new [TraktSeasonProgress] instance.
+  const TraktSeasonProgress({
+    required this.number,
+    required this.aired,
+    required this.completed,
+    this.title,
+    required this.episodes,
+  });
+
+  /// Season number.
   final int number;
+
+  /// Number of aired episodes in this season.
   final int aired;
+
+  /// Number of completed episodes in this season.
   final int completed;
+
+  /// Title of the season.
   final String? title;
+
+  /// Progress by episode.
   final List<TraktEpisodeProgress> episodes;
 }
 
+/// Progress information for a single episode.
 class TraktEpisodeProgress {
-  const TraktEpisodeProgress({
-    required this.number,
-    required this.completed,
-    this.watchedAt,
-    this.collectedAt,
-  });
 
+  /// Creates a [TraktEpisodeProgress] from a JSON map.
   factory TraktEpisodeProgress.fromJson(Map<String, dynamic> json) {
     return TraktEpisodeProgress(
       number: json['number'] as int? ?? 0,
@@ -81,8 +107,23 @@ class TraktEpisodeProgress {
       collectedAt: TraktDateUtils.parse(json['collected_at']),
     );
   }
+  /// Creates a new [TraktEpisodeProgress] instance.
+  const TraktEpisodeProgress({
+    required this.number,
+    required this.completed,
+    this.watchedAt,
+    this.collectedAt,
+  });
+
+  /// Episode number.
   final int number;
+
+  /// Whether the episode is completed.
   final bool completed;
+
+  /// When the episode was watched.
   final DateTime? watchedAt;
+
+  /// When the episode was collected.
   final DateTime? collectedAt;
 }

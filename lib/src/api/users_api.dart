@@ -18,8 +18,12 @@ import '../models/trakt_sync_models.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_user_models.dart';
 
+/// Access to user endpoints.
 class UsersApi {
+  /// Creates a new [UsersApi] instance.
   UsersApi(this._client);
+
+  /// Internal client reference.
   final TraktApiClient _client;
 
   // --- SETTINGS & FILTERS ---
@@ -110,9 +114,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Add items to hidden list.
   Future<TraktSyncResponse> addHiddenItems(
-    String section,
-    TraktSyncRequest request,
-  ) async {
+      String section, TraktSyncRequest request) async {
     return _client.post(
       '/users/hidden/$section',
       body: request.toJson(),
@@ -124,9 +126,7 @@ class UsersApi {
 
   /// [🔒 OAuth Required] Remove items from hidden list.
   Future<TraktSyncResponse> removeHiddenItems(
-    String section,
-    TraktSyncRequest request,
-  ) async {
+      String section, TraktSyncRequest request) async {
     return _client.post(
       '/users/hidden/$section/remove',
       body: request.toJson(),
@@ -149,14 +149,16 @@ class UsersApi {
   }) async {
     return _client.get(
       '/users/$username/likes/$type',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List).map((e) {
           final json = e as Map<String, dynamic>;
           if (type == 'comments') {
             return TraktComment.fromJson(
-              json['comment'] as Map<String, dynamic>,
-            );
+                json['comment'] as Map<String, dynamic>);
           } else {
             return TraktList.fromJson(json['list'] as Map<String, dynamic>);
           }
@@ -174,10 +176,8 @@ class UsersApi {
   /// Get a user's profile.
   ///
   /// [username] can be a username or UUID.
-  Future<TraktUser> getProfile(
-    String username, {
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<TraktUser> getProfile(String username,
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username',
       queryParams: {'extended': extended.value},
@@ -189,10 +189,8 @@ class UsersApi {
   /// Get what a user is currently watching.
   ///
   /// [username] can be a username or UUID.
-  Future<dynamic> getWatching(
-    String username, {
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<dynamic> getWatching(String username,
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watching',
       queryParams: {'extended': extended.value},
@@ -200,10 +198,12 @@ class UsersApi {
         if (body == null) return null;
         final json = body as Map<String, dynamic>;
         final type = json['type'] as String;
-        if (type == 'movie')
+        if (type == 'movie') {
           return TraktMovie.fromJson(json['movie'] as Map<String, dynamic>);
-        if (type == 'episode')
+        }
+        if (type == 'episode') {
           return TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>);
+        }
         return json;
       },
     );
@@ -277,11 +277,9 @@ class UsersApi {
   /// Get user's collection.
   ///
   /// [username] can be a username or UUID.
-  Future<List<TraktMediaState<T>>> getCollection<T>(
-    String username, {
-    required TraktMediaType type,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<List<TraktMediaState<T>>> getCollection<T>(String username,
+      {required TraktMediaType type,
+      TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/collection/${type.value}',
       queryParams: {'extended': extended.value},
@@ -291,18 +289,10 @@ class UsersApi {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
             return TraktMediaState<TraktMovie>.fromJson(
-                  json,
-                  TraktMovie.fromJson,
-                  'movie',
-                )
-                as TraktMediaState<T>;
+                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
           } else {
             return TraktMediaState<TraktShow>.fromJson(
-                  json,
-                  TraktShow.fromJson,
-                  'show',
-                )
-                as TraktMediaState<T>;
+                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -348,11 +338,9 @@ class UsersApi {
   /// Get user's watched items.
   ///
   /// [username] can be a username or UUID.
-  Future<List<TraktMediaState<T>>> getWatched<T>(
-    String username, {
-    required TraktMediaType type,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<List<TraktMediaState<T>>> getWatched<T>(String username,
+      {required TraktMediaType type,
+      TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/users/$username/watched/${type.value}',
       queryParams: {'extended': extended.value},
@@ -362,18 +350,10 @@ class UsersApi {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
             return TraktMediaState<TraktMovie>.fromJson(
-                  json,
-                  TraktMovie.fromJson,
-                  'movie',
-                )
-                as TraktMediaState<T>;
+                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
           } else {
             return TraktMediaState<TraktShow>.fromJson(
-                  json,
-                  TraktShow.fromJson,
-                  'show',
-                )
-                as TraktMediaState<T>;
+                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -504,10 +484,7 @@ class UsersApi {
   ///
   /// [username] can be a username or UUID.
   Future<void> reorderListItems(
-    String username,
-    String listId,
-    List<int> rank,
-  ) async {
+      String username, String listId, List<int> rank) async {
     await _client.post(
       '/users/$username/lists/$listId/items/reorder',
       body: {'rank': rank},
@@ -604,15 +581,14 @@ class UsersApi {
   /// [🔒 OAuth Required] Report a user for inappropriate content.
   ///
   /// [username] can be a username or UUID.
-  Future<void> report(
-    String username, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
+  Future<void> report(String username,
+      {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/users/$username/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

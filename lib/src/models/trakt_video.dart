@@ -1,47 +1,62 @@
+/// Represents a video related to a movie or show (e.g. trailer, teaser).
 class TraktVideo {
+
+  /// Creates a [TraktVideo] from a JSON map.
+  factory TraktVideo.fromJson(Map<String, dynamic> json) {
+    return TraktVideo(
+      name: json['name'] as String? ?? '',
+      site: json['site'] as String? ?? '',
+      key: json['key'] as String? ?? '',
+      type: json['type'] as String? ?? '',
+      official: json['official'] as bool?,
+      publishedAt: json['published_at'] != null
+          ? DateTime.tryParse(json['published_at'] as String)
+          : null,
+      country: json['country'] as String?,
+    );
+  }
+  /// Creates a new [TraktVideo] instance.
   const TraktVideo({
     required this.name,
     required this.site,
     required this.key,
     required this.type,
-    required this.size,
-    required this.traktId,
+    this.official,
+    this.publishedAt,
+    this.country,
   });
 
-  factory TraktVideo.fromJson(Map<String, dynamic> json) {
-    return TraktVideo(
-      name: json['name'] as String,
-      site: json['site'] as String,
-      key: json['key'] as String,
-      type: json['type'] as String,
-      size: json['size'] as int,
-      traktId: json['ids']['trakt'] as int,
-    );
-  }
+  /// Name of the video.
   final String name;
-  final String site;
-  final String key;
-  final String type;
-  final int size;
-  final int traktId;
 
+  /// Site where the video is hosted (e.g. youtube).
+  final String site;
+
+  /// Key/ID of the video on the hosting site.
+  final String key;
+
+  /// Type of video (e.g. Trailer, Teaser, Clip).
+  final String type;
+
+  /// Whether this is an official video.
+  final bool? official;
+
+  /// When the video was published.
+  final DateTime? publishedAt;
+
+  /// 2-character country code.
+  final String? country;
+
+  /// Converts this video to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'site': site,
       'key': key,
       'type': type,
-      'size': size,
-      'ids': {'trakt': traktId},
+      if (official != null) 'official': official,
+      if (publishedAt != null) 'published_at': publishedAt!.toIso8601String(),
+      if (country != null) 'country': country,
     };
-  }
-
-  String? get url {
-    if (site.toLowerCase() == 'youtube') {
-      return 'https://www.youtube.com/watch?v=$key';
-    } else if (site.toLowerCase() == 'vimeo') {
-      return 'https://vimeo.com/$key';
-    }
-    return null;
   }
 }

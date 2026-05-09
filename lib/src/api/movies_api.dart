@@ -16,8 +16,12 @@ import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Access to movie endpoints.
 class MoviesApi {
+
+  /// Creates a new [MoviesApi] instance.
   MoviesApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Get trending movies.
@@ -43,14 +47,8 @@ class MoviesApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _getMovieResponseList(
-      '/movies/popular',
-      page,
-      limit,
-      extended,
-      null,
-      (json) => TraktMovie.fromJson(json),
-    );
+    return _getMovieResponseList('/movies/popular', page, limit, extended, null,
+        (json) => TraktMovie.fromJson(json));
   }
 
   /// Get recommended movies.
@@ -62,13 +60,12 @@ class MoviesApi {
     TraktFilters? filters,
   }) async {
     return _getMovieResponseList(
-      '/movies/recommended${period != null ? '/${period.value}' : ''}',
-      page,
-      limit,
-      extended,
-      filters,
-      (json) => TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
-    );
+        '/movies/recommended${period != null ? '/${period.value}' : ''}',
+        page,
+        limit,
+        extended,
+        filters,
+        (json) => TraktMovie.fromJson(json['movie'] as Map<String, dynamic>));
   }
 
   /// Get most played movies.
@@ -168,10 +165,8 @@ class MoviesApi {
       '/movies/boxoffice',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) =>
-                TraktBoxOfficeMovie.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) =>
+              TraktBoxOfficeMovie.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -193,13 +188,8 @@ class MoviesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktUpdate<TraktMovie>.fromJson(
-                item as Map<String, dynamic>,
-                TraktMovie.fromJson,
-                'movie',
-              ),
-            )
+            .map((item) => TraktUpdate<TraktMovie>.fromJson(
+                item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -218,7 +208,10 @@ class MoviesApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/movies/updates/id/$dateStr',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -246,13 +239,8 @@ class MoviesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktDeleted<TraktMovie>.fromJson(
-                item as Map<String, dynamic>,
-                TraktMovie.fromJson,
-                'movie',
-              ),
-            )
+            .map((item) => TraktDeleted<TraktMovie>.fromJson(
+                item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -296,10 +284,8 @@ class MoviesApi {
     return _client.get(
       '/movies/$id/certifications',
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) =>
-                TraktMediaCertification.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) =>
+              TraktMediaCertification.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -310,24 +296,20 @@ class MoviesApi {
   Future<List<String>> getLanguages(String id) async {
     return _client.get(
       '/movies/$id/languages',
-      mapper: (body, headers) =>
-          (body as List).map((e) => e as String).toList(),
+      mapper: (body, headers) => (body as List).map((e) => e as String).toList(),
     );
   }
 
   /// Get all release dates and certifications for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktMovieRelease>> getReleases(
-    String id, {
-    String? country,
-  }) async {
+  Future<List<TraktMovieRelease>> getReleases(String id,
+      {String? country}) async {
     return _client.get(
       '/movies/$id/releases${country != null ? '/$country' : ''}',
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) => TraktMovieRelease.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) =>
+              TraktMovieRelease.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -335,16 +317,12 @@ class MoviesApi {
   /// Get all translations for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktTranslation>> getTranslations(
-    String id, {
-    String? language,
-  }) async {
+  Future<List<TraktTranslation>> getTranslations(String id,
+      {String? language}) async {
     return _client.get(
       '/movies/$id/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -390,7 +368,10 @@ class MoviesApi {
   }) async {
     return _client.get(
       '/movies/$id/lists/${type.value}/${sort.value}',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -406,10 +387,8 @@ class MoviesApi {
   /// Get all cast and crew for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktCredits> getPeople(
-    String id, {
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<TraktCredits> getPeople(String id,
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/movies/$id/people',
       queryParams: {'extended': extended.value},
@@ -495,10 +474,8 @@ class MoviesApi {
   /// Get users currently watching a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktUser>> getWatching(
-    String id, {
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
+  Future<List<TraktUser>> getWatching(String id,
+      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
     return _client.get(
       '/movies/$id/watching',
       queryParams: {'extended': extended.value},
@@ -511,15 +488,14 @@ class MoviesApi {
   /// [🔒 OAuth Required] Report a movie for inappropriate content.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(
-    String id, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
+  Future<void> report(String id,
+      {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/movies/$id/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

@@ -1,7 +1,10 @@
 import '../core/trakt_date_utils.dart';
 import 'trakt_user.dart';
 
+/// Represents a comment on a media object.
 class TraktComment {
+
+  /// Creates a new [TraktComment] instance.
   TraktComment({
     required this.id,
     required this.comment,
@@ -14,6 +17,7 @@ class TraktComment {
     this.user,
   });
 
+  /// Creates a [TraktComment] from a JSON map.
   factory TraktComment.fromJson(Map<String, dynamic> json) {
     return TraktComment(
       id: json['id'] as int? ?? 0,
@@ -29,16 +33,26 @@ class TraktComment {
           : null,
     );
   }
+  /// Unique ID of the comment.
   final int id;
+  /// Content of the comment.
   final String comment;
+  /// Whether the comment contains spoilers.
   final bool spoiler;
+  /// When the comment was created.
   final DateTime? createdAt;
+  /// When the comment was last updated.
   final DateTime? updatedAt;
+  /// Number of replies to this comment.
   final int? replies;
+  /// Number of likes for this comment.
   final int? likes;
+  /// Rating given by the user who commented.
   final int? userRating;
+  /// The user who wrote the comment.
   final TraktUser? user;
 
+  /// Converts this comment to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'id': id,

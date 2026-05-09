@@ -1,8 +1,12 @@
 import '../core/trakt_api_client.dart';
 import '../models/trakt_auth_models.dart';
 
+/// Access to authentication endpoints.
 class AuthenticationApi {
+
+  /// Creates a new [AuthenticationApi] instance.
   AuthenticationApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Generate new codes to start the device authentication flow.
@@ -37,10 +41,8 @@ class AuthenticationApi {
   /// Exchange an authorization code (or PIN) for an access token.
   ///
   /// Automatically updates the parent [TraktApiClient] config with the new token.
-  Future<TraktOAuthToken> getToken(
-    String code, {
-    String redirectUri = 'urn:ietf:wg:oauth:2.0:oob',
-  }) async {
+  Future<TraktOAuthToken> getToken(String code,
+      {String redirectUri = 'urn:ietf:wg:oauth:2.0:oob'}) async {
     final token = await _client.post(
       '/oauth/token',
       body: {
@@ -92,10 +94,8 @@ class AuthenticationApi {
     );
 
     if (_client.config.accessToken == accessToken) {
-      _client.config = _client.config.copyWith(
-        accessToken: '',
-        refreshToken: '',
-      );
+      _client.config =
+          _client.config.copyWith(accessToken: '', refreshToken: '');
     }
   }
 

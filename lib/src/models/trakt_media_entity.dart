@@ -1,14 +1,15 @@
-import 'trakt_movie.dart';
-import 'trakt_show.dart';
-import 'trakt_season.dart';
 import 'trakt_episode.dart';
+import 'trakt_movie.dart';
 import 'trakt_person.dart';
+import 'trakt_season.dart';
+import 'trakt_show.dart';
 import 'trakt_list.dart';
 
 /// A universal container for any Trakt media object.
 ///
 /// Used to avoid duplication in search results, list items, sync items, etc.
 class TraktMediaEntity {
+  /// Creates a new [TraktMediaEntity] instance.
   const TraktMediaEntity({
     required this.type,
     this.movie,
@@ -19,6 +20,7 @@ class TraktMediaEntity {
     this.list,
   });
 
+  /// Creates a [TraktMediaEntity] from a JSON map.
   factory TraktMediaEntity.fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String;
     return TraktMediaEntity(
@@ -43,14 +45,29 @@ class TraktMediaEntity {
           : null,
     );
   }
+
+  /// Type of the media object (movie, show, episode, etc.).
   final String type;
+
+  /// The movie object, if [type] is 'movie'.
   final TraktMovie? movie;
+
+  /// The show object, if [type] is 'show'.
   final TraktShow? show;
+
+  /// The season object, if [type] is 'season'.
   final TraktSeason? season;
+
+  /// The episode object, if [type] is 'episode'.
   final TraktEpisode? episode;
+
+  /// The person object, if [type] is 'person'.
   final TraktPerson? person;
+
+  /// The list object, if [type] is 'list'.
   final TraktList? list;
 
+  /// Converts this entity to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'type': type,

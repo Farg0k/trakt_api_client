@@ -1,24 +1,25 @@
+/// Utility class for Trakt date operations.
 class TraktDateUtils {
-  /// Safely parses a date string from the API.
-  ///
-  /// Trakt sometimes returns null or malformed strings for dates
-  /// (e.g. "0000-00-00" in some edge cases or empty strings).
+  /// Internal client reference.
+  const TraktDateUtils();
+
+  /// Parses a value into a [DateTime] object.
   static DateTime? parse(dynamic value) {
-    if (value == null || value is! String || value.isEmpty) return null;
-
-    // Handle edge case where Trakt might return "0000-00-00"
-    if (value.startsWith('0000')) return null;
-
-    return DateTime.tryParse(value);
+    if (value == null) return null;
+    if (value is String) {
+      if (value == '0000-00-00') return null;
+      return DateTime.tryParse(value);
+    }
+    return null;
   }
 
-  /// Formats a DateTime to the YYYY-MM-DD format required by some paths.
+  /// Formats a [DateTime] for use in URL paths (YYYY-MM-DD).
   static String formatPathDate(DateTime date) {
-    return date.toUtc().toIso8601String().split('T')[0];
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
-  /// Formats a DateTime to the full ISO 8601 UTC string.
+  /// Formats a [DateTime] to a full ISO 8601 string.
   static String formatFullDate(DateTime date) {
-    return date.toUtc().toIso8601String();
+    return date.toIso8601String();
   }
 }

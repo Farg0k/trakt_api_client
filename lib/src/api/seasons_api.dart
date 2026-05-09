@@ -15,8 +15,12 @@ import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Access to season endpoints.
 class SeasonsApi {
+
+  /// Creates a new [SeasonsApi] instance.
   SeasonsApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Get all seasons for a show.
@@ -59,17 +63,12 @@ class SeasonsApi {
   /// Get all translations for a season.
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktTranslation>> getTranslations(
-    String showId,
-    int seasonNumber, {
-    String? language,
-  }) async {
+  Future<List<TraktTranslation>> getTranslations(String showId, int seasonNumber,
+      {String? language}) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -117,7 +116,10 @@ class SeasonsApi {
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/${sort.value}',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -214,13 +216,8 @@ class SeasonsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktUpdate<TraktSeason>.fromJson(
-                item as Map<String, dynamic>,
-                TraktSeason.fromJson,
-                'season',
-              ),
-            )
+            .map((item) => TraktUpdate<TraktSeason>.fromJson(
+                item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -239,7 +236,10 @@ class SeasonsApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/seasons/updates/id/$dateStr',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -267,13 +267,8 @@ class SeasonsApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktDeleted<TraktSeason>.fromJson(
-                item as Map<String, dynamic>,
-                TraktSeason.fromJson,
-                'season',
-              ),
-            )
+            .map((item) => TraktDeleted<TraktSeason>.fromJson(
+                item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -286,16 +281,14 @@ class SeasonsApi {
   /// [🔒 OAuth Required] Report a season for inappropriate content.
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(
-    String showId,
-    int seasonNumber, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
+  Future<void> report(String showId, int seasonNumber,
+      {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/shows/$showId/seasons/$seasonNumber/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

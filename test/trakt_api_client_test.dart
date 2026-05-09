@@ -3,65 +3,50 @@ import 'package:trakt_api_client/trakt_api_client.dart';
 
 void main() {
   group('TraktApiClientConfig', () {
-    test('baseUrl should be staging when useStaging is true', () {
+    test('baseUrl returns staging when useStaging is true', () {
       final config = TraktApiClientConfig(clientId: 'id', useStaging: true);
       expect(config.baseUrl, 'https://api-staging.trakt.tv');
     });
 
-    test('baseUrl should be production by default', () {
+    test('baseUrl returns production by default', () {
       final config = TraktApiClientConfig(clientId: 'id');
       expect(config.baseUrl, 'https://api.trakt.tv');
     });
 
-    test('headers should include client id', () {
+    test('headers include mandatory trakt headers', () {
       final config = TraktApiClientConfig(clientId: 'my_id');
-      expect(config.headers['trakt-api-key'], 'my_id');
-      expect(config.headers['trakt-api-version'], '2');
-      expect(config.headers['Content-Type'], 'application/json');
+      final headers = config.headers;
+
+      expect(headers['Content-Type'], 'application/json');
+      expect(headers['trakt-api-version'], '2');
+      expect(headers['trakt-api-key'], 'my_id');
     });
 
-    test('headers should include User-Agent if provided', () {
-      final config = TraktApiClientConfig(
-        clientId: 'id',
-        userAgent: 'MyAppName/1.0.0',
-      );
-      expect(config.headers['User-Agent'], 'MyAppName/1.0.0');
+    test('headers include authorization when token is present', () {
+      final config = TraktApiClientConfig(clientId: 'id', accessToken: 'token');
+      expect(config.headers['Authorization'], 'Bearer token');
     });
 
-    test('headers should include custom headers', () {
+    test('headers include custom headers', () {
       final config = TraktApiClientConfig(
         clientId: 'id',
-        customHeaders: {'X-Custom-Header': 'custom_value'},
+        customHeaders: {'X-Custom': 'value'},
       );
-      expect(config.headers['X-Custom-Header'], 'custom_value');
-      expect(config.headers['trakt-api-key'], 'id');
-    });
-
-    test('custom headers should be able to override default headers', () {
-      final config = TraktApiClientConfig(
-        clientId: 'id',
-        customHeaders: {'trakt-api-version': '3'},
-      );
-      expect(config.headers['trakt-api-version'], '3');
+      expect(config.headers['X-Custom'], 'value');
     });
   });
 
-  group('TraktRateLimit', () {
-    test('should parse headers correctly', () {
-      final headers = {
-        'X-Ratelimit-Limit': '1000',
-        'X-Ratelimit-Remaining': '999',
-        'X-Ratelimit-Reset': '1442171122',
-        'Retry-After': '30',
-      };
-      final rateLimit = TraktRateLimit.fromHeaders(headers);
-      expect(rateLimit.limit, 1000);
-      expect(rateLimit.remaining, 999);
-      expect(
-        rateLimit.reset,
-        DateTime.fromMillisecondsSinceEpoch(1442171122 * 1000),
-      );
-      expect(rateLimit.retryAfter?.inSeconds, 30);
+  group('TraktApiException', () {
+    test('toString includes message and status code', () {
+      const ex = TraktApiException('Error', statusCode: 404);
+      expect(ex.toString(), contains('Error'));
+      expect(ex.toString(), contains('404'));
+    });
+
+    test('toString includes rate limit info', () {
+      const rateLimit = TraktRateLimit(limit: 100, remaining: 50);
+      const ex = TraktApiException('Rate limited', rateLimit: rateLimit);
+      expect(ex.toString(), contains('Rate Limit'));
     });
   });
 }

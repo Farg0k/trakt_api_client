@@ -2,8 +2,12 @@ import '../core/trakt_api_client.dart';
 import '../core/trakt_media_class.dart';
 import '../models/trakt_media_models.dart';
 
+/// Access to country endpoints.
 class CountriesApi {
+  /// Creates a new [CountriesApi] instance.
   CountriesApi(this._client);
+
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Get all countries for movies or shows.

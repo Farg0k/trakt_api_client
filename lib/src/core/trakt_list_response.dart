@@ -1,4 +1,7 @@
+/// Pagination info returned in headers.
 class TraktPagination {
+
+  /// Creates a new [TraktPagination] instance.
   TraktPagination({
     required this.itemCount,
     required this.pageCount,
@@ -6,6 +9,7 @@ class TraktPagination {
     required this.currentPage,
   });
 
+  /// Creates a [TraktPagination] from HTTP response headers.
   factory TraktPagination.fromHeaders(Map<String, String> headers) {
     return TraktPagination(
       itemCount: int.tryParse(headers['X-Pagination-Item-Count'] ?? '') ?? 0,
@@ -14,9 +18,13 @@ class TraktPagination {
       currentPage: int.tryParse(headers['X-Pagination-Page'] ?? '') ?? 1,
     );
   }
+  /// Total number of items across all pages.
   final int itemCount;
+  /// Total number of pages.
   final int pageCount;
+  /// Number of items per page.
   final int limit;
+  /// The current page number.
   final int currentPage;
 
   @override
@@ -25,8 +33,16 @@ class TraktPagination {
   }
 }
 
+/// Generic response wrapper for lists.
 class TraktListResponse<T> {
-  TraktListResponse({required this.data, this.pagination});
+
+  /// Creates a new [TraktListResponse] instance.
+  TraktListResponse({
+    required this.data,
+    this.pagination,
+  });
+  /// The list of data items.
   final List<T> data;
+  /// Pagination information (if available).
   final TraktPagination? pagination;
 }

@@ -1,42 +1,15 @@
+/// Utilities for escaping Trakt search queries.
 class TraktSearchUtils {
-  /// Escapes special characters that have specific meaning in the Trakt search engine.
+  /// Internal client reference.
+  const TraktSearchUtils();
+
+  /// Escapes special characters in a search query.
   ///
-  /// The following characters are escaped:
-  /// + - && || ! ( ) { } [ ] ^ " ~ * ? : / \
-  ///
-  /// Use this if you want to search for a literal string that contains these characters.
+  /// Special characters (+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \)
+  /// will be escaped with a backslash to be interpreted literally by the
+  /// Lucene search engine used by Trakt.
   static String escape(String query) {
-    if (query.isEmpty) return query;
-
-    // Characters to escape: \ + - && || ! ( ) { } [ ] ^ " ~ * ? : /
-    // Note: \ must be first to avoid double escaping
-    final specialChars = [
-      '\\',
-      '+',
-      '-',
-      '&&',
-      '||',
-      '!',
-      '(',
-      ')',
-      '{',
-      '}',
-      '[',
-      ']',
-      '^',
-      '"',
-      '~',
-      '*',
-      '?',
-      ':',
-      '/',
-    ];
-
-    var escapedQuery = query;
-    for (final char in specialChars) {
-      escapedQuery = escapedQuery.replaceAll(char, '\\$char');
-    }
-
-    return escapedQuery;
+    final specials = RegExp(r'([\+\-&&\|\|!\(\)\{\}\[\]\^"~\*\?\:\/\\ ])');
+    return query.replaceAllMapped(specials, (match) => '\\${match.group(0)}');
   }
 }

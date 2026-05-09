@@ -1,62 +1,47 @@
-import 'trakt_episode.dart';
 import 'trakt_movie.dart';
-import 'trakt_show.dart';
+import 'trakt_episode.dart';
+import 'trakt_sharing.dart';
 
-class TraktScrobbleRequest {
-  const TraktScrobbleRequest({
-    this.movie,
-    this.episode,
-    required this.progress,
-    this.appVersion,
-    this.appDate,
-  });
-  final TraktMovie? movie;
-  final TraktEpisode? episode;
-  final double progress;
-  final String? appVersion;
-  final String? appDate;
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (movie != null) 'movie': {'ids': movie!.ids?.toJson()},
-      if (episode != null) 'episode': {'ids': episode!.ids?.toJson()},
-      'progress': progress,
-      if (appVersion != null) 'app_version': appVersion,
-      if (appDate != null) 'app_date': appDate,
-    };
-  }
-}
-
+/// Response to a scrobble request.
 class TraktScrobbleResponse {
+
+  /// Creates a new [TraktScrobbleResponse] instance.
   const TraktScrobbleResponse({
     required this.id,
-    required this.action,
     required this.progress,
+    this.sharing,
     this.movie,
-    this.show,
     this.episode,
+    required this.type,
   });
 
+  /// Creates a [TraktScrobbleResponse] from a JSON map.
   factory TraktScrobbleResponse.fromJson(Map<String, dynamic> json) {
     return TraktScrobbleResponse(
       id: json['id'] as int? ?? 0,
-      action: json['action'] as String? ?? '',
       progress: (json['progress'] as num?)?.toDouble() ?? 0.0,
+      sharing: json['sharing'] != null
+          ? TraktSharing.fromJson(json['sharing'] as Map<String, dynamic>)
+          : null,
       movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
-          : null,
-      show: json['show'] != null
-          ? TraktShow.fromJson(json['show'] as Map<String, dynamic>)
           : null,
       episode: json['episode'] != null
           ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>)
           : null,
+      type: json['type'] as String? ?? '',
     );
   }
+  /// Unique ID of the scrobble session.
   final int id;
-  final String action;
+  /// Progress percentage (0-100).
   final double progress;
+  /// Sharing settings used.
+  final TraktSharing? sharing;
+  /// The movie object, if scrobbling a movie.
   final TraktMovie? movie;
-  final TraktShow? show;
+  /// The episode object, if scrobbling an episode.
   final TraktEpisode? episode;
+  /// Type of the media item.
+  final String type;
 }

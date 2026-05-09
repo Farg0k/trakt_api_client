@@ -14,9 +14,14 @@ import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Access to episode endpoints.
 class EpisodesApi {
+
+  /// Creates a new [EpisodesApi] instance.
   EpisodesApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
+
 
   /// Get detailed episode information.
   ///
@@ -47,9 +52,7 @@ class EpisodesApi {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map(
-            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
-          )
+          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -99,7 +102,10 @@ class EpisodesApi {
   }) async {
     return _client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/lists/${type.value}/${sort.value}',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
             .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
@@ -210,13 +216,8 @@ class EpisodesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktUpdate<TraktEpisode>.fromJson(
-                item as Map<String, dynamic>,
-                TraktEpisode.fromJson,
-                'episode',
-              ),
-            )
+            .map((item) => TraktUpdate<TraktEpisode>.fromJson(
+                item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -235,7 +236,10 @@ class EpisodesApi {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
     return _client.get(
       '/episodes/updates/id/$dateStr',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List).map((item) => item as int).toList();
         return TraktListResponse(
@@ -263,13 +267,8 @@ class EpisodesApi {
       },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) => TraktDeleted<TraktEpisode>.fromJson(
-                item as Map<String, dynamic>,
-                TraktEpisode.fromJson,
-                'episode',
-              ),
-            )
+            .map((item) => TraktDeleted<TraktEpisode>.fromJson(
+                item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
             .toList();
         return TraktListResponse(
           data: data,
@@ -291,8 +290,10 @@ class EpisodesApi {
   }) async {
     await _client.post(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

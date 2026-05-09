@@ -1,67 +1,38 @@
-import '../core/trakt_date_utils.dart';
-import 'trakt_episode.dart';
 import 'trakt_movie.dart';
-import 'trakt_sharing.dart';
 import 'trakt_show.dart';
 
-class TraktCheckinRequest {
-  const TraktCheckinRequest({
-    this.movie,
-    this.episode,
-    this.show,
-    this.message,
-    this.sharing,
-    this.appVersion,
-    this.appDate,
-  });
-  final TraktMovie? movie;
-  final TraktEpisode? episode;
-  final TraktShow? show;
-  final String? message;
-  final TraktSharing? sharing;
-  final String? appVersion;
-  final String? appDate;
-
-  Map<String, dynamic> toJson() {
-    return {
-      if (movie != null) 'movie': {'ids': movie!.ids?.toJson()},
-      if (episode != null) 'episode': {'ids': episode!.ids?.toJson()},
-      if (show != null) 'show': {'ids': show!.ids?.toJson()},
-      if (sharing != null) 'sharing': sharing!.toJson(),
-      if (message != null) 'message': message,
-      if (appVersion != null) 'app_version': appVersion,
-      if (appDate != null) 'app_date': appDate,
-    };
-  }
-}
-
+/// Represents a response to a checkin request.
 class TraktCheckinResponse {
+
+  /// Creates a new [TraktCheckinResponse] instance.
   const TraktCheckinResponse({
     this.watchedAt,
-    this.expiresAt,
+    this.sharing,
     this.movie,
     this.show,
-    this.episode,
   });
 
+  /// Creates a [TraktCheckinResponse] from a JSON map.
   factory TraktCheckinResponse.fromJson(Map<String, dynamic> json) {
     return TraktCheckinResponse(
-      watchedAt: TraktDateUtils.parse(json['watched_at']),
-      expiresAt: TraktDateUtils.parse(json['expires_at']),
+      watchedAt: json['watched_at'] != null
+          ? DateTime.tryParse(json['watched_at'] as String)
+          : null,
+      sharing: json['sharing'] as Map<String, dynamic>?,
       movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
       show: json['show'] != null
           ? TraktShow.fromJson(json['show'] as Map<String, dynamic>)
           : null,
-      episode: json['episode'] != null
-          ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>)
-          : null,
     );
   }
+  /// When the checkin airs.
   final DateTime? watchedAt;
-  final DateTime? expiresAt;
+  /// The sharing settings used for this checkin.
+  final Map<String, dynamic>? sharing;
+  /// The movie object, if checking into a movie.
   final TraktMovie? movie;
+  /// The show object, if checking into an episode.
   final TraktShow? show;
-  final TraktEpisode? episode;
 }

@@ -1,5 +1,7 @@
 /// Common filters that can be applied to many Trakt API endpoints.
 class TraktFilters {
+
+  /// Creates a new [TraktFilters] instance.
   TraktFilters({
     this.query,
     this.years,
@@ -11,7 +13,6 @@ class TraktFilters {
     this.runtimes,
     this.ratings,
   });
-
   /// Search query to filter by title or description.
   final String? query;
 
@@ -45,8 +46,9 @@ class TraktFilters {
 
     if (query != null) params['query'] = query!;
     if (years != null) params['years'] = years!;
-    if (genres != null && genres!.isNotEmpty)
+    if (genres != null && genres!.isNotEmpty) {
       params['genres'] = genres!.join(',');
+    }
     if (languages != null && languages!.isNotEmpty) {
       params['languages'] = languages!.join(',');
     }

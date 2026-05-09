@@ -1,31 +1,21 @@
+/// Amount of information returned by the API.
 enum TraktExtendedInfo {
-  /// Minimal info (default).
+  /// Minimum information.
   min('min'),
-
-  /// Complete info for the item.
-  full('full'),
-
-  /// Includes additional metadata like genres.
+  /// Metadata only.
   metadata('metadata'),
-
-  /// Excludes season details for shows.
-  noSeasons('no_seasons'),
-
-  /// Includes episode details for each season of a show.
-  episodes('episodes'),
-
-  /// Includes guest stars for movies and episodes.
+  /// Full information.
+  full('full'),
+  /// No episodes (for seasons).
+  noEpisodes('noepisodes'),
+  /// Guest stars only.
   guestStars('guest_stars'),
-
-  /// Includes comment counts for the item.
+  /// Comments only.
   comments('comments'),
-
-  /// Includes VIP specific data.
+  /// VIP only info.
   vip('vip');
-
-  final String value;
+  /// Creates a new [TraktExtendedInfo] instance.
   const TraktExtendedInfo(this.value);
-
-  @override
-  String toString() => value;
+  /// The value used in API requests.
+  final String value;
 }

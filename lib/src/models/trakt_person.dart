@@ -1,23 +1,12 @@
 import 'trakt_ids.dart';
-import 'trakt_user_models.dart';
 
+/// Represents a person (actor, crew member).
 class TraktPerson {
-  const TraktPerson({
-    this.name,
-    this.ids,
-    this.biography,
-    this.birthday,
-    this.death,
-    this.birthplace,
-    this.homepage,
-    this.gender,
-    this.knownForDepartment,
-    this.socialIds,
-  });
 
+  /// Creates a [TraktPerson] from a JSON map.
   factory TraktPerson.fromJson(Map<String, dynamic> json) {
     return TraktPerson(
-      name: json['name'] as String?,
+      name: json['name'] as String? ?? '',
       ids: json['ids'] != null
           ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
           : null,
@@ -30,38 +19,44 @@ class TraktPerson {
           : null,
       birthplace: json['birthplace'] as String?,
       homepage: json['homepage'] as String?,
-      gender: json['gender'] as String?,
-      knownForDepartment: json['known_for_department'] as String?,
-      socialIds: json['social_ids'] != null
-          ? TraktUserSocialIds.fromJson(
-              json['social_ids'] as Map<String, dynamic>,
-            )
-          : null,
     );
   }
-  final String? name;
-  final TraktIds? ids;
-  final String? biography;
-  final DateTime? birthday;
-  final DateTime? death;
-  final String? birthplace;
-  final String? homepage;
-  final String? gender;
-  final String? knownForDepartment;
-  final TraktUserSocialIds? socialIds;
 
+  /// Creates a new [TraktPerson] instance.
+  const TraktPerson({
+    required this.name,
+    this.ids,
+    this.biography,
+    this.birthday,
+    this.death,
+    this.birthplace,
+    this.homepage,
+  });
+  /// Name of the person.
+  final String name;
+  /// IDs for the person (Trakt, TMDB, etc.).
+  final TraktIds? ids;
+  /// Biography of the person.
+  final String? biography;
+  /// Birthday of the person.
+  final DateTime? birthday;
+  /// Death day of the person (if applicable).
+  final DateTime? death;
+  /// Birthplace of the person.
+  final String? birthplace;
+  /// Official website URL.
+  final String? homepage;
+
+  /// Converts this person to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'ids': ids?.toJson(),
+      if (ids != null) 'ids': ids!.toJson(),
       'biography': biography,
       'birthday': birthday?.toIso8601String(),
       'death': death?.toIso8601String(),
       'birthplace': birthplace,
       'homepage': homepage,
-      'gender': gender,
-      'known_for_department': knownForDepartment,
-      'social_ids': socialIds?.toJson(),
     };
   }
 }

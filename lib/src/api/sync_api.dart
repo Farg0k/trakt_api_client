@@ -10,8 +10,12 @@ import '../models/trakt_movie.dart';
 import '../models/trakt_show.dart';
 import '../core/trakt_date_utils.dart';
 
+/// Access to sync endpoints.
 class SyncApi {
+  /// Creates a new [SyncApi] instance.
   SyncApi(this._client);
+
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// [🔒 OAuth Required] Get the last activities for the authenticated user.
@@ -82,18 +86,10 @@ class SyncApi {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
             return TraktMediaState<TraktMovie>.fromJson(
-                  json,
-                  TraktMovie.fromJson,
-                  'movie',
-                )
-                as TraktMediaState<T>;
+                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
           } else {
             return TraktMediaState<TraktShow>.fromJson(
-                  json,
-                  TraktShow.fromJson,
-                  'show',
-                )
-                as TraktMediaState<T>;
+                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -113,8 +109,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Remove items from the user's collection.
   Future<TraktSyncResponse> removeFromCollection(
-    TraktSyncRequest request,
-  ) async {
+      TraktSyncRequest request) async {
     return _client.post(
       '/sync/collection/remove',
       body: request.toJson(),
@@ -141,18 +136,10 @@ class SyncApi {
           final json = e as Map<String, dynamic>;
           if (type == TraktMediaType.movies) {
             return TraktMediaState<TraktMovie>.fromJson(
-                  json,
-                  TraktMovie.fromJson,
-                  'movie',
-                )
-                as TraktMediaState<T>;
+                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
           } else {
             return TraktMediaState<TraktShow>.fromJson(
-                  json,
-                  TraktShow.fromJson,
-                  'show',
-                )
-                as TraktMediaState<T>;
+                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
           }
         }).toList();
       },
@@ -182,10 +169,12 @@ class SyncApi {
       'limit': limit.toString(),
       'extended': extended.value,
     };
-    if (startAt != null)
+    if (startAt != null) {
       queryParams['start_at'] = TraktDateUtils.formatFullDate(startAt);
-    if (endAt != null)
+    }
+    if (endAt != null) {
       queryParams['end_at'] = TraktDateUtils.formatFullDate(endAt);
+    }
 
     return _client.get(
       path,
@@ -314,8 +303,7 @@ class SyncApi {
 
   /// [🔒 OAuth Required] Remove items from the user's watchlist.
   Future<TraktSyncResponse> removeFromWatchlist(
-    TraktSyncRequest request,
-  ) async {
+      TraktSyncRequest request) async {
     return _client.post(
       '/sync/watchlist/remove',
       body: request.toJson(),

@@ -1,8 +1,9 @@
-import '../core/trakt_date_utils.dart';
-
+/// Represents a user profile on Trakt.tv.
 class TraktUser {
+
+  /// Creates a new [TraktUser] instance.
   const TraktUser({
-    this.username,
+    required this.username,
     this.private,
     this.name,
     this.vip,
@@ -16,69 +17,65 @@ class TraktUser {
     this.images,
   });
 
+  /// Creates a [TraktUser] from a JSON map.
   factory TraktUser.fromJson(Map<String, dynamic> json) {
     return TraktUser(
-      username: json['username'] as String?,
+      username: json['username'] as String? ?? '',
       private: json['private'] as bool?,
       name: json['name'] as String?,
       vip: json['vip'] as bool?,
       vipEp: json['vip_ep'] as bool?,
-      ids: json['ids'] != null
-          ? TraktUserIds.fromJson(json['ids'] as Map<String, dynamic>)
+      ids: json['ids'] as Map<String, dynamic>?,
+      joinedAt: json['joined_at'] != null
+          ? DateTime.tryParse(json['joined_at'] as String)
           : null,
-      joinedAt: TraktDateUtils.parse(json['joined_at']),
       location: json['location'] as String?,
       about: json['about'] as String?,
       gender: json['gender'] as String?,
       age: json['age'] as int?,
-      images:
-          (json['images'] as Map<String, dynamic>?)?['avatar']?['full']
-              as String?,
+      images: json['images'] as Map<String, dynamic>?,
     );
   }
-  final String? username;
+  /// Username of the user.
+  final String username;
+  /// Whether the user has a private profile.
   final bool? private;
+  /// Display name of the user.
   final String? name;
+  /// Whether the user is a VIP member.
   final bool? vip;
+  /// Whether the user is a VIP EP member.
   final bool? vipEp;
-  final TraktUserIds? ids;
+  /// IDs for the user (Trakt, etc.).
+  final Map<String, dynamic>? ids;
+  /// When the user joined Trakt.
   final DateTime? joinedAt;
+  /// Location of the user.
   final String? location;
+  /// About text of the user.
   final String? about;
+  /// Gender of the user.
   final String? gender;
+  /// Age of the user.
   final int? age;
-  final String? images;
+  /// Images for the user (avatars).
+  final Map<String, dynamic>? images;
 
+  /// Converts this user to a JSON map.
   Map<String, dynamic> toJson() {
     return {
       'username': username,
-      'private': private,
-      'name': name,
-      'vip': vip,
-      'vip_ep': vipEp,
-      'ids': ids?.toJson(),
-      'joined_at': joinedAt?.toIso8601String(),
-      'location': location,
-      'about': about,
-      'gender': gender,
-      'age': age,
+      if (private != null) 'private': private,
+      if (name != null) 'name': name,
+      if (vip != null) 'vip': vip,
+      if (vipEp != null) 'vip_ep': vipEp,
+      if (ids != null) 'ids': ids,
+      if (joinedAt != null) 'joined_at': joinedAt!.toIso8601String(),
+      if (location != null) 'location': location,
+      if (about != null) 'about': about,
+      if (gender != null) 'gender': gender,
+      if (age != null) 'age': age,
+      if (images != null) 'images': images,
     };
-  }
-}
-
-class TraktUserIds {
-  const TraktUserIds({required this.slug, this.uuid});
-
-  factory TraktUserIds.fromJson(Map<String, dynamic> json) {
-    return TraktUserIds(
-      slug: json['slug'] as String? ?? '',
-      uuid: json['uuid'] as String?,
-    );
-  }
-  final String slug;
-  final String? uuid;
-
-  Map<String, dynamic> toJson() {
-    return {'slug': slug, 'uuid': uuid};
   }
 }

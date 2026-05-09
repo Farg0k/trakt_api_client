@@ -8,8 +8,12 @@ import '../models/trakt_comment.dart';
 import '../models/trakt_list.dart';
 import '../models/trakt_user.dart';
 
+/// Access to list endpoints.
 class ListsApi {
+
+  /// Creates a new [ListsApi] instance.
   ListsApi(this._client);
+  /// Internal client reference.
   final TraktApiClient _client;
 
   /// Get trending lists.
@@ -21,13 +25,14 @@ class ListsApi {
     final path = '/lists/trending${type != null ? '/${type.value}' : ''}';
     return _client.get(
       path,
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) =>
-                  TraktList.fromJson(item['list'] as Map<String, dynamic>),
-            )
+            .map((item) =>
+                TraktList.fromJson(item['list'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -46,13 +51,14 @@ class ListsApi {
     final path = '/lists/popular${type != null ? '/${type.value}' : ''}';
     return _client.get(
       path,
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) =>
-                  TraktList.fromJson(item['list'] as Map<String, dynamic>),
-            )
+            .map((item) =>
+                TraktList.fromJson(item['list'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -68,8 +74,7 @@ class ListsApi {
   Future<TraktList> getSummary(String id) async {
     return _client.get(
       '/lists/$id',
-      mapper: (body, headers) =>
-          TraktList.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktList.fromJson(body as Map<String, dynamic>),
     );
   }
 
@@ -132,13 +137,14 @@ class ListsApi {
   }) async {
     return _client.get(
       '/lists/$id/likes',
-      queryParams: {'page': page.toString(), 'limit': limit.toString()},
+      queryParams: {
+        'page': page.toString(),
+        'limit': limit.toString(),
+      },
       mapper: (body, headers) {
         final data = (body as List)
-            .map(
-              (item) =>
-                  TraktUser.fromJson(item['user'] as Map<String, dynamic>),
-            )
+            .map((item) =>
+                TraktUser.fromJson(item['user'] as Map<String, dynamic>))
             .toList();
         return TraktListResponse(
           data: data,
@@ -173,15 +179,14 @@ class ListsApi {
   /// [🔒 OAuth Required] Report a list for inappropriate content.
   ///
   /// [id] can be a Trakt ID or Trakt slug.
-  Future<void> report(
-    String id, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
+  Future<void> report(String id,
+      {required TraktReportReason reason, String? notes}) async {
     await _client.post(
       '/lists/$id/report',
-      body: {'reason': reason.value, 'notes': notes}
-        ..removeWhere((key, value) => value == null),
+      body: {
+        'reason': reason.value,
+        'notes': notes,
+      }..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

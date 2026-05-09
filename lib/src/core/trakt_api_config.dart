@@ -1,5 +1,16 @@
 /// Configuration for the [TraktApiClient].
 class TraktApiClientConfig {
+
+  /// Creates a new Trakt API configuration.
+  TraktApiClientConfig({
+    required this.clientId,
+    this.clientSecret,
+    this.accessToken,
+    this.refreshToken,
+    this.useStaging = false,
+    this.userAgent,
+    this.customHeaders,
+  });
   /// The client ID (API Key) from your Trakt API dashboard.
   final String clientId;
 
@@ -20,17 +31,6 @@ class TraktApiClientConfig {
 
   /// Any custom headers to include in every request.
   final Map<String, String>? customHeaders;
-
-  /// Creates a new Trakt API configuration.
-  TraktApiClientConfig({
-    required this.clientId,
-    this.clientSecret,
-    this.accessToken,
-    this.refreshToken,
-    this.useStaging = false,
-    this.userAgent,
-    this.customHeaders,
-  });
 
   /// Returns the base URL for the Trakt API.
   String get baseUrl =>
