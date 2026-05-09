@@ -167,23 +167,15 @@ class ShowsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
-      '/shows/$dateStr',
+    return _client.getList(
+      '/shows/updates/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktUpdate<TraktShow>.fromJson(
-                item as Map<String, dynamic>, TraktShow.fromJson, 'show'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktUpdate<TraktShow>.fromJson(json, TraktShow.fromJson, 'show'),
     );
   }
 
@@ -194,19 +186,13 @@ class ShowsApi {
     int limit = 10,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/shows/updates/id/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
-      mapper: (body, headers) {
-        final data = (body as List).map((item) => item as int).toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => json as int,
     );
   }
 
@@ -218,23 +204,15 @@ class ShowsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/shows/updates/deleted/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktDeleted<TraktShow>.fromJson(
-                item as Map<String, dynamic>, TraktShow.fromJson, 'show'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktDeleted<TraktShow>.fromJson(json, TraktShow.fromJson, 'show'),
     );
   }
 
@@ -311,22 +289,14 @@ class ShowsApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/shows/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -340,21 +310,13 @@ class ShowsApi {
     int page = 1,
     int limit = 10,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/shows/$id/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktList.fromJson(json),
     );
   }
 
@@ -391,22 +353,14 @@ class ShowsApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/shows/$id/related',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktShow.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktShow.fromJson(json),
     );
   }
 
@@ -582,18 +536,10 @@ class ShowsApi {
     };
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
-    return _client.get(
+    return _client.getList(
       path,
       queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => itemMapper(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: itemMapper,
     );
   }
 }

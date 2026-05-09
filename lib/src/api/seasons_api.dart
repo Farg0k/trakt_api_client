@@ -84,22 +84,14 @@ class SeasonsApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/shows/$showId/seasons/$seasonNumber/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -114,21 +106,13 @@ class SeasonsApi {
     int page = 1,
     int limit = 10,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktList.fromJson(json),
     );
   }
 
@@ -207,23 +191,15 @@ class SeasonsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/seasons/updates/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktUpdate<TraktSeason>.fromJson(
-                item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktUpdate<TraktSeason>.fromJson(json, TraktSeason.fromJson, 'season'),
     );
   }
 
@@ -234,19 +210,13 @@ class SeasonsApi {
     int limit = 10,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/seasons/updates/id/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
-      mapper: (body, headers) {
-        final data = (body as List).map((item) => item as int).toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => json as int,
     );
   }
 
@@ -258,23 +228,15 @@ class SeasonsApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/seasons/updates/deleted/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktDeleted<TraktSeason>.fromJson(
-                item as Map<String, dynamic>, TraktSeason.fromJson, 'season'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) =>
+          TraktDeleted<TraktSeason>.fromJson(json, TraktSeason.fromJson, 'season'),
     );
   }
 

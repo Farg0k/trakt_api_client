@@ -179,23 +179,15 @@ class MoviesApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/movies/updates/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktUpdate<TraktMovie>.fromJson(
-                item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktUpdate<TraktMovie>.fromJson(
+          json, TraktMovie.fromJson, 'movie'),
     );
   }
 
@@ -230,23 +222,15 @@ class MoviesApi {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return _client.getList(
       '/movies/updates/deleted/$dateStr',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktDeleted<TraktMovie>.fromJson(
-                item as Map<String, dynamic>, TraktMovie.fromJson, 'movie'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktDeleted<TraktMovie>.fromJson(
+          json, TraktMovie.fromJson, 'movie'),
     );
   }
 
@@ -337,22 +321,14 @@ class MoviesApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/movies/$id/comments/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktComment.fromJson(json),
     );
   }
 
@@ -366,21 +342,13 @@ class MoviesApi {
     int page = 1,
     int limit = 10,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/movies/$id/lists/${type.value}/${sort.value}',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktList.fromJson(json),
     );
   }
 
@@ -417,22 +385,14 @@ class MoviesApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return _client.getList(
       '/movies/$id/related',
       queryParams: {
         'page': page.toString(),
         'limit': limit.toString(),
         'extended': extended.value,
       },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktMovie.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: (json) => TraktMovie.fromJson(json),
     );
   }
 
@@ -531,18 +491,10 @@ class MoviesApi {
     };
     if (filters != null) queryParams.addAll(filters.toQueryParams());
 
-    return _client.get(
+    return _client.getList(
       path,
       queryParams: queryParams,
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => itemMapper(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      mapper: itemMapper,
     );
   }
 }

@@ -22,10 +22,12 @@ class TraktMovie {
       votes: json['votes'] as int?,
       commentCount: json['comment_count'] as int?,
       language: json['language'] as String?,
-      availableTranslations: (json['available_translations'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      genres: (json['genres'] as List?)?.map((e) => e as String).toList(),
+      availableTranslations: json['available_translations'] is List
+          ? (json['available_translations'] as List).cast<String>()
+          : null,
+      genres: json['genres'] is List
+          ? (json['genres'] as List).cast<String>()
+          : null,
       certification: json['certification'] as String?,
     );
   }

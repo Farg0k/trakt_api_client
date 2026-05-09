@@ -24,6 +24,7 @@ import '../api/users_api.dart';
 import 'trakt_api_config.dart';
 import 'trakt_api_exception.dart';
 import 'trakt_rate_limit.dart';
+import 'trakt_list_response.dart';
 import '../models/trakt_auth_models.dart';
 
 /// The main entry point for the Trakt.tv API.
@@ -44,7 +45,7 @@ class TraktApiClient {
   final void Function(TraktOAuthToken token)? onTokenRefreshed;
 
   final http.Client _client;
-  bool _isRefreshing = false;
+  Future<void>? _refreshTask;
   TraktRateLimit? _lastRateLimit;
 
   /// Access to authentication endpoints.
@@ -112,6 +113,29 @@ class TraktApiClient {
 
   /// Returns the rate limit information from the last request.
   TraktRateLimit? get lastRateLimit => _lastRateLimit;
+
+  /// Performs a GET request that returns a list with pagination.
+  Future<TraktListResponse<T>> getList<T>(
+    String path, {
+    Map<String, String>? queryParams,
+    bool authenticated = false,
+    required T Function(Map<String, dynamic> json) mapper,
+  }) async {
+    return get(
+      path,
+      queryParams: queryParams,
+      authenticated: authenticated,
+      mapper: (body, headers) {
+        final data = (body as List)
+            .map((item) => mapper(item as Map<String, dynamic>))
+            .toList();
+        return TraktListResponse(
+          data: data,
+          pagination: TraktPagination.fromHeaders(headers),
+        );
+      },
+    );
+  }
 
   /// Performs a GET request.
   Future<T> get<T>(
@@ -202,27 +226,29 @@ class TraktApiClient {
 
       if (response.statusCode == 401 &&
           authenticated &&
-          config.refreshToken != null &&
-          !_isRefreshing) {
-        _isRefreshing = true;
-        try {
-          final newToken = await auth.refreshToken(config.refreshToken!);
-          config = config.copyWith(
-            accessToken: newToken.accessToken,
-            refreshToken: newToken.refreshToken,
-          );
-          onTokenRefreshed?.call(newToken);
-          // Retry the request with new headers
-          response = await request(config.headers);
-        } finally {
-          _isRefreshing = false;
-        }
+          config.refreshToken != null) {
+        _refreshTask ??= _doRefresh();
+        await _refreshTask;
+        response = await request(config.headers);
       }
 
       return _handleResponse(response, mapper);
     } catch (e) {
       if (e is TraktApiException) rethrow;
       throw TraktApiException('Request failed: $e');
+    }
+  }
+
+  Future<void> _doRefresh() async {
+    try {
+      final newToken = await auth.refreshToken(config.refreshToken!);
+      config = config.copyWith(
+        accessToken: newToken.accessToken,
+        refreshToken: newToken.refreshToken,
+      );
+      onTokenRefreshed?.call(newToken);
+    } finally {
+      _refreshTask = null;
     }
   }
 
