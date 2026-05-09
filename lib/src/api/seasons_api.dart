@@ -14,14 +14,12 @@ import '../models/trakt_season.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
+import 'trakt_api_base.dart';
 
 /// Access to season endpoints.
-class SeasonsApi {
-
+class SeasonsApi extends TraktApiBase {
   /// Creates a new [SeasonsApi] instance.
-  SeasonsApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
+  SeasonsApi(super.client);
 
   /// Get all seasons for a show.
   ///
@@ -30,7 +28,7 @@ class SeasonsApi {
     String showId, {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
@@ -51,7 +49,7 @@ class SeasonsApi {
     final queryParams = <String, String>{'extended': extended.value};
     if (translations != null) queryParams['translations'] = translations;
 
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber',
       queryParams: queryParams,
       mapper: (body, headers) => (body as List)
@@ -65,7 +63,7 @@ class SeasonsApi {
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(String showId, int seasonNumber,
       {String? language}) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
@@ -84,14 +82,12 @@ class SeasonsApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.getList(
+    return getList(
       '/shows/$showId/seasons/$seasonNumber/comments/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (json) => TraktComment.fromJson(json),
+      page: page,
+      limit: limit,
+      extended: extended,
+      mapper: TraktComment.fromJson,
     );
   }
 
@@ -106,13 +102,11 @@ class SeasonsApi {
     int page = 1,
     int limit = 10,
   }) async {
-    return _client.getList(
+    return getList(
       '/shows/$showId/seasons/$seasonNumber/lists/${type.value}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (json) => TraktList.fromJson(json),
+      page: page,
+      limit: limit,
+      mapper: TraktList.fromJson,
     );
   }
 
@@ -124,7 +118,7 @@ class SeasonsApi {
     int seasonNumber, {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/people',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
@@ -136,7 +130,7 @@ class SeasonsApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(String showId, int seasonNumber) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/ratings',
       mapper: (body, headers) =>
           TraktRating.fromJson(body as Map<String, dynamic>),
@@ -147,7 +141,7 @@ class SeasonsApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktStats> getStats(String showId, int seasonNumber) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/stats',
       mapper: (body, headers) =>
           TraktStats.fromJson(body as Map<String, dynamic>),
@@ -162,7 +156,7 @@ class SeasonsApi {
     int seasonNumber, {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/watching',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
@@ -175,7 +169,7 @@ class SeasonsApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(String showId, int seasonNumber) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/videos',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktVideo.fromJson(item as Map<String, dynamic>))
@@ -184,22 +178,20 @@ class SeasonsApi {
   }
 
   /// Get recently updated seasons.
-  Future<TraktListResponse<TraktUpdate<TraktSeason>>> getUpdates(
+  Future<TraktListResponse<TraktMetadata<TraktSeason>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.getList(
+    return getList(
       '/seasons/updates/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
+      page: page,
+      limit: limit,
+      extended: extended,
       mapper: (json) =>
-          TraktUpdate<TraktSeason>.fromJson(json, TraktSeason.fromJson, 'season'),
+          TraktMetadata.fromJson(json, TraktSeason.fromJson, 'season'),
     );
   }
 
@@ -210,33 +202,29 @@ class SeasonsApi {
     int limit = 10,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.getList(
+    return getList(
       '/seasons/updates/id/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
+      page: page,
+      limit: limit,
       mapper: (json) => json as int,
     );
   }
 
   /// Get recently deleted seasons.
-  Future<TraktListResponse<TraktDeleted<TraktSeason>>> getDeleted(
+  Future<TraktListResponse<TraktMetadata<TraktSeason>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.getList(
+    return getList(
       '/seasons/updates/deleted/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
+      page: page,
+      limit: limit,
+      extended: extended,
       mapper: (json) =>
-          TraktDeleted<TraktSeason>.fromJson(json, TraktSeason.fromJson, 'season'),
+          TraktMetadata.fromJson(json, TraktSeason.fromJson, 'season'),
     );
   }
 
@@ -245,7 +233,7 @@ class SeasonsApi {
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> report(String showId, int seasonNumber,
       {required TraktReportReason reason, String? notes}) async {
-    await _client.post(
+    await client.post(
       '/shows/$showId/seasons/$seasonNumber/report',
       body: {
         'reason': reason.value,
@@ -260,7 +248,7 @@ class SeasonsApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<void> refresh(String showId, int seasonNumber) async {
-    await _client.post(
+    await client.post(
       '/shows/$showId/seasons/$seasonNumber/refresh',
       mapper: (body, headers) => null,
     );

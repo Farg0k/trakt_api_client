@@ -316,11 +316,11 @@ class TraktSyncNotFound {
   /// Creates a [TraktSyncNotFound] from a JSON map.
   factory TraktSyncNotFound.fromJson(Map<String, dynamic> json) {
     return TraktSyncNotFound(
-      movies: List<Map<String, dynamic>>.from(json['movies'] as List? ?? []),
-      shows: List<Map<String, dynamic>>.from(json['shows'] as List? ?? []),
-      seasons: List<Map<String, dynamic>>.from(json['seasons'] as List? ?? []),
-      episodes: List<Map<String, dynamic>>.from(json['episodes'] as List? ?? []),
-      people: List<Map<String, dynamic>>.from(json['people'] as List? ?? []),
+      movies: (json['movies'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+      shows: (json['shows'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+      seasons: (json['seasons'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+      episodes: (json['episodes'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+      people: (json['people'] as List?)?.cast<Map<String, dynamic>>() ?? [],
     );
   }
 

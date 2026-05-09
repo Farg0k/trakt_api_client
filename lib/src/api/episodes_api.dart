@@ -13,15 +13,12 @@ import '../models/trakt_stats.dart';
 import '../models/trakt_user.dart';
 import '../models/trakt_video.dart';
 import '../core/trakt_date_utils.dart';
+import 'trakt_api_base.dart';
 
 /// Access to episode endpoints.
-class EpisodesApi {
-
+class EpisodesApi extends TraktApiBase {
   /// Creates a new [EpisodesApi] instance.
-  EpisodesApi(this._client);
-  /// Internal client reference.
-  final TraktApiClient _client;
-
+  EpisodesApi(super.client);
 
   /// Get detailed episode information.
   ///
@@ -30,9 +27,9 @@ class EpisodesApi {
     String showId,
     int seasonNumber,
     int episodeNumber, {
-    TraktExtendedInfo extended = TraktExtendedInfo.full,
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) =>
@@ -40,16 +37,26 @@ class EpisodesApi {
     );
   }
 
+  /// Get all title aliases for an episode.
+  ///
+  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
+  Future<List<TraktMediaAlias>> getAliases(
+      String showId, int seasonNumber, int episodeNumber) async {
+    return client.get(
+      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/aliases',
+      mapper: (body, headers) => (body as List)
+          .map((item) => TraktMediaAlias.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   /// Get all translations for an episode.
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(
-    String showId,
-    int seasonNumber,
-    int episodeNumber, {
-    String? language,
-  }) async {
-    return _client.get(
+      String showId, int seasonNumber, int episodeNumber,
+      {String? language}) async {
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
@@ -69,22 +76,12 @@ class EpisodesApi {
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return getList(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/comments/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktComment.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      page: page,
+      limit: limit,
+      extended: extended,
+      mapper: TraktComment.fromJson,
     );
   }
 
@@ -100,38 +97,11 @@ class EpisodesApi {
     int page = 1,
     int limit = 10,
   }) async {
-    return _client.get(
+    return getList(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/lists/${type.value}/${sort.value}',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktList.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
-    );
-  }
-
-  /// Get cast and crew for an episode.
-  ///
-  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktCredits> getPeople(
-    String showId,
-    int seasonNumber,
-    int episodeNumber, {
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
-  }) async {
-    return _client.get(
-      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/people',
-      queryParams: {'extended': extended.value},
-      mapper: (body, headers) =>
-          TraktCredits.fromJson(body as Map<String, dynamic>),
+      page: page,
+      limit: limit,
+      mapper: TraktList.fromJson,
     );
   }
 
@@ -139,11 +109,8 @@ class EpisodesApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(
-    String showId,
-    int seasonNumber,
-    int episodeNumber,
-  ) async {
-    return _client.get(
+      String showId, int seasonNumber, int episodeNumber) async {
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/ratings',
       mapper: (body, headers) =>
           TraktRating.fromJson(body as Map<String, dynamic>),
@@ -154,11 +121,8 @@ class EpisodesApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktStats> getStats(
-    String showId,
-    int seasonNumber,
-    int episodeNumber,
-  ) async {
-    return _client.get(
+      String showId, int seasonNumber, int episodeNumber) async {
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/stats',
       mapper: (body, headers) =>
           TraktStats.fromJson(body as Map<String, dynamic>),
@@ -174,7 +138,7 @@ class EpisodesApi {
     int episodeNumber, {
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    return _client.get(
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/watching',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
@@ -187,11 +151,8 @@ class EpisodesApi {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(
-    String showId,
-    int seasonNumber,
-    int episodeNumber,
-  ) async {
-    return _client.get(
+      String showId, int seasonNumber, int episodeNumber) async {
+    return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/videos',
       mapper: (body, headers) => (body as List)
           .map((item) => TraktVideo.fromJson(item as Map<String, dynamic>))
@@ -200,30 +161,20 @@ class EpisodesApi {
   }
 
   /// Get recently updated episodes.
-  Future<TraktListResponse<TraktUpdate<TraktEpisode>>> getUpdates(
+  Future<TraktListResponse<TraktMetadata<TraktEpisode>>> getUpdates(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return getList(
       '/episodes/updates/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktUpdate<TraktEpisode>.fromJson(
-                item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      page: page,
+      limit: limit,
+      extended: extended,
+      mapper: (json) =>
+          TraktMetadata.fromJson(json, TraktEpisode.fromJson, 'episode'),
     );
   }
 
@@ -234,81 +185,44 @@ class EpisodesApi {
     int limit = 10,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return getList(
       '/episodes/updates/id/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-      },
-      mapper: (body, headers) {
-        final data = (body as List).map((item) => item as int).toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      page: page,
+      limit: limit,
+      mapper: (json) => json as int,
     );
   }
 
   /// Get recently deleted episodes.
-  Future<TraktListResponse<TraktDeleted<TraktEpisode>>> getDeleted(
+  Future<TraktListResponse<TraktMetadata<TraktEpisode>>> getDeleted(
     DateTime startDate, {
     int page = 1,
     int limit = 10,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
     final dateStr = TraktDateUtils.formatPathDate(startDate);
-    return _client.get(
+    return getList(
       '/episodes/updates/deleted/$dateStr',
-      queryParams: {
-        'page': page.toString(),
-        'limit': limit.toString(),
-        'extended': extended.value,
-      },
-      mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => TraktDeleted<TraktEpisode>.fromJson(
-                item as Map<String, dynamic>, TraktEpisode.fromJson, 'episode'))
-            .toList();
-        return TraktListResponse(
-          data: data,
-          pagination: TraktPagination.fromHeaders(headers),
-        );
-      },
+      page: page,
+      limit: limit,
+      extended: extended,
+      mapper: (json) =>
+          TraktMetadata.fromJson(json, TraktEpisode.fromJson, 'episode'),
     );
   }
 
   /// [🔒 OAuth Required] Report an episode for inappropriate content.
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(
-    String showId,
-    int seasonNumber,
-    int episodeNumber, {
-    required TraktReportReason reason,
-    String? notes,
-  }) async {
-    await _client.post(
+  Future<void> report(String showId, int seasonNumber, int episodeNumber,
+      {required TraktReportReason reason, String? notes}) async {
+    await client.post(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/report',
       body: {
         'reason': reason.value,
         'notes': notes,
       }..removeWhere((key, value) => value == null),
       authenticated: true,
-      mapper: (body, headers) => null,
-    );
-  }
-
-  /// Refresh an episode to get the latest metadata from TMDB.
-  ///
-  /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> refresh(
-    String showId,
-    int seasonNumber,
-    int episodeNumber,
-  ) async {
-    await _client.post(
-      '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/refresh',
       mapper: (body, headers) => null,
     );
   }
