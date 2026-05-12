@@ -109,12 +109,14 @@ class TraktMediaAlias {
     return TraktMediaAlias(
       title: json['title'] as String? ?? '',
       country: json['country'] as String? ?? '',
+      language: json['language'] as String? ?? '',
     );
   }
   /// Creates a new [TraktMediaAlias] instance.
   const TraktMediaAlias({
     required this.title,
     required this.country,
+    required this.language,
   });
 
   /// Title in the specific country.
@@ -122,6 +124,9 @@ class TraktMediaAlias {
 
   /// 2-character country code.
   final String country;
+
+  /// 2-character language code.
+  final String language;
 }
 
 /// Translation for a media object.

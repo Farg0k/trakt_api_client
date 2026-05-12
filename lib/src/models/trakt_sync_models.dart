@@ -1,5 +1,6 @@
 import '../core/trakt_date_utils.dart';
 import 'trakt_episode.dart';
+import 'trakt_ids.dart';
 import 'trakt_movie.dart';
 import 'trakt_person.dart';
 import 'trakt_season.dart';
@@ -316,28 +317,43 @@ class TraktSyncNotFound {
   /// Creates a [TraktSyncNotFound] from a JSON map.
   factory TraktSyncNotFound.fromJson(Map<String, dynamic> json) {
     return TraktSyncNotFound(
-      movies: (json['movies'] as List?)?.cast<Map<String, dynamic>>() ?? [],
-      shows: (json['shows'] as List?)?.cast<Map<String, dynamic>>() ?? [],
-      seasons: (json['seasons'] as List?)?.cast<Map<String, dynamic>>() ?? [],
-      episodes: (json['episodes'] as List?)?.cast<Map<String, dynamic>>() ?? [],
-      people: (json['people'] as List?)?.cast<Map<String, dynamic>>() ?? [],
+      movies: (json['movies'] as List?)
+          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
+      shows: (json['shows'] as List?)
+          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
+      seasons: (json['seasons'] as List?)
+          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
+      episodes: (json['episodes'] as List?)
+          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
+      people: (json['people'] as List?)
+          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+          [],
     );
   }
 
   /// List of movies not found.
-  final List<Map<String, dynamic>> movies;
+  final List<TraktIds> movies;
 
   /// List of shows not found.
-  final List<Map<String, dynamic>> shows;
+  final List<TraktIds> shows;
 
   /// List of seasons not found.
-  final List<Map<String, dynamic>> seasons;
+  final List<TraktIds> seasons;
 
   /// List of episodes not found.
-  final List<Map<String, dynamic>> episodes;
+  final List<TraktIds> episodes;
 
   /// List of people not found.
-  final List<Map<String, dynamic>> people;
+  final List<TraktIds> people;
 }
 
 /// Last activities for a user.

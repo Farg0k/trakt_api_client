@@ -1,4 +1,5 @@
 import '../core/trakt_date_utils.dart';
+import 'trakt_media_metadata.dart';
 
 /// Generic model for user's watched/collected items.
 class TraktMediaState<T> {
@@ -8,7 +9,7 @@ class TraktMediaState<T> {
     this.plays,
     this.lastWatchedAt,
     this.lastCollectedAt,
-    required this.lastUpdatedAt,
+    this.lastUpdatedAt,
     required this.item,
     this.seasons,
     this.metadata,
@@ -21,10 +22,12 @@ class TraktMediaState<T> {
       plays: json['plays'] as int?,
       lastWatchedAt: TraktDateUtils.parse(json['last_watched_at']),
       lastCollectedAt: TraktDateUtils.parse(json['last_collected_at']),
-      lastUpdatedAt:
-          TraktDateUtils.parse(json['last_updated_at']) ?? DateTime.now(),
+      lastUpdatedAt: TraktDateUtils.parse(json['last_updated_at']),
       item: fromJsonT(json[itemKey] as Map<String, dynamic>),
-      metadata: json['metadata'] as Map<String, dynamic>?,
+      metadata: json['metadata'] != null
+          ? TraktMediaMetadata.fromJson(
+              json['metadata'] as Map<String, dynamic>)
+          : null,
       seasons: json['seasons'] != null
           ? (json['seasons'] as List)
               .map((e) => TraktSeasonState.fromJson(e as Map<String, dynamic>))
@@ -39,13 +42,13 @@ class TraktMediaState<T> {
   /// When the item was last collected.
   final DateTime? lastCollectedAt;
   /// When the state was last updated.
-  final DateTime lastUpdatedAt;
+  final DateTime? lastUpdatedAt;
   /// The media item (Movie or Show).
   final T item;
   /// Progress by season (for shows).
   final List<TraktSeasonState>? seasons;
   /// Optional metadata about the collection state.
-  final Map<String, dynamic>? metadata;
+  final TraktMediaMetadata? metadata;
 }
 
 /// Progress state for a single season.
@@ -91,7 +94,10 @@ class TraktEpisodeState {
       plays: json['plays'] as int?,
       lastWatchedAt: TraktDateUtils.parse(json['last_watched_at']),
       collectedAt: TraktDateUtils.parse(json['collected_at']),
-      metadata: json['metadata'] as Map<String, dynamic>?,
+      metadata: json['metadata'] != null
+          ? TraktMediaMetadata.fromJson(
+              json['metadata'] as Map<String, dynamic>)
+          : null,
     );
   }
   /// Episode number.
@@ -103,5 +109,5 @@ class TraktEpisodeState {
   /// When the episode was collected.
   final DateTime? collectedAt;
   /// Optional metadata about the collection state.
-  final Map<String, dynamic>? metadata;
+  final TraktMediaMetadata? metadata;
 }

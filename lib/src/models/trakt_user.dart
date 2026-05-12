@@ -1,3 +1,6 @@
+import 'trakt_ids.dart';
+import 'trakt_user_images.dart';
+
 /// Represents a user profile on Trakt.tv.
 class TraktUser {
 
@@ -25,7 +28,9 @@ class TraktUser {
       name: json['name'] as String?,
       vip: json['vip'] as bool?,
       vipEp: json['vip_ep'] as bool?,
-      ids: json['ids'] as Map<String, dynamic>?,
+      ids: json['ids'] != null
+          ? TraktIds.fromJson(json['ids'] as Map<String, dynamic>)
+          : null,
       joinedAt: json['joined_at'] != null
           ? DateTime.tryParse(json['joined_at'] as String)
           : null,
@@ -33,7 +38,9 @@ class TraktUser {
       about: json['about'] as String?,
       gender: json['gender'] as String?,
       age: json['age'] as int?,
-      images: json['images'] as Map<String, dynamic>?,
+      images: json['images'] != null
+          ? TraktUserImages.fromJson(json['images'] as Map<String, dynamic>)
+          : null,
     );
   }
   /// Username of the user.
@@ -47,7 +54,7 @@ class TraktUser {
   /// Whether the user is a VIP EP member.
   final bool? vipEp;
   /// IDs for the user (Trakt, etc.).
-  final Map<String, dynamic>? ids;
+  final TraktIds? ids;
   /// When the user joined Trakt.
   final DateTime? joinedAt;
   /// Location of the user.
@@ -59,7 +66,7 @@ class TraktUser {
   /// Age of the user.
   final int? age;
   /// Images for the user (avatars).
-  final Map<String, dynamic>? images;
+  final TraktUserImages? images;
 
   /// Converts this user to a JSON map.
   Map<String, dynamic> toJson() {
@@ -69,13 +76,13 @@ class TraktUser {
       if (name != null) 'name': name,
       if (vip != null) 'vip': vip,
       if (vipEp != null) 'vip_ep': vipEp,
-      if (ids != null) 'ids': ids,
+      if (ids != null) 'ids': ids!.toJson(),
       if (joinedAt != null) 'joined_at': joinedAt!.toIso8601String(),
       if (location != null) 'location': location,
       if (about != null) 'about': about,
       if (gender != null) 'gender': gender,
       if (age != null) 'age': age,
-      if (images != null) 'images': images,
+      if (images != null) 'images': images!.toJson(),
     };
   }
 }

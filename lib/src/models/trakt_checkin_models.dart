@@ -1,5 +1,6 @@
 import 'trakt_movie.dart';
 import 'trakt_show.dart';
+import 'trakt_sharing.dart';
 
 /// Represents a response to a checkin request.
 class TraktCheckinResponse {
@@ -12,13 +13,15 @@ class TraktCheckinResponse {
     this.show,
   });
 
-  /// Creates a [TraktCheckinResponse] from a JSON map.
+   /// Creates a [TraktCheckinResponse] from a JSON map.
   factory TraktCheckinResponse.fromJson(Map<String, dynamic> json) {
     return TraktCheckinResponse(
       watchedAt: json['watched_at'] != null
           ? DateTime.tryParse(json['watched_at'] as String)
           : null,
-      sharing: json['sharing'] as Map<String, dynamic>?,
+      sharing: json['sharing'] != null
+          ? TraktSharing.fromJson(json['sharing'] as Map<String, dynamic>)
+          : null,
       movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
@@ -30,7 +33,7 @@ class TraktCheckinResponse {
   /// When the checkin airs.
   final DateTime? watchedAt;
   /// The sharing settings used for this checkin.
-  final Map<String, dynamic>? sharing;
+  final TraktSharing? sharing;
   /// The movie object, if checking into a movie.
   final TraktMovie? movie;
   /// The show object, if checking into an episode.

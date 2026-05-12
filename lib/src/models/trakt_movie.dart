@@ -1,5 +1,6 @@
 import '../core/trakt_date_utils.dart';
 import 'trakt_ids.dart';
+import 'trakt_trailers.dart';
 
 /// Represents a movie.
 class TraktMovie {
@@ -17,6 +18,11 @@ class TraktMovie {
       released: TraktDateUtils.parse(json['released']),
       runtime: json['runtime'] as int?,
       homepage: json['homepage'] as String?,
+      trailers: json['trailers'] != null
+          ? TraktMovieTrailers.fromJson(
+              json['trailers'] as Map<String, dynamic>)
+          : null,
+      // backward compatibility: if trailers object not present, fall back to single trailer string
       trailer: json['trailer'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
       votes: json['votes'] as int?,
@@ -42,6 +48,7 @@ class TraktMovie {
     this.runtime,
     this.homepage,
     this.trailer,
+    this.trailers,
     this.rating,
     this.votes,
     this.commentCount,
@@ -75,8 +82,12 @@ class TraktMovie {
   /// Official website URL.
   final String? homepage;
 
-  /// Trailer URL.
+  /// Legacy single trailer URL (deprecated, use trailers).
+  @Deprecated('Use trailers instead')
   final String? trailer;
+
+  /// Collection of trailer URLs.
+  final TraktMovieTrailers? trailers;
 
   /// Average rating.
   final double? rating;
@@ -110,7 +121,8 @@ class TraktMovie {
       'released': released?.toIso8601String(),
       'runtime': runtime,
       'homepage': homepage,
-      'trailer': trailer,
+      if (trailer != null) 'trailer': trailer,
+      if (trailers != null) 'trailers': trailers!.toJson(),
       'rating': rating,
       'votes': votes,
       'comment_count': commentCount,

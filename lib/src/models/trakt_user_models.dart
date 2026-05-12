@@ -1,4 +1,7 @@
 import 'trakt_user.dart';
+import 'trakt_user_account.dart';
+import 'trakt_user_connections.dart';
+import 'trakt_sharing_text.dart';
 
 /// Social IDs for a user.
 class TraktUserSocialIds {
@@ -10,6 +13,11 @@ class TraktUserSocialIds {
       facebook: json['facebook'] as String?,
       instagram: json['instagram'] as String?,
       tumblr: json['tumblr'] as String?,
+      youtube: json['youtube'] as String?,
+      twitch: json['twitch'] as String?,
+      myspace: json['myspace'] as String?,
+      soundcloud: json['soundcloud'] as String?,
+      website: json['website'] as String?,
     );
   }
   /// Creates a new [TraktUserSocialIds] instance.
@@ -18,6 +26,11 @@ class TraktUserSocialIds {
     this.facebook,
     this.instagram,
     this.tumblr,
+    this.youtube,
+    this.twitch,
+    this.myspace,
+    this.soundcloud,
+    this.website,
   });
 
   /// Twitter username.
@@ -31,6 +44,21 @@ class TraktUserSocialIds {
 
   /// Tumblr username.
   final String? tumblr;
+
+  /// YouTube channel.
+  final String? youtube;
+
+  /// Twitch channel.
+  final String? twitch;
+
+  /// MySpace profile.
+  final String? myspace;
+
+  /// SoundCloud profile.
+  final String? soundcloud;
+
+  /// Personal website URL.
+  final String? website;
 }
 
 /// A follow request from another user.
@@ -38,9 +66,13 @@ class TraktFollowRequest {
 
   /// Creates a [TraktFollowRequest] from a JSON map.
   factory TraktFollowRequest.fromJson(Map<String, dynamic> json) {
+    final rawRequestedAt = json['requested_at'];
+    if (rawRequestedAt == null) {
+      throw ArgumentError('Missing required field requested_at');
+    }
     return TraktFollowRequest(
       id: json['id'] as int,
-      requestedAt: DateTime.parse(json['requested_at'] as String),
+      requestedAt: DateTime.parse(rawRequestedAt as String),
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
@@ -66,8 +98,12 @@ class TraktUserConnection {
 
   /// Creates a [TraktUserConnection] from a JSON map.
   factory TraktUserConnection.fromJson(Map<String, dynamic> json) {
+    final rawFollowedAt = json['followed_at'];
+    if (rawFollowedAt == null) {
+      throw ArgumentError('Missing required field followed_at');
+    }
     return TraktUserConnection(
-      followedAt: DateTime.parse(json['followed_at'] as String),
+      followedAt: DateTime.parse(rawFollowedAt as String),
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
@@ -293,28 +329,36 @@ class TraktUserSettings {
   factory TraktUserSettings.fromJson(Map<String, dynamic> json) {
     return TraktUserSettings(
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
-      account: json['account'] as Map<String, dynamic>? ?? {},
-      connections: json['connections'] as Map<String, dynamic>? ?? {},
-      sharingText: json['sharing_text'] as Map<String, dynamic>? ?? {},
+      account: json['account'] != null
+          ? TraktUserAccount.fromJson(json['account'] as Map<String, dynamic>)
+          : null,
+      connections: json['connections'] != null
+          ? TraktUserConnections.fromJson(
+              json['connections'] as Map<String, dynamic>)
+          : null,
+      sharingText: json['sharing_text'] != null
+          ? TraktSharingText.fromJson(
+              json['sharing_text'] as Map<String, dynamic>)
+          : null,
     );
   }
   /// Creates a new [TraktUserSettings] instance.
   const TraktUserSettings({
     required this.user,
-    required this.account,
-    required this.connections,
-    required this.sharingText,
+    this.account,
+    this.connections,
+    this.sharingText,
   });
 
   /// User profile information.
   final TraktUser user;
 
   /// Account specific settings.
-  final Map<String, dynamic> account;
+  final TraktUserAccount? account;
 
   /// Social connections settings.
-  final Map<String, dynamic> connections;
+  final TraktUserConnections? connections;
 
   /// Sharing settings.
-  final Map<String, dynamic> sharingText;
+  final TraktSharingText? sharingText;
 }
