@@ -50,7 +50,7 @@ class TraktApiClient {
   TraktRateLimit? _lastRateLimit;
 
   /// Access to authentication endpoints.
-  AuthenticationApi get auth => AuthenticationApi(this);
+  AuthenticationApi get authentication => AuthenticationApi(this);
 
   /// Access to calendar endpoints.
   CalendarsApi get calendars => CalendarsApi(this);
@@ -250,7 +250,7 @@ class TraktApiClient {
 
   Future<void> _doRefresh() async {
     try {
-      final newToken = await auth.refreshToken(config.refreshToken!);
+      final newToken = await authentication.refreshToken(config.refreshToken!);
       config = config.copyWith(
         accessToken: newToken.accessToken,
         refreshToken: newToken.refreshToken,
