@@ -59,6 +59,80 @@ final client = TraktApiClient(
 );
 ```
 
+### Working with OAuth: Single vs Multiple Profiles
+
+The client manages OAuth tokens through `TraktApiClientConfig`. Token refresh happens automatically when a 401 error occurs.
+
+#### Single Profile (Recommended)
+
+For apps that work with one authenticated user:
+
+```dart
+final client = TraktApiClient(
+  config: TraktApiClientConfig(
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET',
+    accessToken: savedAccessToken,
+    refreshToken: savedRefreshToken,
+  ),
+  onTokenRefreshed: (token) {
+    // Called automatically when token is refreshed
+    saveTokens(token.accessToken, token.refreshToken);
+  },
+);
+
+// Use the client - OAuth handled transparently
+final myCalendar = await client.calendars.getMyFinales(
+  startDate: DateTime.now(),
+  days: 7,
+);
+```
+
+The client stores the current user's tokens. When `getMy*` endpoints return 401, it automatically uses `refreshToken` to get a new token, saves it to config, and retries the request. The `onTokenRefreshed` callback lets you persist the updated tokens.
+
+#### Multiple Profiles
+
+For apps that need to switch between different user accounts:
+
+```dart
+final client = TraktApiClient(
+  config: TraktApiClientConfig(
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET',
+    accessToken: savedAccessToken,
+    refreshToken: savedRefreshToken,
+  ),
+);
+```
+
+Store user tokens externally (e.g., in a map by username):
+
+```dart
+Map<String, TraktOAuthToken> userTokens = {};
+
+// Switch to a user's account
+Future<void> switchToUser(String username) async {
+  final token = userTokens[username];
+  if (token == null) throw Exception('User not found');
+  
+  client.setTokens(
+    accessToken: token.accessToken,
+    refreshToken: token.refreshToken,
+    onTokenRefreshed: (newToken) {
+      // Save refreshed token for this specific user
+      userTokens[username] = newToken;
+      saveUserTokens(username, newToken.accessToken, newToken.refreshToken);
+    },
+  );
+}
+
+// Switch user and fetch their calendar
+await switchToUser('user2');
+final theirCalendar = await client.calendars.getMyFinales();
+```
+
+Each call to `setTokens` replaces the client's tokens and optionally sets a user-specific refresh callback. The callback receives the new token when Trakt returns 401, allowing you to persist per-user tokens.
+
 ### 2. Smart Pagination
 
 The library features an advanced pagination system. You can easily fetch subsequent pages using the `nextPageParams` property.

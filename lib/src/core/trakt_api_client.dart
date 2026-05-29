@@ -43,7 +43,7 @@ class TraktApiClient {
   TraktApiClientConfig config;
 
   /// Callback triggered when an OAuth token is refreshed.
-  final void Function(TraktOAuthToken token)? onTokenRefreshed;
+  void Function(TraktOAuthToken token)? onTokenRefreshed;
 
   final http.Client _client;
   Future<void>? _refreshTask;
@@ -51,6 +51,21 @@ class TraktApiClient {
 
   /// Access to authentication endpoints.
   AuthenticationApi get authentication => AuthenticationApi(this);
+
+  /// Updates the OAuth tokens used for authenticated requests.
+  void setTokens({
+    required String accessToken,
+    String? refreshToken,
+    void Function(TraktOAuthToken token)? onTokenRefreshed,
+  }) {
+    config = config.copyWith(
+      accessToken: accessToken,
+      refreshToken: refreshToken ?? config.refreshToken,
+    );
+    if (onTokenRefreshed != null) {
+      this.onTokenRefreshed = onTokenRefreshed;
+    }
+  }
 
   /// Access to calendar endpoints.
   CalendarsApi get calendars => CalendarsApi(this);
