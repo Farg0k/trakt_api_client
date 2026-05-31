@@ -51,4 +51,17 @@ class TraktIds {
       'uuid': uuid,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktIds{
+      trakt: $trakt, 
+      slug: $slug, 
+      imdb: $imdb, 
+      tmdb: $tmdb, 
+      tvdb: $tvdb, 
+      tvrage: $tvrage, 
+      uuid: $uuid
+    }''';
+  }
 }

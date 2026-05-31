@@ -245,10 +245,12 @@ class TraktSyncResponse {
     return TraktSyncResponse(
       added: TraktSyncCount.fromJson(json['added'] as Map<String, dynamic>),
       deleted: TraktSyncCount.fromJson(json['deleted'] as Map<String, dynamic>),
-      existing:
-          TraktSyncCount.fromJson(json['existing'] as Map<String, dynamic>),
-      notFound:
-          TraktSyncNotFound.fromJson(json['not_found'] as Map<String, dynamic>),
+      existing: TraktSyncCount.fromJson(
+        json['existing'] as Map<String, dynamic>,
+      ),
+      notFound: TraktSyncNotFound.fromJson(
+        json['not_found'] as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -317,25 +319,30 @@ class TraktSyncNotFound {
   /// Creates a [TraktSyncNotFound] from a JSON map.
   factory TraktSyncNotFound.fromJson(Map<String, dynamic> json) {
     return TraktSyncNotFound(
-      movies: (json['movies'] as List?)
-          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      movies:
+          (json['movies'] as List?)
+              ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      shows: (json['shows'] as List?)
-          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      shows:
+          (json['shows'] as List?)
+              ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      seasons: (json['seasons'] as List?)
-          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      seasons:
+          (json['seasons'] as List?)
+              ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      episodes: (json['episodes'] as List?)
-          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      episodes:
+          (json['episodes'] as List?)
+              ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      people: (json['people'] as List?)
-          ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      people:
+          (json['people'] as List?)
+              ?.map((e) => TraktIds.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -373,18 +380,24 @@ class TraktLastActivities {
   factory TraktLastActivities.fromJson(Map<String, dynamic> json) {
     return TraktLastActivities(
       all: TraktDateUtils.parse(json['all']),
-      movies:
-          TraktMediaActivities.fromJson(json['movies'] as Map<String, dynamic>),
+      movies: TraktMediaActivities.fromJson(
+        json['movies'] as Map<String, dynamic>,
+      ),
       episodes: TraktMediaActivities.fromJson(
-          json['episodes'] as Map<String, dynamic>),
-      shows:
-          TraktMediaActivities.fromJson(json['shows'] as Map<String, dynamic>),
-      seasons:
-          TraktMediaActivities.fromJson(json['seasons'] as Map<String, dynamic>),
+        json['episodes'] as Map<String, dynamic>,
+      ),
+      shows: TraktMediaActivities.fromJson(
+        json['shows'] as Map<String, dynamic>,
+      ),
+      seasons: TraktMediaActivities.fromJson(
+        json['seasons'] as Map<String, dynamic>,
+      ),
       comments: TraktCommentActivities.fromJson(
-          json['comments'] as Map<String, dynamic>),
-      lists:
-          TraktListActivities.fromJson(json['lists'] as Map<String, dynamic>),
+        json['comments'] as Map<String, dynamic>,
+      ),
+      lists: TraktListActivities.fromJson(
+        json['lists'] as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -472,11 +485,7 @@ class TraktCommentActivities {
 /// List-specific last activities.
 class TraktListActivities {
   /// Creates a new [TraktListActivities] instance.
-  TraktListActivities({
-    this.updatedAt,
-    this.commentedAt,
-    this.likedAt,
-  });
+  TraktListActivities({this.updatedAt, this.commentedAt, this.likedAt});
 
   /// Creates a [TraktListActivities] from a JSON map.
   factory TraktListActivities.fromJson(Map<String, dynamic> json) {
@@ -517,16 +526,16 @@ class TraktSyncRating {
       rating: json['rating'] as int,
       ratedAt: TraktDateUtils.parse(json['rated_at']),
       type: type,
-      movie: type == 'movie' && json['movie'] != null
+      movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
-      show: type == 'show' && json['show'] != null
+      show: json['show'] != null
           ? TraktShow.fromJson(json['show'] as Map<String, dynamic>)
           : null,
-      season: type == 'season' && json['season'] != null
+      season: json['season'] != null
           ? TraktSeason.fromJson(json['season'] as Map<String, dynamic>)
           : null,
-      episode: type == 'episode' && json['episode'] != null
+      episode: json['episode'] != null
           ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>)
           : null,
     );
@@ -575,13 +584,13 @@ class TraktSyncPlayback {
       progress: (json['progress'] as num).toDouble(),
       pausedAt: TraktDateUtils.parse(json['paused_at']),
       type: type,
-      movie: type == 'movie' && json['movie'] != null
+      movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
-      episode: type == 'episode' && json['episode'] != null
+      episode: json['episode'] != null
           ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>)
           : null,
-      show: type == 'show' && json['show'] != null
+      show: json['show'] != null
           ? TraktShow.fromJson(json['show'] as Map<String, dynamic>)
           : null,
     );
@@ -631,16 +640,16 @@ class TraktSyncHistory {
       watchedAt: TraktDateUtils.parse(json['watched_at']),
       action: json['action'] as String,
       type: type,
-      movie: type == 'movie' && json['movie'] != null
+      movie: json['movie'] != null
           ? TraktMovie.fromJson(json['movie'] as Map<String, dynamic>)
           : null,
-      show: type == 'show' && json['show'] != null
+      show: json['show'] != null
           ? TraktShow.fromJson(json['show'] as Map<String, dynamic>)
           : null,
-      season: type == 'season' && json['season'] != null
+      season: json['season'] != null
           ? TraktSeason.fromJson(json['season'] as Map<String, dynamic>)
           : null,
-      episode: type == 'episode' && json['episode'] != null
+      episode: json['episode'] != null
           ? TraktEpisode.fromJson(json['episode'] as Map<String, dynamic>)
           : null,
     );
@@ -669,4 +678,18 @@ class TraktSyncHistory {
 
   /// The episode object.
   final TraktEpisode? episode;
+
+  @override
+  String toString() {
+    return '''TraktSyncHistory{
+      id: $id, 
+      watchedAt: $watchedAt, 
+      action: $action, 
+      type: $type, 
+      movie: $movie, 
+      show: $show, 
+      season: $season, 
+      episode: $episode
+    }''';
+  }
 }

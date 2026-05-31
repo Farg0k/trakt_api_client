@@ -90,4 +90,21 @@ class TraktSeason {
         'episodes': episodes!.map((e) => e.toJson()).toList(),
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktSeason{
+      number: $number, 
+      ids: $ids, 
+      rating: $rating, 
+      votes: $votes, 
+      episodeCount: $episodeCount, 
+      airedEpisodes: $airedEpisodes, 
+      title: $title, 
+      overview: $overview, 
+      firstAired: $firstAired, 
+      updatedAt: $updatedAt, 
+      episodes: $episodes
+    }''';
+  }
 }

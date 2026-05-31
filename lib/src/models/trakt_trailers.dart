@@ -90,4 +90,16 @@ class TraktMovieTrailers {
     };
     return map;
   }
+
+  @override
+  String toString() {
+    return '''TraktMovieTrailers{
+      youtube: $youtube, 
+      quicktime: $quicktime, 
+      iphone: $iphone, 
+      ipad: $ipad, 
+      android: $android, 
+      additional: $additional
+    }''';
+  }
 }

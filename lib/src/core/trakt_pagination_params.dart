@@ -26,4 +26,12 @@ class TraktPaginationParams {
   /// Creates a copy of these parameters with the previous page number.
   TraktPaginationParams? previous() =>
       page > 1 ? TraktPaginationParams(page: page - 1, limit: limit) : null;
+
+  @override
+  String toString() {
+    return '''TraktPaginationParams{
+      page: $page, 
+      limit: $limit
+    }''';
+  }
 }

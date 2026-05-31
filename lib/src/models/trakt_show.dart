@@ -151,4 +151,31 @@ class TraktShow {
       'aired_episodes': airedEpisodes,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktShow{
+      title: $title, 
+      year: $year, 
+      ids: $ids, 
+      overview: $overview, 
+      firstAired: $firstAired, 
+      airs: $airs, 
+      runtime: $runtime, 
+      certification: $certification, 
+      network: $network, 
+      country: $country, 
+      homepage: $homepage, 
+      trailer: $trailer, 
+      status: $status, 
+      rating: $rating, 
+      votes: $votes, 
+      commentCount: $commentCount, 
+      updatedAt: $updatedAt, 
+      language: $language, 
+      availableTranslations: $availableTranslations, 
+      genres: $genres, 
+      airedEpisodes: $airedEpisodes
+    }''';
+  }
 }

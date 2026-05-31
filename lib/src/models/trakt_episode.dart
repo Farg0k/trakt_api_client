@@ -104,4 +104,23 @@ class TraktEpisode {
       if (overview != null) 'overview': overview,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktEpisode{
+      title: $title, 
+      season: $season, 
+      number: $number, 
+      numberAbs: $numberAbs, 
+      ids: $ids, 
+      firstAired: $firstAired, 
+      updatedAt: $updatedAt, 
+      rating: $rating, 
+      votes: $votes, 
+      commentCount: $commentCount, 
+      availableTranslations: $availableTranslations, 
+      runtime: $runtime, 
+      overview: $overview
+    }''';
+  }
 }

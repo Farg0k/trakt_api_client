@@ -34,7 +34,12 @@ class TraktPagination {
 
   @override
   String toString() {
-    return 'TraktPagination(page: $currentPage, limit: $limit, pageCount: $pageCount, itemCount: $itemCount)';
+    return '''TraktPagination(
+      page: $currentPage, 
+      limit: $limit, 
+      pageCount: $pageCount, 
+      itemCount: $itemCount
+    )''';
   }
 }
 
@@ -73,5 +78,14 @@ class TraktListResponse<T> {
   TraktPaginationParams? get prevPageParams {
     if (!hasPrevPage) return null;
     return (requestParams ?? const TraktPaginationParams()).previous();
+  }
+
+  @override
+  String toString() {
+    return '''TraktListResponse{
+      data: $data, 
+      pagination: $pagination, 
+      requestParams: $requestParams
+    }''';
   }
 }

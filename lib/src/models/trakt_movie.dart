@@ -132,4 +132,27 @@ class TraktMovie {
       'certification': certification,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktMovie{
+      title: $title, 
+      year: $year, 
+      ids: $ids, 
+      tagline: $tagline, 
+      overview: $overview, 
+      released: $released, 
+      runtime: $runtime, 
+      homepage: $homepage, 
+      trailer: $trailer, 
+      trailers: $trailers, 
+      rating: $rating, 
+      votes: $votes, 
+      commentCount: $commentCount, 
+      language: $language,
+       availableTranslations: $availableTranslations, 
+       genres: $genres, 
+       certification: $certification
+     }''';
+  }
 }
