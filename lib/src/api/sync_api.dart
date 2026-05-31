@@ -120,13 +120,20 @@ class SyncApi extends TraktApiBase {
   // --- WATCHED ---
 
   /// [🔒 OAuth Required] Get the user's watched items.
+  /// Returns all movies or shows a user has watched sorted by most recently watched.
+  /// For shows, set [includeSeasons] to false to omit season and episode info (?extended=noseasons).
   Future<List<TraktMediaState<T>>> getWatched<T>({
     required TraktMediaType type,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
+    bool includeSeasons = true,
   }) async {
+    var params = {'extended': extended.value};
+    if (type == TraktMediaType.shows && !includeSeasons) {
+      params['extended'] = 'noseasons';
+    }
     return client.get(
       '/sync/watched/${type.value}',
-      queryParams: {'extended': extended.value},
+      queryParams: params,
       authenticated: true,
       mapper: (body, headers) {
         final list = body as List;
