@@ -38,4 +38,14 @@ class TraktCheckinResponse {
   final TraktMovie? movie;
   /// The show object, if checking into an episode.
   final TraktShow? show;
+
+  @override
+  String toString() {
+    return '''TraktCheckinResponse{
+      watchedAt: $watchedAt, 
+      sharing: $sharing, 
+      movie: $movie, 
+      show: $show
+    }''';
+  }
 }

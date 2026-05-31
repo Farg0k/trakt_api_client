@@ -1,4 +1,4 @@
-/// Represents a video related to a movie or show (e.g. trailer, teaser).
+﻿/// Represents a video related to a movie or show (e.g. trailer, teaser).
 class TraktVideo {
 
   /// Creates a [TraktVideo] from a JSON map.
@@ -58,5 +58,18 @@ class TraktVideo {
       if (publishedAt != null) 'published_at': publishedAt!.toIso8601String(),
       if (country != null) 'country': country,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktVideo{
+      name: $name, 
+      site: $site, 
+      key: $key, 
+      type: $type, 
+      official: $official, 
+      publishedAt: $publishedAt, 
+      country: $country
+    }''';
   }
 }

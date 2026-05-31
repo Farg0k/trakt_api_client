@@ -66,4 +66,19 @@ class TraktComment {
       'user': user?.toJson(),
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktComment{
+      id: $id, 
+      comment: $comment, 
+      spoiler: $spoiler, 
+      createdAt: $createdAt, 
+      updatedAt: $updatedAt, 
+      replies: $replies, 
+      likes: $likes, 
+      userRating: $userRating, 
+      user: $user
+    }''';
+  }
 }

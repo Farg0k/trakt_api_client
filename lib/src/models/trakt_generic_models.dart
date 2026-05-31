@@ -57,6 +57,21 @@ class TraktMetadata<T> {
 
   /// When the item was deleted.
   final DateTime? deletedAt;
+
+  @override
+  String toString() {
+    return '''TraktMetadata{
+      item: $item, 
+      watchers: $watchers, 
+      watcherCount: $watcherCount, 
+      playCount: $playCount, 
+      collectedCount: $collectedCount, 
+      userCount: $userCount, 
+      listCount: $listCount, 
+      updatedAt: $updatedAt, 
+      deletedAt: $deletedAt
+    }''';
+  }
 }
 
 /// Generic wrapper for calendar entries.
@@ -96,4 +111,13 @@ class TraktCalendarEntry<T> {
 
   /// The show (for episodes in calendar).
   final dynamic show;
+
+  @override
+  String toString() {
+    return '''TraktCalendarEntry{
+      date: $date, 
+      item: $item, 
+      show: $show
+    }''';
+  }
 }

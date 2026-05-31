@@ -30,4 +30,13 @@ class TraktAirs {
       'timezone': timezone,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktAirs{
+      day: $day, 
+      time: $time, 
+      timezone: $timezone
+    }''';
+  }
 }

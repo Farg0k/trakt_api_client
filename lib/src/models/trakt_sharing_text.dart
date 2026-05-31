@@ -1,4 +1,4 @@
-/// Sharing text templates for different media types.
+﻿/// Sharing text templates for different media types.
 class TraktSharingText {
   /// Creates a [TraktSharingText] from a JSON map.
   factory TraktSharingText.fromJson(Map<String, dynamic> json) {
@@ -41,6 +41,15 @@ class TraktSharingText {
       if (show != null) 'show': show!.toJson(),
       if (episode != null) 'episode': episode!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktSharingText{
+      movie: $movie, 
+      show: $show, 
+      episode: $episode
+    }''';
   }
 }
 
@@ -106,7 +115,21 @@ class TraktSharingTextTemplate {
       if (addToWatchlist != null) 'add_to_watchlist': addToWatchlist,
       if (addedToWatchlist != null) 'added_to_watchlist': addedToWatchlist,
       if (collected != null) 'collected': collected,
-      if (watchlist != null) 'watchlist': watchlist,
+if (watchlist != null) 'watchlist': watchlist,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktSharingTextTemplate{
+      watching: $watching, 
+      watched: $watched, 
+      rating: $rating, 
+      review: $review, 
+      addToWatchlist: $addToWatchlist, 
+      addedToWatchlist: $addedToWatchlist, 
+      collected: $collected, 
+      watchlist: $watchlist
+    }''';
   }
 }

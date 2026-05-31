@@ -1,4 +1,4 @@
-/// OAuth connection details for a single service.
+﻿/// OAuth connection details for a single service.
 class TraktServiceConnection {
   /// Creates a [TraktServiceConnection] from a JSON map.
   factory TraktServiceConnection.fromJson(Map<String, dynamic> json) {
@@ -46,6 +46,17 @@ class TraktServiceConnection {
       if (authorizedAt != null) 'authorized_at': authorizedAt!.toIso8601String(),
       if (username != null) 'username': username,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktServiceConnection{
+      connected: $connected, 
+      token: $token, 
+      secret: $secret, 
+      authorizedAt: $authorizedAt, 
+      username: $username
+    }''';
   }
 }
 
@@ -128,5 +139,18 @@ class TraktUserConnections {
       if (webhook != null) 'webhook': webhook!.toJson(),
       if (twitterRead != null) 'twitter_read': twitterRead!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktUserConnections{
+      twitter: $twitter, 
+      facebook: $facebook, 
+      instagram: $instagram, 
+      tumblr: $tumblr, 
+      slack: $slack, 
+      webhook: $webhook, 
+      twitterRead: $twitterRead
+    }''';
   }
 }

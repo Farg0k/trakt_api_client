@@ -30,6 +30,17 @@ class TraktDeviceCode {
   final int expiresIn;
   /// Number of seconds between polling requests.
   final int interval;
+
+  @override
+  String toString() {
+    return '''TraktDeviceCode{
+      deviceCode: $deviceCode, 
+      userCode: $userCode, 
+      verificationUrl: $verificationUrl, 
+      expiresIn: $expiresIn, 
+      interval: $interval
+    }''';
+  }
 }
 
 /// Represents an OAuth access token.
@@ -79,5 +90,17 @@ class TraktOAuthToken {
       'scope': scope,
       'created_at': createdAt,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktOAuthToken{
+      accessToken: $accessToken, 
+      tokenType: $tokenType, 
+      expiresIn: $expiresIn, 
+      refreshToken: $refreshToken, 
+      scope: $scope, 
+      createdAt: $createdAt
+    }''';
   }
 }

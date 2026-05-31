@@ -1,4 +1,4 @@
-import 'trakt_movie.dart';
+﻿import 'trakt_movie.dart';
 import 'trakt_person.dart';
 import 'trakt_show.dart';
 
@@ -30,6 +30,14 @@ class TraktPersonMovieCredits {
   final List<TraktPersonCredit<TraktMovie>>? cast;
   /// Map of crew credits grouped by department.
   final Map<String, List<TraktPersonCredit<TraktMovie>>>? crew;
+
+  @override
+  String toString() {
+    return '''TraktPersonMovieCredits{
+      cast: $cast, 
+      crew: $crew
+    }''';
+  }
 }
 
 /// Show credits for a person.
@@ -60,6 +68,14 @@ class TraktPersonShowCredits {
   final List<TraktPersonCredit<TraktShow>>? cast;
   /// Map of crew credits grouped by department.
   final Map<String, List<TraktPersonCredit<TraktShow>>>? crew;
+
+  @override
+  String toString() {
+    return '''TraktPersonShowCredits{
+      cast: $cast, 
+      crew: $crew
+    }''';
+  }
 }
 
 /// Generic credit information for a person.
@@ -84,6 +100,15 @@ class TraktPersonCredit<T> {
   final String? job;
   /// The media item (Movie or Show).
   final T item;
+
+  @override
+  String toString() {
+    return '''TraktPersonCredit{
+      characters: $characters, 
+      job: $job, 
+      item: $item
+    }''';
+  }
 }
 
 /// Information about a person's profile update.
@@ -103,6 +128,14 @@ class TraktPersonUpdate {
   final DateTime updatedAt;
   /// The person object.
   final TraktPerson person;
+
+  @override
+  String toString() {
+    return '''TraktPersonUpdate{
+      updatedAt: $updatedAt, 
+      person: $person
+    }''';
+  }
 }
 
 /// Information about a deleted person.
@@ -122,4 +155,12 @@ class TraktDeletedPerson {
   final DateTime deletedAt;
   /// The person object.
   final TraktPerson person;
+
+  @override
+  String toString() {
+    return '''TraktDeletedPerson{
+      deletedAt: $deletedAt, 
+      person: $person
+    }''';
+  }
 }

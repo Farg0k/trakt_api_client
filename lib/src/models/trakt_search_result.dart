@@ -1,4 +1,4 @@
-import 'trakt_episode.dart';
+﻿import 'trakt_episode.dart';
 import 'trakt_list.dart';
 import 'trakt_movie.dart';
 import 'trakt_person.dart';
@@ -66,5 +66,18 @@ class TraktSearchResult {
       if (person != null) 'person': person!.toJson(),
       if (list != null) 'list': list!.toJson(),
     }..removeWhere((key, value) => value == null);
+  }
+
+  @override
+  String toString() {
+    return '''TraktSearchResult{
+      type: $type, 
+      score: $score, 
+      movie: $movie, 
+      show: $show, 
+      episode: $episode, 
+      person: $person, 
+      list: $list
+    }''';
   }
 }

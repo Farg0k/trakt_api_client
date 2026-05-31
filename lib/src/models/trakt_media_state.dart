@@ -1,4 +1,4 @@
-import '../core/trakt_date_utils.dart';
+﻿import '../core/trakt_date_utils.dart';
 import 'trakt_media_metadata.dart';
 
 /// Generic model for user's watched/collected items.
@@ -49,6 +49,19 @@ class TraktMediaState<T> {
   final List<TraktSeasonState>? seasons;
   /// Optional metadata about the collection state.
   final TraktMediaMetadata? metadata;
+
+  @override
+  String toString() {
+    return '''TraktMediaState{
+      plays: $plays, 
+      lastWatchedAt: $lastWatchedAt, 
+      lastCollectedAt: $lastCollectedAt, 
+      lastUpdatedAt: $lastUpdatedAt, 
+      item: $item, 
+      seasons: $seasons, 
+      metadata: $metadata
+    }''';
+  }
 }
 
 /// Progress state for a single season.
@@ -73,6 +86,14 @@ class TraktSeasonState {
   final int number;
   /// Progress state for episodes in this season.
   final List<TraktEpisodeState> episodes;
+
+  @override
+  String toString() {
+    return '''TraktSeasonState{
+      number: $number, 
+      episodes: $episodes
+    }''';
+  }
 }
 
 /// Progress state for a single episode.
@@ -110,4 +131,15 @@ class TraktEpisodeState {
   final DateTime? collectedAt;
   /// Optional metadata about the collection state.
   final TraktMediaMetadata? metadata;
+
+  @override
+  String toString() {
+    return '''TraktEpisodeState{
+      number: $number, 
+      plays: $plays, 
+      lastWatchedAt: $lastWatchedAt, 
+      collectedAt: $collectedAt, 
+      metadata: $metadata
+    }''';
+  }
 }

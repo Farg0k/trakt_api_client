@@ -1,4 +1,4 @@
-import 'trakt_user.dart';
+﻿import 'trakt_user.dart';
 import 'trakt_user_account.dart';
 import 'trakt_user_connections.dart';
 import 'trakt_sharing_text.dart';
@@ -59,6 +59,21 @@ class TraktUserSocialIds {
 
   /// Personal website URL.
   final String? website;
+
+  @override
+  String toString() {
+    return '''TraktUserSocialIds{
+      twitter: $twitter, 
+      facebook: $facebook, 
+      instagram: $instagram, 
+      tumblr: $tumblr, 
+      youtube: $youtube, 
+      twitch: $twitch, 
+      myspace: $myspace, 
+      soundcloud: $soundcloud, 
+      website: $website
+    }''';
+  }
 }
 
 /// A follow request from another user.
@@ -91,6 +106,15 @@ class TraktFollowRequest {
 
   /// The user who made the request.
   final TraktUser user;
+
+  @override
+  String toString() {
+    return '''TraktFollowRequest{
+      id: $id, 
+      requestedAt: $requestedAt, 
+      user: $user
+    }''';
+  }
 }
 
 /// A connection between two users (follower/friend).
@@ -118,6 +142,14 @@ class TraktUserConnection {
 
   /// The user object.
   final TraktUser user;
+
+  @override
+  String toString() {
+    return '''TraktUserConnection{
+      followedAt: $followedAt, 
+      user: $user
+    }''';
+  }
 }
 
 /// Comprehensive statistics for a user profile.
@@ -160,6 +192,17 @@ class TraktUserStats {
 
   /// Rating-related statistics.
   final TraktUserRatingStats ratings;
+
+  @override
+  String toString() {
+    return '''TraktUserStats{
+      movies: $movies, 
+      shows: $shows, 
+      episodes: $episodes, 
+      network: $network, 
+      ratings: $ratings
+    }''';
+  }
 }
 
 /// User movie statistics.
@@ -198,6 +241,17 @@ class TraktUserMovieStats {
 
   /// Number of comments on movies.
   final int comments;
+
+  @override
+  String toString() {
+    return '''TraktUserMovieStats{
+      plays: $plays, 
+      watched: $watched, 
+      collected: $collected, 
+      ratings: $ratings, 
+      comments: $comments
+    }''';
+  }
 }
 
 /// User show statistics.
@@ -231,6 +285,16 @@ class TraktUserShowStats {
 
   /// Number of comments on shows.
   final int comments;
+
+  @override
+  String toString() {
+    return '''TraktUserShowStats{
+      watched: $watched, 
+      collected: $collected, 
+      ratings: $ratings, 
+      comments: $comments
+    }''';
+  }
 }
 
 /// User episode statistics.
@@ -269,6 +333,17 @@ class TraktUserEpisodeStats {
 
   /// Number of comments on episodes.
   final int comments;
+
+  @override
+  String toString() {
+    return '''TraktUserEpisodeStats{
+      plays: $plays, 
+      watched: $watched, 
+      collected: $collected, 
+      ratings: $ratings, 
+      comments: $comments
+    }''';
+  }
 }
 
 /// User network statistics (friends, followers).
@@ -297,6 +372,15 @@ class TraktUserNetworkStats {
 
   /// Number of users following.
   final int following;
+
+  @override
+  String toString() {
+    return '''TraktUserNetworkStats{
+      friends: $friends, 
+      followers: $followers, 
+      following: $following
+    }''';
+  }
 }
 
 /// User rating statistics.
@@ -320,6 +404,14 @@ class TraktUserRatingStats {
 
   /// Rating distribution (1-10).
   final Map<String, int> distribution;
+
+  @override
+  String toString() {
+    return '''TraktUserRatingStats{
+      total: $total, 
+      distribution: $distribution
+    }''';
+  }
 }
 
 /// User account settings.
@@ -361,4 +453,14 @@ class TraktUserSettings {
 
   /// Sharing settings.
   final TraktSharingText? sharingText;
+
+  @override
+  String toString() {
+    return '''TraktUserSettings{
+      user: $user, 
+      account: $account, 
+      connections: $connections, 
+      sharingText: $sharingText
+    }''';
+  }
 }

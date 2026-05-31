@@ -106,6 +106,26 @@ class TraktList {
       if (sortHow != null) 'sort_how': sortHow,
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktList{
+      name: $name, 
+      description: $description, 
+      privacy: $privacy, 
+      displayNumbers: $displayNumbers, 
+      allowComments: $allowComments, 
+      sortBy: $sortBy, 
+      sortHow: $sortHow, 
+      createdAt: $createdAt, 
+      updatedAt: $updatedAt, 
+      itemCount: $itemCount, 
+      commentCount: $commentCount, 
+      likes: $likes, 
+      ids: $ids, 
+      user: $user
+    }''';
+  }
 }
 
 /// Represents an item within a Trakt list.
@@ -195,5 +215,21 @@ class TraktListItem {
       if (episode != null) 'episode': episode!.toJson(),
       if (person != null) 'person': person!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktListItem{
+      rank: $rank, 
+      id: $id, 
+      listedAt: $listedAt, 
+      notes: $notes, 
+      type: $type, 
+      movie: $movie, 
+      show: $show, 
+      season: $season, 
+      episode: $episode, 
+      person: $person
+    }''';
   }
 }

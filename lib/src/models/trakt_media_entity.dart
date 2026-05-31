@@ -78,4 +78,17 @@ class TraktMediaEntity {
       if (list != null) 'list': list!.toJson(),
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktMediaEntity{
+      type: $type, 
+      movie: $movie, 
+      show: $show, 
+      season: $season, 
+      episode: $episode, 
+      person: $person, 
+      list: $list
+    }''';
+  }
 }

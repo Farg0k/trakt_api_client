@@ -1,4 +1,4 @@
-import 'trakt_user_images.dart';
+﻿import 'trakt_user_images.dart';
 
 /// Account settings from /users/settings endpoint.
 class TraktUserAccount {
@@ -92,5 +92,23 @@ class TraktUserAccount {
       if (joinedAt != null) 'joined_at': joinedAt!.toIso8601String(),
       if (images != null) 'images': images!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktUserAccount{
+      username: $username, 
+      private: $private, 
+      vip: $vip, 
+      vipEp: $vipEp, 
+      email: $email, 
+      name: $name, 
+      gender: $gender, 
+      age: $age, 
+      location: $location, 
+      about: $about, 
+      joinedAt: $joinedAt, 
+      images: $images
+    }''';
   }
 }

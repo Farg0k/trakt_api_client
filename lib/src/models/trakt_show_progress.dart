@@ -1,4 +1,4 @@
-import 'trakt_episode.dart';
+﻿import 'trakt_episode.dart';
 import '../core/trakt_date_utils.dart';
 
 /// Progress information for a TV show.
@@ -53,6 +53,19 @@ class TraktShowProgress {
 
   /// The last episode to air.
   final TraktEpisode? lastEpisode;
+
+  @override
+  String toString() {
+    return '''TraktShowProgress{
+      aired: $aired, 
+      completed: $completed, 
+      lastWatchedAt: $lastWatchedAt, 
+      lastCollectedAt: $lastCollectedAt, 
+      seasons: $seasons, 
+      nextEpisode: $nextEpisode, 
+      lastEpisode: $lastEpisode
+    }''';
+  }
 }
 
 /// Progress information for a single season.
@@ -93,6 +106,17 @@ class TraktSeasonProgress {
 
   /// Progress by episode.
   final List<TraktEpisodeProgress> episodes;
+
+  @override
+  String toString() {
+    return '''TraktSeasonProgress{
+      number: $number, 
+      aired: $aired, 
+      completed: $completed, 
+      title: $title, 
+      episodes: $episodes
+    }''';
+  }
 }
 
 /// Progress information for a single episode.
@@ -126,4 +150,14 @@ class TraktEpisodeProgress {
 
   /// When the episode was collected.
   final DateTime? collectedAt;
+
+  @override
+  String toString() {
+    return '''TraktEpisodeProgress{
+      number: $number, 
+      completed: $completed, 
+      watchedAt: $watchedAt, 
+      collectedAt: $collectedAt
+    }''';
+  }
 }

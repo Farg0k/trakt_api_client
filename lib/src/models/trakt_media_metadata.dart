@@ -87,4 +87,21 @@ class TraktMediaMetadata {
       if (ids != null) 'ids': ids!.toJson(),
     };
   }
+
+  @override
+  String toString() {
+    return '''TraktMediaMetadata{
+      mediaSource: $mediaSource, 
+      videoResolution: $videoResolution, 
+      audio: $audio, 
+      audioChannels: $audioChannels, 
+      is3d: $is3d, 
+      hdr: $hdr, 
+      provider: $provider, 
+      fileName: $fileName, 
+      size: $size, 
+      updatedAt: $updatedAt, 
+      ids: $ids
+    }''';
+  }
 }

@@ -1,4 +1,4 @@
-import 'trakt_movie.dart';
+﻿import 'trakt_movie.dart';
 import 'trakt_episode.dart';
 import 'trakt_sharing.dart';
 
@@ -44,4 +44,16 @@ class TraktScrobbleResponse {
   final TraktEpisode? episode;
   /// Type of the media item.
   final String type;
+
+  @override
+  String toString() {
+    return '''TraktScrobbleResponse{
+      id: $id, 
+      progress: $progress, 
+      sharing: $sharing, 
+      movie: $movie, 
+      episode: $episode, 
+      type: $type
+    }''';
+  }
 }

@@ -1,4 +1,4 @@
-/// Avatar images for a user profile.
+﻿/// Avatar images for a user profile.
 class TraktUserImages {
   /// Creates a [TraktUserImages] from a JSON map.
   factory TraktUserImages.fromJson(Map<String, dynamic> json) {
@@ -50,5 +50,17 @@ class TraktUserImages {
       if (thumb256 != null) 'thumb_256': thumb256,
       if (thumb512 != null) 'thumb_512': thumb512,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktUserImages{
+      avatar: $avatar, 
+      fullSize: $fullSize, 
+      thumb60: $thumb60, 
+      thumb128: $thumb128, 
+      thumb256: $thumb256, 
+      thumb512: $thumb512
+    }''';
   }
 }

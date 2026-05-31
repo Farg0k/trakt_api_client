@@ -1,4 +1,4 @@
-/// Represents social sharing settings.
+﻿/// Represents social sharing settings.
 class TraktSharing {
 
   /// Creates a new [TraktSharing] instance.
@@ -30,5 +30,14 @@ class TraktSharing {
       if (mastodon != null) 'mastodon': mastodon,
       if (tumblr != null) 'tumblr': tumblr,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktSharing{
+      twitter: $twitter, 
+      mastodon: $mastodon, 
+      tumblr: $tumblr
+    }''';
   }
 }

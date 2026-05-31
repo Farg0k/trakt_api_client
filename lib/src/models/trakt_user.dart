@@ -1,4 +1,4 @@
-import 'trakt_ids.dart';
+﻿import 'trakt_ids.dart';
 import 'trakt_user_images.dart';
 
 /// Represents a user profile on Trakt.tv.
@@ -84,5 +84,23 @@ class TraktUser {
       if (age != null) 'age': age,
       if (images != null) 'images': images!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktUser{
+      username: $username, 
+      private: $private, 
+      name: $name, 
+      vip: $vip, 
+      vipEp: $vipEp, 
+      ids: $ids, 
+      joinedAt: $joinedAt, 
+      location: $location, 
+      about: $about, 
+      gender: $gender, 
+      age: $age, 
+      images: $images
+    }''';
   }
 }

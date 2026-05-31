@@ -1,4 +1,4 @@
-import 'trakt_ids.dart';
+﻿import 'trakt_ids.dart';
 import 'trakt_person.dart';
 import 'trakt_movie.dart';
 import '../core/trakt_date_utils.dart';
@@ -27,8 +27,17 @@ class TraktRating {
   /// Total number of votes.
   final int votes;
 
-  /// Rating distribution (1 to 10).
+/// Rating distribution (1 to 10).
   final Map<String, int> distribution;
+
+  @override
+  String toString() {
+    return '''TraktRating{
+      rating: $rating, 
+      votes: $votes, 
+      distribution: $distribution
+    }''';
+  }
 }
 
 /// Cast and crew information.
@@ -58,6 +67,14 @@ class TraktCredits {
 
   /// Map of crew members grouped by department.
   final Map<String, List<TraktCrew>>? crew;
+
+  @override
+  String toString() {
+    return '''TraktCredits{
+      cast: $cast, 
+      crew: $crew
+    }''';
+  }
 }
 
 /// Represents a cast member.
@@ -79,6 +96,14 @@ class TraktCast {
 
   /// The person object.
   final TraktPerson person;
+
+  @override
+  String toString() {
+    return '''TraktCast{
+      characters: $characters, 
+      person: $person
+    }''';
+  }
 }
 
 /// Represents a crew member.
@@ -99,6 +124,14 @@ class TraktCrew {
 
   /// The person object.
   final TraktPerson person;
+
+  @override
+  String toString() {
+    return '''TraktCrew{
+      job: $job, 
+      person: $person
+    }''';
+  }
 }
 
 /// Title alias for a media object.
@@ -127,6 +160,24 @@ class TraktMediaAlias {
 
   /// 2-character language code.
   final String language;
+
+  /// Converts this media alias to a JSON map.
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'country': country,
+      'language': language,
+    };
+  }
+
+  @override
+  String toString() {
+    return '''TraktMediaAlias{
+      title: $title, 
+      country: $country, 
+      language: $language
+    }''';
+  }
 }
 
 /// Translation for a media object.
@@ -165,6 +216,17 @@ class TraktTranslation {
 
   /// 2-character country code.
   final String? country;
+
+  @override
+  String toString() {
+    return '''TraktTranslation{
+      title: $title, 
+      overview: $overview, 
+      tagline: $tagline, 
+      language: $language, 
+      country: $country
+    }''';
+  }
 }
 
 /// Content certification (e.g. PG-13).
@@ -193,6 +255,15 @@ class TraktCertification {
 
   /// Description of the certification.
   final String description;
+
+  @override
+  String toString() {
+    return '''TraktCertification{
+      name: $name, 
+      slug: $slug, 
+      description: $description
+    }''';
+  }
 }
 
 /// Media-specific certification.
@@ -216,6 +287,14 @@ class TraktMediaCertification {
 
   /// 2-character country code.
   final String country;
+
+  @override
+  String toString() {
+    return '''TraktMediaCertification{
+      certification: $certification, 
+      country: $country
+    }''';
+  }
 }
 
 /// Represents a country.
@@ -236,6 +315,14 @@ class TraktCountry {
 
   /// 2-character country code.
   final String code;
+
+  @override
+  String toString() {
+    return '''TraktCountry{
+      name: $name, 
+      code: $code
+    }''';
+  }
 }
 
 /// Represents a media genre.
@@ -256,6 +343,14 @@ class TraktGenre {
 
   /// URL slug for the genre.
   final String slug;
+
+  @override
+  String toString() {
+    return '''TraktGenre{
+      name: $name, 
+      slug: $slug
+    }''';
+  }
 }
 
 /// Represents a language.
@@ -276,6 +371,14 @@ class TraktLanguage {
 
   /// 2-character language code.
   final String code;
+
+  @override
+  String toString() {
+    return '''TraktLanguage{
+      name: $name, 
+      code: $code
+    }''';
+  }
 }
 
 /// Represents a TV network.
@@ -290,6 +393,13 @@ class TraktNetwork {
 
   /// Name of the network.
   final String name;
+
+  @override
+  String toString() {
+    return '''TraktNetwork{
+      name: $name
+    }''';
+  }
 }
 
 /// Represents a production studio.
@@ -320,6 +430,15 @@ class TraktStudio {
 
   /// IDs for the studio.
   final TraktIds? ids;
+
+  @override
+  String toString() {
+    return '''TraktStudio{
+      name: $name, 
+      country: $country, 
+      ids: $ids
+    }''';
+  }
 }
 
 /// Release information for a movie.
@@ -358,6 +477,17 @@ class TraktMovieRelease {
 
   /// Certification for this specific release.
   final String certification;
+
+  @override
+  String toString() {
+    return '''TraktMovieRelease{
+      country: $country, 
+      releaseDate: $releaseDate, 
+      releaseType: $releaseType, 
+      note: $note, 
+      certification: $certification
+    }''';
+  }
 }
 
 /// Box office revenue information for a movie.
@@ -381,4 +511,12 @@ class TraktBoxOfficeMovie {
 
   /// The movie object.
   final TraktMovie movie;
+
+  @override
+  String toString() {
+    return '''TraktBoxOfficeMovie{
+      revenue: $revenue, 
+      movie: $movie
+    }''';
+  }
 }

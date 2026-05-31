@@ -1,4 +1,4 @@
-/// General statistics for a media object.
+﻿/// General statistics for a media object.
 class TraktStats {
 
   /// Creates a [TraktStats] from a JSON map.
@@ -56,5 +56,18 @@ class TraktStats {
       'lists': lists,
       'votes': votes,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktStats{
+      watchers: $watchers, 
+      plays: $plays, 
+      collectors: $collectors, 
+      collectedEpisodes: $collectedEpisodes, 
+      comments: $comments, 
+      lists: $lists, 
+      votes: $votes
+    }''';
   }
 }

@@ -1,4 +1,4 @@
-import 'trakt_ids.dart';
+﻿import 'trakt_ids.dart';
 
 /// Represents a person (actor, crew member).
 class TraktPerson {
@@ -58,5 +58,18 @@ class TraktPerson {
       'birthplace': birthplace,
       'homepage': homepage,
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktPerson{
+      name: $name, 
+      ids: $ids, 
+      biography: $biography, 
+      birthday: $birthday, 
+      death: $death, 
+      birthplace: $birthplace, 
+      homepage: $homepage
+    }''';
   }
 }

@@ -1,4 +1,4 @@
-import '../core/trakt_date_utils.dart';
+﻿import '../core/trakt_date_utils.dart';
 import 'trakt_user.dart';
 
 /// Represents a user note.
@@ -50,5 +50,17 @@ class TraktNote {
       if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
       if (user != null) 'user': user!.toJson(),
     };
+  }
+
+  @override
+  String toString() {
+    return '''TraktNote{
+      id: $id, 
+      note: $note, 
+      privacy: $privacy, 
+      createdAt: $createdAt, 
+      updatedAt: $updatedAt, 
+      user: $user
+    }''';
   }
 }
