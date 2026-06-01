@@ -149,8 +149,28 @@ class TraktApiClient {
       queryParams: effectiveQueryParams.isEmpty ? null : effectiveQueryParams,
       authenticated: authenticated,
       mapper: (body, headers) {
-        final data = (body as List)
-            .map((item) => mapper(item as Map<String, dynamic>))
+        if (body == null) {
+          return TraktListResponse(
+            data: [],
+            pagination: TraktPagination.fromHeaders(headers),
+            requestParams: pagination,
+          );
+        }
+        
+        final List<dynamic> list;
+        if (body is List) {
+          list = body;
+        } else if (body is Map<String, dynamic>) {
+          list = [body];
+        } else {
+          // Unexpected type, return empty list
+          list = [];
+        }
+        
+        final data = list
+            .where((item) => item != null && item is Map<String, dynamic>)
+            .map((item) => item as Map<String, dynamic>)
+            .map(mapper)
             .toList();
         return TraktListResponse(
           data: data,

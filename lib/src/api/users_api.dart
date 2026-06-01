@@ -232,17 +232,33 @@ class UsersApi extends TraktApiBase {
       '/users/$username/collection/${type.value}',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
-        final list = body as List;
-        return list.map((e) {
-          final json = e as Map<String, dynamic>;
-          if (type == TraktMediaType.movies) {
-            return TraktMediaState<TraktMovie>.fromJson(
-                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
-          } else {
-            return TraktMediaState<TraktShow>.fromJson(
-                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
-          }
-        }).toList();
+        if (body == null) {
+          return [];
+        }
+        
+        final List<dynamic> list;
+        if (body is List) {
+          list = body;
+        } else if (body is Map<String, dynamic>) {
+          list = [body];
+        } else {
+          // Unexpected type, return empty list
+          return [];
+        }
+        
+        return list
+            .where((e) => e != null && e is Map<String, dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .map((json) {
+              if (type == TraktMediaType.movies) {
+                return TraktMediaState<TraktMovie>.fromJson(
+                    json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+              } else {
+                return TraktMediaState<TraktShow>.fromJson(
+                    json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
+              }
+            })
+            .toList();
       },
     );
   }
@@ -281,17 +297,33 @@ class UsersApi extends TraktApiBase {
       '/users/$username/watched/${type.value}',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) {
-        final list = body as List;
-        return list.map((e) {
-          final json = e as Map<String, dynamic>;
-          if (type == TraktMediaType.movies) {
-            return TraktMediaState<TraktMovie>.fromJson(
-                json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
-          } else {
-            return TraktMediaState<TraktShow>.fromJson(
-                json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
-          }
-        }).toList();
+        if (body == null) {
+          return [];
+        }
+        
+        final List<dynamic> list;
+        if (body is List) {
+          list = body;
+        } else if (body is Map<String, dynamic>) {
+          list = [body];
+        } else {
+          // Unexpected type, return empty list
+          return [];
+        }
+        
+        return list
+            .where((e) => e != null && e is Map<String, dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .map((json) {
+              if (type == TraktMediaType.movies) {
+                return TraktMediaState<TraktMovie>.fromJson(
+                    json, TraktMovie.fromJson, 'movie') as TraktMediaState<T>;
+              } else {
+                return TraktMediaState<TraktShow>.fromJson(
+                    json, TraktShow.fromJson, 'show') as TraktMediaState<T>;
+              }
+            })
+            .toList();
       },
     );
   }
