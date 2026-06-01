@@ -2,7 +2,8 @@ import '../core/trakt_extended_info.dart';
 import '../core/trakt_filters.dart';
 import '../core/trakt_list_response.dart';
 import '../core/trakt_pagination_params.dart';
-import '../models/trakt_media_entity.dart';
+import '../models/trakt_movie.dart';
+import '../models/trakt_show.dart';
 import 'trakt_api_base.dart';
 
 /// Access to recommendation endpoints.
@@ -11,14 +12,20 @@ class RecommendationsApi extends TraktApiBase {
   RecommendationsApi(super.client);
 
   /// [🔒 OAuth Required] Get movie recommendations.
-  Future<TraktListResponse<TraktMediaEntity>> getMovies({
+  Future<TraktListResponse<TraktMovie>> getMovies({
     TraktPaginationParams? pagination,
     bool ignoreCollected = false,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getRecommendationsList('/recommendations/movies', pagination,
-        ignoreCollected, extended, filters);
+    return _getRecommendationsList<TraktMovie>(
+      '/recommendations/movies',
+      pagination: pagination,
+      ignoreCollected: ignoreCollected,
+      extended: extended,
+      filters: filters,
+      mapper: (json) => TraktMovie.fromJson(json),
+    );
   }
 
   /// [🔒 OAuth Required] Hide a movie from recommendations.
@@ -31,14 +38,20 @@ class RecommendationsApi extends TraktApiBase {
   }
 
   /// [🔒 OAuth Required] Get show recommendations.
-  Future<TraktListResponse<TraktMediaEntity>> getShows({
+  Future<TraktListResponse<TraktShow>> getShows({
     TraktPaginationParams? pagination,
     bool ignoreCollected = false,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getRecommendationsList('/recommendations/shows', pagination,
-        ignoreCollected, extended, filters);
+    return _getRecommendationsList<TraktShow>(
+      '/recommendations/shows',
+      pagination: pagination,
+      ignoreCollected: ignoreCollected,
+      extended: extended,
+      filters: filters,
+      mapper: (json) => TraktShow.fromJson(json),
+    );
   }
 
   /// [🔒 OAuth Required] Hide a show from recommendations.
@@ -52,13 +65,14 @@ class RecommendationsApi extends TraktApiBase {
 
   // --- HELPERS ---
 
-  Future<TraktListResponse<TraktMediaEntity>> _getRecommendationsList(
-    String path,
+  Future<TraktListResponse<T>> _getRecommendationsList<T>(
+    String path, {
     TraktPaginationParams? pagination,
-    bool ignoreCollected,
-    TraktExtendedInfo extended,
+    required bool ignoreCollected,
+    required TraktExtendedInfo extended,
     TraktFilters? filters,
-  ) async {
+    required T Function(Map<String, dynamic> json) mapper,
+  }) async {
     return getList(
       path,
       pagination: pagination,
@@ -67,7 +81,7 @@ class RecommendationsApi extends TraktApiBase {
       queryParams: {
         'ignore_collected': ignoreCollected.toString(),
       },
-      mapper: (json) => TraktMediaEntity.fromJson(json),
+      mapper: mapper,
     );
   }
 }
