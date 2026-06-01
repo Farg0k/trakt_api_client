@@ -124,7 +124,7 @@ class SyncApi extends TraktApiBase {
   /// For shows, set [includeSeasons] to false to omit season and episode info (?extended=noseasons).
   Future<List<TraktMediaState<T>>> getWatched<T>({
     required TraktMediaType type,
-    TraktExtendedInfo extended = TraktExtendedInfo.min,
+    TraktExtendedInfo extended = TraktExtendedInfo.metadata,
     bool includeSeasons = true,
   }) async {
     var params = {'extended': extended.value};
