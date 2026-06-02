@@ -198,68 +198,110 @@ class ShowsApi extends TraktApiBase {
     );
   }
 
-  /// Get detailed show information.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktShow> getSummary(
-    String id, {
-    TraktExtendedInfo extended = TraktExtendedInfo.full,
-  }) async {
-    return client.get(
-      '/shows/$id',
-      queryParams: {'extended': extended.value},
-      mapper: (body, headers) =>
-          TraktShow.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get detailed show information.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktShow> getSummary(
+      String id, {
+      TraktExtendedInfo extended = TraktExtendedInfo.full,
+    }) async {
+      return client.get(
+        '/shows/$id',
+        queryParams: {'extended': extended.value},
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktShow.fromJson(json);
+        },
+      );
+    }
 
-  /// Get all title aliases for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktMediaAlias>> getAliases(String id) async {
-    return client.get(
-      '/shows/$id/aliases',
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktMediaAlias.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get all title aliases for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktMediaAlias>> getAliases(String id) async {
+      return client.get(
+        '/shows/$id/aliases',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktMediaAlias.fromJson)
+              .toList();
+        },
+      );
+    }
 
-  /// Get all certifications for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktMediaCertification>> getCertifications(String id) async {
-    return client.get(
-      '/shows/$id/certifications',
-      mapper: (body, headers) => (body as List)
-          .map((item) =>
-              TraktMediaCertification.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get all certifications for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktMediaCertification>> getCertifications(String id) async {
+      return client.get(
+        '/shows/$id/certifications',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktMediaCertification.fromJson)
+              .toList();
+        },
+      );
+    }
 
-  /// Get all languages for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<String>> getLanguages(String id) async {
-    return client.get(
-      '/shows/$id/languages',
-      mapper: (body, headers) => (body as List).map((e) => e as String).toList(),
-    );
-  }
+    /// Get all languages for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<String>> getLanguages(String id) async {
+      return client.get(
+        '/shows/$id/languages',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((e) => e != null && e is String)
+              .map((e) => e as String)
+              .toList();
+        },
+      );
+    }
 
-  /// Get all translations for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktTranslation>> getTranslations(String id,
-      {String? language}) async {
-    return client.get(
-      '/shows/$id/translations${language != null ? '/$language' : ''}',
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get all translations for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktTranslation>> getTranslations(String id,
+        {String? language}) async {
+      return client.get(
+        '/shows/$id/translations${language != null ? '/$language' : ''}',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktTranslation.fromJson)
+              .toList();
+        },
+      );
+    }
 
   /// Get all comments for a show.
   ///
@@ -294,29 +336,33 @@ class ShowsApi extends TraktApiBase {
     );
   }
 
-  /// Get all cast and crew for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktCredits> getPeople(String id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return client.get(
-      '/shows/$id/people',
-      queryParams: {'extended': extended.value},
-      mapper: (body, headers) =>
-          TraktCredits.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get all cast and crew for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktCredits> getPeople(String id,
+        {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+      return client.get(
+        '/shows/$id/people',
+        queryParams: {'extended': extended.value},
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktCredits.fromJson(json);
+        },
+      );
+    }
 
-  /// Get rating distribution for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktRating> getRatings(String id) async {
-    return client.get(
-      '/shows/$id/ratings',
-      mapper: (body, headers) =>
-          TraktRating.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get rating distribution for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktRating> getRatings(String id) async {
+      return client.get(
+        '/shows/$id/ratings',
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktRating.fromJson(json);
+        },
+      );
+    }
 
   /// Get related shows.
   ///
@@ -334,96 +380,132 @@ class ShowsApi extends TraktApiBase {
     );
   }
 
-  /// Get show stats.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktStats> getStats(String id) async {
-    return client.get(
-      '/shows/$id/stats',
-      mapper: (body, headers) =>
-          TraktStats.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get show stats.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktStats> getStats(String id) async {
+      return client.get(
+        '/shows/$id/stats',
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktStats.fromJson(json);
+        },
+      );
+    }
 
-  /// Get all studios for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktStudio>> getStudios(String id) async {
-    return client.get(
-      '/shows/$id/studios',
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktStudio.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get all studios for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktStudio>> getStudios(String id) async {
+      return client.get(
+        '/shows/$id/studios',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktStudio.fromJson)
+              .toList();
+        },
+      );
+    }
 
-  /// Get all videos for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktVideo>> getVideos(String id) async {
-    return client.get(
-      '/shows/$id/videos',
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktVideo.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get all videos for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktVideo>> getVideos(String id) async {
+      return client.get(
+        '/shows/$id/videos',
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktVideo.fromJson)
+              .toList();
+        },
+      );
+    }
 
-  /// Get users currently watching a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktUser>> getWatching(String id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
-    return client.get(
-      '/shows/$id/watching',
-      queryParams: {'extended': extended.value},
-      mapper: (body, headers) => (body as List)
-          .map((item) => TraktUser.fromJson(item as Map<String, dynamic>))
-          .toList(),
-    );
-  }
+    /// Get users currently watching a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<List<TraktUser>> getWatching(String id,
+        {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+      return client.get(
+        '/shows/$id/watching',
+        queryParams: {'extended': extended.value},
+        mapper: (body, headers) {
+          if (body == null) {
+            return [];
+          }
+          if (body is! List) {
+            return [];
+          }
+          return body
+              .where((item) => item != null && item is Map<String, dynamic>)
+              .map((item) => item as Map<String, dynamic>)
+              .map(TraktUser.fromJson)
+              .toList();
+        },
+      );
+    }
 
-  /// Get collection progress for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktShowProgress> getCollectionProgress(
-    String id, {
-    bool hidden = false,
-    bool specials = false,
-    bool countSpecials = false,
-  }) async {
-    return client.get(
-      '/shows/$id/progress/collection',
-      queryParams: {
-        'hidden': hidden.toString(),
-        'specials': specials.toString(),
-        'count_specials': countSpecials.toString(),
-      },
-      mapper: (body, headers) =>
-          TraktShowProgress.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get collection progress for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktShowProgress> getCollectionProgress(
+      String id, {
+      bool hidden = false,
+      bool specials = false,
+      bool countSpecials = false,
+    }) async {
+      return client.get(
+        '/shows/$id/progress/collection',
+        queryParams: {
+          'hidden': hidden.toString(),
+          'specials': specials.toString(),
+          'count_specials': countSpecials.toString(),
+        },
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktShowProgress.fromJson(json);
+        },
+      );
+    }
 
-  /// Get watched progress for a show.
-  ///
-  /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktShowProgress> getWatchedProgress(
-    String id, {
-    bool hidden = false,
-    bool specials = false,
-    bool countSpecials = false,
-  }) async {
-    return client.get(
-      '/shows/$id/progress/watched',
-      queryParams: {
-        'hidden': hidden.toString(),
-        'specials': specials.toString(),
-        'count_specials': countSpecials.toString(),
-      },
-      mapper: (body, headers) =>
-          TraktShowProgress.fromJson(body as Map<String, dynamic>),
-    );
-  }
+    /// Get watched progress for a show.
+    ///
+    /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
+    Future<TraktShowProgress> getWatchedProgress(
+      String id, {
+      bool hidden = false,
+      bool specials = false,
+      bool countSpecials = false,
+    }) async {
+      return client.get(
+        '/shows/$id/progress/watched',
+        queryParams: {
+          'hidden': hidden.toString(),
+          'specials': specials.toString(),
+          'count_specials': countSpecials.toString(),
+        },
+        mapper: (body, headers) {
+          final Map<String, dynamic> json = body ?? <String, dynamic>{};
+          return TraktShowProgress.fromJson(json);
+        },
+      );
+    }
 
   /// Reset watched progress for a show.
   ///
