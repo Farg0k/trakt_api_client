@@ -116,8 +116,8 @@ class SyncApi extends TraktApiBase {
       '/sync/collection',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -128,8 +128,8 @@ class SyncApi extends TraktApiBase {
       '/sync/collection/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -224,8 +224,8 @@ class SyncApi extends TraktApiBase {
       '/sync/history',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -235,8 +235,8 @@ class SyncApi extends TraktApiBase {
       '/sync/history/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -267,8 +267,8 @@ class SyncApi extends TraktApiBase {
       '/sync/ratings',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -278,8 +278,8 @@ class SyncApi extends TraktApiBase {
       '/sync/ratings/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -310,8 +310,8 @@ class SyncApi extends TraktApiBase {
       '/sync/watchlist',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 
@@ -322,8 +322,8 @@ class SyncApi extends TraktApiBase {
       '/sync/watchlist/remove',
       body: request.toJson(),
       authenticated: true,
-      mapper: (body, headers) =>
-          TraktSyncResponse.fromJson(body as Map<String, dynamic>),
+      mapper: (body, headers) => TraktSyncResponse.fromJson(
+          body as Map<String, dynamic>? ?? <String, dynamic>{}),
     );
   }
 

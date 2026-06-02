@@ -243,14 +243,19 @@ class TraktSyncResponse {
   /// Creates a [TraktSyncResponse] from a JSON map.
   factory TraktSyncResponse.fromJson(Map<String, dynamic> json) {
     return TraktSyncResponse(
-      added: TraktSyncCount.fromJson(json['added'] as Map<String, dynamic>),
-      deleted: TraktSyncCount.fromJson(json['deleted'] as Map<String, dynamic>),
-      existing: TraktSyncCount.fromJson(
-        json['existing'] as Map<String, dynamic>,
-      ),
-      notFound: TraktSyncNotFound.fromJson(
-        json['not_found'] as Map<String, dynamic>,
-      ),
+      added: json['added'] is Map<String, dynamic>
+          ? TraktSyncCount.fromJson(json['added'] as Map<String, dynamic>)
+          : TraktSyncCount(),
+      deleted: json['deleted'] is Map<String, dynamic>
+          ? TraktSyncCount.fromJson(json['deleted'] as Map<String, dynamic>)
+          : TraktSyncCount(),
+      existing: json['existing'] is Map<String, dynamic>
+          ? TraktSyncCount.fromJson(json['existing'] as Map<String, dynamic>)
+          : TraktSyncCount(),
+      notFound: json['not_found'] is Map<String, dynamic>
+          ? TraktSyncNotFound.fromJson(
+              json['not_found'] as Map<String, dynamic>)
+          : TraktSyncNotFound.empty(),
     );
   }
 
@@ -315,6 +320,17 @@ class TraktSyncNotFound {
     required this.episodes,
     required this.people,
   });
+
+  /// Creates an empty [TraktSyncNotFound] instance.
+  factory TraktSyncNotFound.empty() {
+    return TraktSyncNotFound(
+      movies: [],
+      shows: [],
+      seasons: [],
+      episodes: [],
+      people: [],
+    );
+  }
 
   /// Creates a [TraktSyncNotFound] from a JSON map.
   factory TraktSyncNotFound.fromJson(Map<String, dynamic> json) {
