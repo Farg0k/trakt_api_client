@@ -12,11 +12,12 @@ class TraktPagination {
 
   /// Creates a [TraktPagination] from HTTP response headers.
   factory TraktPagination.fromHeaders(Map<String, String> headers) {
+    final h = headers.map((k, v) => MapEntry(k.toLowerCase(), v));
     return TraktPagination(
-      itemCount: int.tryParse(headers['x-pagination-item-count'] ?? '') ?? 0,
-      pageCount: int.tryParse(headers['x-pagination-page-count'] ?? '') ?? 0,
-      limit: int.tryParse(headers['x-pagination-limit'] ?? '') ?? 0,
-      currentPage: int.tryParse(headers['x-pagination-page'] ?? '') ?? 1,
+      itemCount: int.tryParse(h['x-pagination-item-count'] ?? '') ?? 0,
+      pageCount: int.tryParse(h['x-pagination-page-count'] ?? '') ?? 0,
+      limit: int.tryParse(h['x-pagination-limit'] ?? '') ?? 0,
+      currentPage: int.tryParse(h['x-pagination-page'] ?? '') ?? 1,
     );
   }
 
