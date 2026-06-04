@@ -288,18 +288,21 @@ class SyncApi extends TraktApiBase {
   /// [🔒 OAuth Required] Get the user's watchlist.
   Future<TraktListResponse<TraktMediaEntity>> getWatchlist({
     TraktMediaType? type,
-    TraktWatchlistSort sort = TraktWatchlistSort.rank,
+    TraktWatchlistSort sortBy = TraktWatchlistSort.rank,
+    TraktSortHow sortHow = TraktSortHow.asc,
     TraktPaginationParams? pagination,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
   }) async {
-    final path =
-        '/sync/watchlist${type != null ? '/${type.value}' : ''}/${sort.value}';
-
+    final path = '/sync/watchlist${type != null ? '/${type.value}' : ''}';
     return getList(
       path,
       authenticated: true,
       pagination: pagination,
       extended: extended,
+      queryParams: {
+        if (sortBy != TraktWatchlistSort.rank) 'sort_by': sortBy.value,
+        'sort_how': sortHow.value,
+      },
       mapper: (json) => TraktMediaEntity.fromJson(json),
     );
   }

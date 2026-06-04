@@ -134,16 +134,21 @@ class TraktSyncShow {
 class TraktSyncSeason {
   /// Creates a new [TraktSyncSeason] instance.
   const TraktSyncSeason({
-    required this.number,
+    this.ids,
+    this.number,
     this.watchedAt,
     this.collectedAt,
     this.rating,
     this.ratedAt,
     this.episodes,
-  });
+  }) : assert(ids != null || number != null,
+            'Either ids or number must be provided');
+
+  /// IDs for the season (alternative to using number).
+  final TraktIds? ids;
 
   /// Season number.
-  final int number;
+  final int? number;
 
   /// When the season was watched.
   final DateTime? watchedAt;
@@ -163,7 +168,8 @@ class TraktSyncSeason {
   /// Converts this season to a JSON map.
   Map<String, dynamic> toJson() {
     return {
-      'number': number,
+      if (ids != null) 'ids': ids!.toJson(),
+      if (number != null) 'number': number,
       if (watchedAt != null)
         'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
       if (collectedAt != null)
@@ -180,15 +186,20 @@ class TraktSyncSeason {
 class TraktSyncEpisode {
   /// Creates a new [TraktSyncEpisode] instance.
   const TraktSyncEpisode({
-    required this.number,
+    this.ids,
+    this.number,
     this.watchedAt,
     this.collectedAt,
     this.rating,
     this.ratedAt,
-  });
+  }) : assert(ids != null || number != null,
+            'Either ids or number must be provided');
+
+  /// IDs for the episode (alternative to using number).
+  final TraktIds? ids;
 
   /// Episode number.
-  final int number;
+  final int? number;
 
   /// When the episode was watched.
   final DateTime? watchedAt;
@@ -205,7 +216,8 @@ class TraktSyncEpisode {
   /// Converts this episode to a JSON map.
   Map<String, dynamic> toJson() {
     return {
-      'number': number,
+      if (ids != null) 'ids': ids!.toJson(),
+      if (number != null) 'number': number,
       if (watchedAt != null)
         'watched_at': TraktDateUtils.formatFullDate(watchedAt!),
       if (collectedAt != null)

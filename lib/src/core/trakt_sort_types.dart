@@ -90,3 +90,17 @@ enum TraktListSort {
   @override
   String toString() => value;
 }
+
+/// Sort direction for Trakt list responses.
+enum TraktSortHow {
+  /// Sort in ascending order.
+  asc('asc'),
+
+  /// Sort in descending order.
+  desc('desc');
+
+  const TraktSortHow(this.value);
+
+  /// The string value used in API requests.
+  final String value;
+}
