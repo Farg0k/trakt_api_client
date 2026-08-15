@@ -36,8 +36,11 @@ class TraktApiClientConfig {
   String get baseUrl =>
       useStaging ? 'https://api-staging.trakt.tv' : 'https://api.trakt.tv';
 
+  String get authBaseUrl =>
+      useStaging ? 'https://api-staging.trakt.tv' : 'https://auth.trakt.tv';
+
   /// Returns the headers to be included in every request.
-  Map<String, String> get headers {
+  Map<String, String> getHeaders({bool authenticated = true}) {
     final headers = {
       'Content-Type': 'application/json',
       'trakt-api-version': '2',
@@ -48,7 +51,7 @@ class TraktApiClientConfig {
       headers['User-Agent'] = userAgent!;
     }
 
-    if (accessToken != null && accessToken!.isNotEmpty) {
+    if (authenticated && accessToken != null && accessToken!.isNotEmpty) {
       headers['Authorization'] = 'Bearer $accessToken';
     }
 
@@ -58,6 +61,9 @@ class TraktApiClientConfig {
 
     return headers;
   }
+
+  /// Compatibility getter for existing code.
+  Map<String, String> get headers => getHeaders();
 
   /// Creates a copy of this configuration with the given fields replaced.
   TraktApiClientConfig copyWith({String? accessToken, String? refreshToken}) {

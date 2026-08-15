@@ -42,6 +42,18 @@ class TraktApiException implements Exception {
     }
   }
 
+  /// Returns true if this error indicates that the session is invalid or expired
+  /// and cannot be refreshed (e.g., refresh token is also invalid).
+  bool get isSessionExpired {
+    if (statusCode == 400) {
+      final msg = detailedMessage.toLowerCase();
+      return msg.contains('session not found') ||
+          msg.contains('invalid_grant') ||
+          msg.contains('invalid refresh_token');
+    }
+    return statusCode == 401;
+  }
+
   @override
   String toString() {
     final buffer = StringBuffer('TraktApiException: $detailedMessage');

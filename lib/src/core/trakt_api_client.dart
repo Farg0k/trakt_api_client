@@ -36,6 +36,7 @@ class TraktApiClient {
   TraktApiClient({
     required this.config,
     this.onTokenRefreshed,
+    this.onTokenRefreshFailed,
     http.Client? httpClient,
   }) : _client = httpClient ?? http.Client();
 
@@ -44,6 +45,9 @@ class TraktApiClient {
 
   /// Callback triggered when an OAuth token is refreshed.
   void Function(TraktOAuthToken token)? onTokenRefreshed;
+
+  /// Callback triggered when an OAuth token refresh fails.
+  void Function(TraktApiException error)? onTokenRefreshFailed;
 
   final http.Client _client;
   Future<void>? _refreshTask;
@@ -57,6 +61,7 @@ class TraktApiClient {
     required String accessToken,
     String? refreshToken,
     void Function(TraktOAuthToken token)? onTokenRefreshed,
+    void Function(TraktApiException error)? onTokenRefreshFailed,
   }) {
     config = config.copyWith(
       accessToken: accessToken,
@@ -64,6 +69,9 @@ class TraktApiClient {
     );
     if (onTokenRefreshed != null) {
       this.onTokenRefreshed = onTokenRefreshed;
+    }
+    if (onTokenRefreshFailed != null) {
+      this.onTokenRefreshFailed = onTokenRefreshFailed;
     }
   }
 
@@ -201,14 +209,15 @@ class TraktApiClient {
 
   /// Performs a POST request.
   Future<T> post<T>(
-    String path, {
-    dynamic body,
-    bool authenticated = false,
-    required T Function(dynamic body, Map<String, String> headers) mapper,
-  }) async {
+      String path, {
+        dynamic body,
+        bool authenticated = false,
+        String? baseUrlOverride,
+        required T Function(dynamic body, Map<String, String> headers) mapper,
+      }) async {
     return _performRequest(
-      (headers) => _client.post(
-        Uri.parse('${config.baseUrl}$path'),
+          (headers) => _client.post(
+        Uri.parse('${baseUrlOverride ?? config.baseUrl}$path'),
         headers: headers,
         body: body != null ? jsonEncode(body) : null,
       ),
@@ -263,7 +272,7 @@ class TraktApiClient {
       );
     }
 
-    var response = await request(config.headers);
+    var response = await request(config.getHeaders(authenticated: authenticated));
 
     try {
       _updateRateLimit(response.headers);
@@ -273,7 +282,7 @@ class TraktApiClient {
           config.refreshToken != null) {
         _refreshTask ??= _doRefresh();
         await _refreshTask;
-        response = await request(config.headers);
+        response = await request(config.getHeaders(authenticated: authenticated));
       }
 
       return _handleResponse(response, mapper);
@@ -285,12 +294,13 @@ class TraktApiClient {
 
   Future<void> _doRefresh() async {
     try {
-      final newToken = await authentication.refreshToken(config.refreshToken!);
-      config = config.copyWith(
-        accessToken: newToken.accessToken,
-        refreshToken: newToken.refreshToken,
-      );
-      onTokenRefreshed?.call(newToken);
+      await authentication.refreshToken(config.refreshToken!);
+      // config і onTokenRefreshed вже оновлені всередині AuthenticationApi
+    } catch (e) {
+      if (e is TraktApiException) {
+        onTokenRefreshFailed?.call(e);
+      }
+      rethrow;
     } finally {
       _refreshTask = null;
     }

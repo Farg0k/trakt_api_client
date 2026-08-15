@@ -13,6 +13,7 @@ class AuthenticationApi {
   Future<TraktDeviceCode> generateDeviceCode() async {
     return _client.post(
       '/oauth/device/code',
+      baseUrlOverride: _client.config.authBaseUrl,
       body: {'client_id': _client.config.clientId},
       mapper: (body, headers) =>
           TraktDeviceCode.fromJson(body as Map<String, dynamic>),
@@ -25,6 +26,7 @@ class AuthenticationApi {
   Future<TraktOAuthToken> pollForDeviceToken(String deviceCode) async {
     final token = await _client.post(
       '/oauth/device/token',
+      baseUrlOverride: _client.config.authBaseUrl,
       body: {
         'code': deviceCode,
         'client_id': _client.config.clientId,
@@ -45,6 +47,7 @@ class AuthenticationApi {
       {String redirectUri = 'urn:ietf:wg:oauth:2.0:oob'}) async {
     final token = await _client.post(
       '/oauth/token',
+      baseUrlOverride: _client.config.authBaseUrl,
       body: {
         'code': code,
         'client_id': _client.config.clientId,
@@ -66,6 +69,7 @@ class AuthenticationApi {
   Future<TraktOAuthToken> refreshToken(String refreshToken) async {
     final token = await _client.post(
       '/oauth/token',
+      baseUrlOverride: _client.config.authBaseUrl,
       body: {
         'refresh_token': refreshToken,
         'client_id': _client.config.clientId,
@@ -85,6 +89,7 @@ class AuthenticationApi {
   Future<void> revokeToken(String accessToken) async {
     await _client.post(
       '/oauth/revoke',
+      baseUrlOverride: _client.config.authBaseUrl,
       body: {
         'token': accessToken,
         'client_id': _client.config.clientId,
