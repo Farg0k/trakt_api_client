@@ -298,7 +298,7 @@ class TraktApiClient {
   Future<void> _doRefresh() async {
     try {
       await authentication.refreshToken(config.refreshToken!);
-      // config і onTokenRefreshed вже оновлені всередині AuthenticationApi
+      // config and onTokenRefreshed are already updated inside AuthenticationApi
     } catch (e) {
       if (e is TraktApiException) {
         onTokenRefreshFailed?.call(e);
