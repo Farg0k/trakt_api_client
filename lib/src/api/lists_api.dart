@@ -23,7 +23,8 @@ class ListsApi extends TraktApiBase {
     return getList(
       path,
       pagination: pagination,
-      mapper: (json) => TraktList.fromJson(json['list'] as Map<String, dynamic>),
+      mapper: (json) =>
+          TraktList.fromJson(json['list'] as Map<String, dynamic>),
     );
   }
 
@@ -36,7 +37,8 @@ class ListsApi extends TraktApiBase {
     return getList(
       path,
       pagination: pagination,
-      mapper: (json) => TraktList.fromJson(json['list'] as Map<String, dynamic>),
+      mapper: (json) =>
+          TraktList.fromJson(json['list'] as Map<String, dynamic>),
     );
   }
 
@@ -98,11 +100,12 @@ class ListsApi extends TraktApiBase {
     return getList(
       '/lists/$id/likes',
       pagination: pagination,
-      mapper: (json) => TraktUser.fromJson(json['user'] as Map<String, dynamic>),
+      mapper: (json) =>
+          TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
-  /// [🔒 OAuth Required] Like a list.
+  /// 🔒 OAuth Required Like a list.
   ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> like(String id) async {
@@ -113,7 +116,7 @@ class ListsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Remove a like from a list.
+  /// 🔒 OAuth Required Remove a like from a list.
   ///
   /// [id] can be a Trakt ID or Trakt slug.
   Future<void> unlike(String id) async {
@@ -124,20 +127,20 @@ class ListsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Report a list for inappropriate content.
+  /// 🔒 OAuth Required Report a list for inappropriate content.
   ///
   /// [id] can be a Trakt ID or Trakt slug.
-  Future<void> report(String id,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    String id, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await client.post(
       '/lists/$id/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 }
-

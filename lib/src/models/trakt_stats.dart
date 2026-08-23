@@ -1,6 +1,5 @@
-﻿/// General statistics for a media object.
+/// General statistics for a media object.
 class TraktStats {
-
   /// Creates a [TraktStats] from a JSON map.
   factory TraktStats.fromJson(Map<String, dynamic> json) {
     return TraktStats(
@@ -13,6 +12,7 @@ class TraktStats {
       votes: json['votes'] as int? ?? 0,
     );
   }
+
   /// Creates a new [TraktStats] instance.
   const TraktStats({
     required this.watchers,

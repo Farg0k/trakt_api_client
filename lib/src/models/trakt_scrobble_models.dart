@@ -1,10 +1,9 @@
-﻿import 'trakt_movie.dart';
+import 'trakt_movie.dart';
 import 'trakt_episode.dart';
 import 'trakt_sharing.dart';
 
 /// Response to a scrobble request.
 class TraktScrobbleResponse {
-
   /// Creates a new [TraktScrobbleResponse] instance.
   const TraktScrobbleResponse({
     required this.id,
@@ -32,16 +31,22 @@ class TraktScrobbleResponse {
       type: json['type'] as String? ?? '',
     );
   }
+
   /// Unique ID of the scrobble session.
   final int id;
+
   /// Progress percentage (0-100).
   final double progress;
+
   /// Sharing settings used.
   final TraktSharing? sharing;
+
   /// The movie object, if scrobbling a movie.
   final TraktMovie? movie;
+
   /// The episode object, if scrobbling an episode.
   final TraktEpisode? episode;
+
   /// Type of the media item.
   final String type;
 

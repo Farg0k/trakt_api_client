@@ -4,7 +4,6 @@ import 'trakt_trailers.dart';
 
 /// Represents a movie.
 class TraktMovie {
-
   /// Creates a [TraktMovie] from a JSON map.
   factory TraktMovie.fromJson(Map<String, dynamic> json) {
     return TraktMovie(
@@ -20,7 +19,8 @@ class TraktMovie {
       homepage: json['homepage'] as String?,
       trailers: json['trailers'] != null
           ? TraktMovieTrailers.fromJson(
-              json['trailers'] as Map<String, dynamic>)
+              json['trailers'] as Map<String, dynamic>,
+            )
           : null,
       // backward compatibility: if trailers object not present, fall back to single trailer string
       trailer: json['trailer'] as String?,
@@ -37,6 +37,7 @@ class TraktMovie {
       certification: json['certification'] as String?,
     );
   }
+
   /// Creates a new [TraktMovie] instance.
   const TraktMovie({
     required this.title,

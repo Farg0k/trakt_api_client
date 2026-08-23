@@ -16,8 +16,11 @@ class TraktMetadata<T> {
   });
 
   /// Creates a [TraktMetadata] from a JSON map.
-  factory TraktMetadata.fromJson(Map<String, dynamic> json,
-      T Function(Map<String, dynamic>) fromJsonT, String itemKey) {
+  factory TraktMetadata.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJsonT,
+    String itemKey,
+  ) {
     return TraktMetadata(
       item: fromJsonT(json[itemKey] as Map<String, dynamic>),
       watchers: json['watchers'] as int?,
@@ -77,11 +80,7 @@ class TraktMetadata<T> {
 /// Generic wrapper for calendar entries.
 class TraktCalendarEntry<T> {
   /// Creates a new [TraktCalendarEntry] instance.
-  const TraktCalendarEntry({
-    required this.date,
-    required this.item,
-    this.show,
-  });
+  const TraktCalendarEntry({required this.date, required this.item, this.show});
 
   /// Creates a [TraktCalendarEntry] from a JSON map.
   factory TraktCalendarEntry.fromJson(
@@ -95,11 +94,13 @@ class TraktCalendarEntry<T> {
     final itemData = itemKey != null
         ? json[itemKey] as Map<String, dynamic>
         : json;
-    
+
     return TraktCalendarEntry(
       date: TraktDateUtils.parse(json[dateKey]) ?? DateTime.now(),
       item: fromJsonT(itemData),
-      show: showJson != null && showMapper != null ? showMapper(showJson) : null,
+      show: showJson != null && showMapper != null
+          ? showMapper(showJson)
+          : null,
     );
   }
 

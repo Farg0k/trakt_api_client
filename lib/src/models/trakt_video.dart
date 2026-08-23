@@ -1,6 +1,5 @@
-﻿/// Represents a video related to a movie or show (e.g. trailer, teaser).
+/// Represents a video related to a movie or show (e.g. trailer, teaser).
 class TraktVideo {
-
   /// Creates a [TraktVideo] from a JSON map.
   factory TraktVideo.fromJson(Map<String, dynamic> json) {
     return TraktVideo(
@@ -15,6 +14,7 @@ class TraktVideo {
       country: json['country'] as String?,
     );
   }
+
   /// Creates a new [TraktVideo] instance.
   const TraktVideo({
     required this.name,

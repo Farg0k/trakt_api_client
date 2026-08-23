@@ -8,7 +8,6 @@ class TraktImageUtils {
 
   /// Generates a TMDB image URL.
   ///
-  /// [type] can be 'poster', 'backdrop', 'still', 'profile'.
   /// [size] can be 'original', 'w500', 'h632', etc.
   /// [path] is the relative path from TMDB (e.g., /path.jpg).
   ///

@@ -1,8 +1,7 @@
-﻿import 'trakt_ids.dart';
+import 'trakt_ids.dart';
 
 /// Represents a person (actor, crew member).
 class TraktPerson {
-
   /// Creates a [TraktPerson] from a JSON map.
   factory TraktPerson.fromJson(Map<String, dynamic> json) {
     return TraktPerson(
@@ -32,18 +31,25 @@ class TraktPerson {
     this.birthplace,
     this.homepage,
   });
+
   /// Name of the person.
   final String name;
+
   /// IDs for the person (Trakt, TMDB, etc.).
   final TraktIds? ids;
+
   /// Biography of the person.
   final String? biography;
+
   /// Birthday of the person.
   final DateTime? birthday;
+
   /// Death day of the person (if applicable).
   final DateTime? death;
+
   /// Birthplace of the person.
   final String? birthplace;
+
   /// Official website URL.
   final String? homepage;
 

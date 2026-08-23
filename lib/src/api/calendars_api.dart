@@ -15,183 +15,274 @@ class CalendarsApi extends TraktApiBase {
 
   /// All Shows: Get shows airing during the time period.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getAllShows({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/shows', startDate, days, extended, filters);
+    return _getCalendarShows(
+      '/calendars/shows',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   /// All New Shows: Get all new show premieres (series_premiere).
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getAllNewShows({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/shows/new', startDate, days, extended, filters);
+    return _getCalendarShows(
+      '/calendars/shows/new',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   /// All Season Premieres: Get all show premieres.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getAllSeasonPremieres({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/shows/premieres', startDate, days, extended, filters);
+    return _getCalendarShows(
+      '/calendars/shows/premieres',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   /// All Finales: Get all show finales.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getAllFinales({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/shows/finales', startDate, days, extended, filters);
+    return _getCalendarShows(
+      '/calendars/shows/finales',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   // === MY SHOWS ===
 
   /// My Shows: Get shows airing during the time period on user's calendar.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getMyShows({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/my/shows', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarShows(
+      '/calendars/my/shows',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   /// My New Shows: Get all new show premieres (series_premiere).
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getMyNewShows({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/my/shows/new', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarShows(
+      '/calendars/my/shows/new',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   /// My Season Premieres: Get all show premieres.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getMySeasonPremieres({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/my/shows/premieres', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarShows(
+      '/calendars/my/shows/premieres',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   /// My Finales: Get all show finales.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarShow>> getMyFinales({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarShows('/calendars/my/shows/finales', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarShows(
+      '/calendars/my/shows/finales',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   // === ALL MOVIES ===
 
   /// All Movies: Get all movies with a release date during the period.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getAllMovies({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/movies', startDate, days, extended, filters);
+    return _getCalendarMovies(
+      '/calendars/movies',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   /// All Streaming: Get all movies with a US streaming release date.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getAllStreaming({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/movies/streaming', startDate, days, extended, filters);
+    return _getCalendarMovies(
+      '/calendars/movies/streaming',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   /// All DVD: Get all movies with a US DVD release date.
   ///
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getAllDvd({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/movies/dvd', startDate, days, extended, filters);
+    return _getCalendarMovies(
+      '/calendars/movies/dvd',
+      startDate,
+      days,
+      extended,
+      filters,
+    );
   }
 
   // === MY MOVIES ===
 
   /// My Movies: Get all movies on user's calendar.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getMyMovies({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/my/movies', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarMovies(
+      '/calendars/my/movies',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   /// My Streaming: Get all movies with a US streaming release on user's calendar.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getMyStreaming({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/my/movies/streaming', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarMovies(
+      '/calendars/my/movies/streaming',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   /// My DVD: Get all movies with a US DVD release on user's calendar.
   ///
-  /// [🔒 OAuth Required]
-  /// ✨ [Extended Info] 🎚 [Filters] supported.
+  /// 🔒 OAuth Required
+  /// ✨ Extended Info 🎚 Filters supported.
   Future<List<TraktCalendarMovie>> getMyDvd({
     DateTime? startDate,
     int? days,
     TraktExtendedInfo extended = TraktExtendedInfo.min,
     TraktFilters? filters,
   }) async {
-    return _getCalendarMovies('/calendars/my/movies/dvd', startDate, days, extended, filters, authenticated: true);
+    return _getCalendarMovies(
+      '/calendars/my/movies/dvd',
+      startDate,
+      days,
+      extended,
+      filters,
+      authenticated: true,
+    );
   }
 
   // === HELPERS ===
@@ -210,7 +301,9 @@ class CalendarsApi extends TraktApiBase {
       if (days != null) fullPath += '/$days';
     }
     final queryParams = <String, String>{};
-    if (extended != TraktExtendedInfo.min) queryParams['extended'] = extended.value;
+    if (extended != TraktExtendedInfo.min) {
+      queryParams['extended'] = extended.value;
+    }
     if (filters != null) queryParams.addAll(filters.toQueryParams());
     return client.get(
       fullPath,
@@ -236,7 +329,9 @@ class CalendarsApi extends TraktApiBase {
       if (days != null) fullPath += '/$days';
     }
     final queryParams = <String, String>{};
-    if (extended != TraktExtendedInfo.min) queryParams['extended'] = extended.value;
+    if (extended != TraktExtendedInfo.min) {
+      queryParams['extended'] = extended.value;
+    }
     if (filters != null) queryParams.addAll(filters.toQueryParams());
     return client.get(
       fullPath,
@@ -252,10 +347,7 @@ class CalendarsApi extends TraktApiBase {
 /// Represents a movie entry in a calendar.
 class TraktCalendarMovie {
   /// Creates a new [TraktCalendarMovie] instance.
-  TraktCalendarMovie({
-    required this.released,
-    required this.movie,
-  });
+  TraktCalendarMovie({required this.released, required this.movie});
 
   /// Creates a [TraktCalendarMovie] from a JSON map.
   factory TraktCalendarMovie.fromJson(Map<String, dynamic> json) {

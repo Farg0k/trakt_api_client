@@ -1,4 +1,4 @@
-﻿/// OAuth connection details for a single service.
+/// OAuth connection details for a single service.
 class TraktServiceConnection {
   /// Creates a [TraktServiceConnection] from a JSON map.
   factory TraktServiceConnection.fromJson(Map<String, dynamic> json) {
@@ -43,7 +43,8 @@ class TraktServiceConnection {
       'connected': connected,
       if (token != null) 'token': token,
       if (secret != null) 'secret': secret,
-      if (authorizedAt != null) 'authorized_at': authorizedAt!.toIso8601String(),
+      if (authorizedAt != null)
+        'authorized_at': authorizedAt!.toIso8601String(),
       if (username != null) 'username': username,
     };
   }
@@ -67,31 +68,38 @@ class TraktUserConnections {
     return TraktUserConnections(
       twitter: json['twitter'] != null
           ? TraktServiceConnection.fromJson(
-              json['twitter'] as Map<String, dynamic>)
+              json['twitter'] as Map<String, dynamic>,
+            )
           : null,
       facebook: json['facebook'] != null
           ? TraktServiceConnection.fromJson(
-              json['facebook'] as Map<String, dynamic>)
+              json['facebook'] as Map<String, dynamic>,
+            )
           : null,
       instagram: json['instagram'] != null
           ? TraktServiceConnection.fromJson(
-              json['instagram'] as Map<String, dynamic>)
+              json['instagram'] as Map<String, dynamic>,
+            )
           : null,
       tumblr: json['tumblr'] != null
           ? TraktServiceConnection.fromJson(
-              json['tumblr'] as Map<String, dynamic>)
+              json['tumblr'] as Map<String, dynamic>,
+            )
           : null,
       slack: json['slack'] != null
           ? TraktServiceConnection.fromJson(
-              json['slack'] as Map<String, dynamic>)
+              json['slack'] as Map<String, dynamic>,
+            )
           : null,
       webhook: json['webhook'] != null
           ? TraktServiceConnection.fromJson(
-              json['webhook'] as Map<String, dynamic>)
+              json['webhook'] as Map<String, dynamic>,
+            )
           : null,
       twitterRead: json['twitter_read'] != null
           ? TraktServiceConnection.fromJson(
-              json['twitter_read'] as Map<String, dynamic>)
+              json['twitter_read'] as Map<String, dynamic>,
+            )
           : null,
     );
   }

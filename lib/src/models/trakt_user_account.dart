@@ -1,4 +1,4 @@
-﻿import 'trakt_user_images.dart';
+import 'trakt_user_images.dart';
 
 /// Account settings from /users/settings endpoint.
 class TraktUserAccount {

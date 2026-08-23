@@ -63,7 +63,8 @@ class MoviesApi extends TraktApiBase {
       pagination: pagination,
       extended: extended,
       filters: filters,
-      mapper: (json) => TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
+      mapper: (json) =>
+          TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }
 
@@ -159,8 +160,10 @@ class MoviesApi extends TraktApiBase {
       '/movies/boxoffice',
       queryParams: {'extended': extended.value},
       mapper: (body, headers) => (body as List)
-          .map((item) =>
-              TraktBoxOfficeMovie.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) =>
+                TraktBoxOfficeMovie.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -244,8 +247,10 @@ class MoviesApi extends TraktApiBase {
     return client.get(
       '/movies/$id/certifications',
       mapper: (body, headers) => (body as List)
-          .map((item) =>
-              TraktMediaCertification.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) =>
+                TraktMediaCertification.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -256,20 +261,24 @@ class MoviesApi extends TraktApiBase {
   Future<List<String>> getLanguages(String id) async {
     return client.get(
       '/movies/$id/languages',
-      mapper: (body, headers) => (body as List).map((e) => e as String).toList(),
+      mapper: (body, headers) =>
+          (body as List).map((e) => e as String).toList(),
     );
   }
 
   /// Get all release dates and certifications for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktMovieRelease>> getReleases(String id,
-      {String? country}) async {
+  Future<List<TraktMovieRelease>> getReleases(
+    String id, {
+    String? country,
+  }) async {
     return client.get(
       '/movies/$id/releases${country != null ? '/$country' : ''}',
       mapper: (body, headers) => (body as List)
-          .map((item) =>
-              TraktMovieRelease.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktMovieRelease.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -277,12 +286,16 @@ class MoviesApi extends TraktApiBase {
   /// Get all translations for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktTranslation>> getTranslations(String id,
-      {String? language}) async {
+  Future<List<TraktTranslation>> getTranslations(
+    String id, {
+    String? language,
+  }) async {
     return client.get(
       '/movies/$id/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -323,8 +336,10 @@ class MoviesApi extends TraktApiBase {
   /// Get all cast and crew for a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<TraktCredits> getPeople(String id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+  Future<TraktCredits> getPeople(
+    String id, {
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+  }) async {
     return client.get(
       '/movies/$id/people',
       queryParams: {'extended': extended.value},
@@ -398,8 +413,10 @@ class MoviesApi extends TraktApiBase {
   /// Get users currently watching a movie.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<List<TraktUser>> getWatching(String id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+  Future<List<TraktUser>> getWatching(
+    String id, {
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+  }) async {
     return client.get(
       '/movies/$id/watching',
       queryParams: {'extended': extended.value},
@@ -409,23 +426,24 @@ class MoviesApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Report a movie for inappropriate content.
+  /// 🔒 OAuth Required Report a movie for inappropriate content.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(String id,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    String id, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await client.post(
       '/movies/$id/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );
   }
 
-  /// [🔒 OAuth Required] Refresh a movie to get the latest metadata from TMDB.
+  /// 🔒 OAuth Required Refresh a movie to get the latest metadata from TMDB.
   ///
   /// [id] can be a Trakt ID, Trakt slug, or IMDB ID.
   ///

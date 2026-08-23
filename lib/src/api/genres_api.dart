@@ -4,12 +4,11 @@ import '../models/trakt_media_models.dart';
 
 /// Access to genre endpoints.
 class GenresApi {
-
   /// Creates a new [GenresApi] instance.
   GenresApi(this._client);
+
   /// Internal client reference.
   final TraktApiClient _client;
-
 
   /// Get all genres for movies or shows.
   Future<List<TraktGenre>> getGenres(TraktMediaClass type) async {

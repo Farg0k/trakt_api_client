@@ -47,11 +47,7 @@ class TraktPagination {
 /// Generic response wrapper for lists.
 class TraktListResponse<T> {
   /// Creates a new [TraktListResponse] instance.
-  TraktListResponse({
-    required this.data,
-    this.pagination,
-    this.requestParams,
-  });
+  TraktListResponse({required this.data, this.pagination, this.requestParams});
 
   /// The list of data items.
   final List<T> data;

@@ -5,7 +5,7 @@ class TraktSearchUtils {
 
   /// Escapes special characters in a search query.
   ///
-  /// Special characters (+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \)
+  /// Special characters (+ - && || ! ( ) { } `[ ]` ^ " ~ * ? : / \)
   /// will be escaped with a backslash to be interpreted literally by the
   /// Lucene search engine used by Trakt.
   static String escape(String query) {

@@ -16,7 +16,7 @@ class CommentsApi extends TraktApiBase {
 
   // --- ACTIONS ---
 
-  /// [🔒 OAuth Required] Post a new comment.
+  /// 🔒 OAuth Required Post a new comment.
   Future<TraktComment> post(
     String comment, {
     bool spoiler = false,
@@ -46,22 +46,22 @@ class CommentsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Update an existing comment.
-  Future<TraktComment> update(int id, String comment,
-      {bool spoiler = false}) async {
+  /// 🔒 OAuth Required Update an existing comment.
+  Future<TraktComment> update(
+    int id,
+    String comment, {
+    bool spoiler = false,
+  }) async {
     return client.put(
       '/comments/$id',
       authenticated: true,
-      body: {
-        'comment': comment,
-        'spoiler': spoiler,
-      },
+      body: {'comment': comment, 'spoiler': spoiler},
       mapper: (body, headers) =>
           TraktComment.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// [🔒 OAuth Required] Delete a comment.
+  /// 🔒 OAuth Required Delete a comment.
   Future<void> delete(int id) async {
     await client.delete(
       '/comments/$id',
@@ -84,7 +84,7 @@ class CommentsApi extends TraktApiBase {
 
   // --- LIKES ---
 
-  /// [🔒 OAuth Required] Like a comment.
+  /// 🔒 OAuth Required Like a comment.
   Future<void> like(int id) async {
     await client.post(
       '/comments/$id/like',
@@ -93,7 +93,7 @@ class CommentsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Remove a like from a comment.
+  /// 🔒 OAuth Required Remove a like from a comment.
   Future<void> unlike(int id) async {
     await client.delete(
       '/comments/$id/like',
@@ -110,7 +110,8 @@ class CommentsApi extends TraktApiBase {
     return getList(
       '/comments/$id/likes',
       pagination: pagination,
-      mapper: (json) => TraktUser.fromJson(json['user'] as Map<String, dynamic>),
+      mapper: (json) =>
+          TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
@@ -218,4 +219,3 @@ class CommentsApi extends TraktApiBase {
     return null;
   }
 }
-

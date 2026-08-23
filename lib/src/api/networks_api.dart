@@ -3,12 +3,11 @@ import '../models/trakt_media_models.dart';
 
 /// Access to network endpoints.
 class NetworksApi {
-
   /// Creates a new [NetworksApi] instance.
   NetworksApi(this._client);
+
   /// Internal client reference.
   final TraktApiClient _client;
-
 
   /// Get all networks for movies or shows.
   Future<List<TraktNetwork>> getNetworks() async {

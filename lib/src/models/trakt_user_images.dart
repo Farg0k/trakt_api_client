@@ -1,4 +1,4 @@
-﻿/// Avatar images for a user profile.
+/// Avatar images for a user profile.
 class TraktUserImages {
   /// Creates a [TraktUserImages] from a JSON map.
   factory TraktUserImages.fromJson(Map<String, dynamic> json) {

@@ -1,9 +1,8 @@
-﻿import 'trakt_episode.dart';
+import 'trakt_episode.dart';
 import '../core/trakt_date_utils.dart';
 
 /// Progress information for a TV show.
 class TraktShowProgress {
-
   /// Creates a [TraktShowProgress] from a JSON map.
   factory TraktShowProgress.fromJson(Map<String, dynamic> json) {
     return TraktShowProgress(
@@ -22,6 +21,7 @@ class TraktShowProgress {
           : null,
     );
   }
+
   /// Creates a new [TraktShowProgress] instance.
   const TraktShowProgress({
     required this.aired,
@@ -70,7 +70,6 @@ class TraktShowProgress {
 
 /// Progress information for a single season.
 class TraktSeasonProgress {
-
   /// Creates a [TraktSeasonProgress] from a JSON map.
   factory TraktSeasonProgress.fromJson(Map<String, dynamic> json) {
     return TraktSeasonProgress(
@@ -83,6 +82,7 @@ class TraktSeasonProgress {
           .toList(),
     );
   }
+
   /// Creates a new [TraktSeasonProgress] instance.
   const TraktSeasonProgress({
     required this.number,
@@ -121,7 +121,6 @@ class TraktSeasonProgress {
 
 /// Progress information for a single episode.
 class TraktEpisodeProgress {
-
   /// Creates a [TraktEpisodeProgress] from a JSON map.
   factory TraktEpisodeProgress.fromJson(Map<String, dynamic> json) {
     return TraktEpisodeProgress(
@@ -131,6 +130,7 @@ class TraktEpisodeProgress {
       collectedAt: TraktDateUtils.parse(json['collected_at']),
     );
   }
+
   /// Creates a new [TraktEpisodeProgress] instance.
   const TraktEpisodeProgress({
     required this.number,

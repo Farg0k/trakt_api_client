@@ -42,7 +42,9 @@ void main() async {
         pagination: trendingMovies.nextPageParams,
         extended: TraktExtendedInfo.full,
       );
-      print('Fetched ${nextPage.data.length} more movies for page ${nextPage.pagination?.currentPage}.');
+      print(
+        'Fetched ${nextPage.data.length} more movies for page ${nextPage.pagination?.currentPage}.',
+      );
     }
 
     // 5. Search API with Advanced Filters

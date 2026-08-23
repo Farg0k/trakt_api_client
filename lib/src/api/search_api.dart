@@ -16,7 +16,7 @@ class SearchApi extends TraktApiBase {
 
   /// Search by text query.
   ///
-  /// If [escape] is true, special characters (+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \)
+  /// If [escape] is true, special characters (`+ - && || ! ( ) { } [ ] ^ " ~ * ? : / \`)
   /// will be escaped with a backslash to be interpreted literally.
   Future<TraktListResponse<TraktMediaEntity>> textQuery(
     String query, {
@@ -32,9 +32,7 @@ class SearchApi extends TraktApiBase {
     final typePath = types != null
         ? types.map((e) => e.singularValue).join(',')
         : 'movie,show,person,list';
-    final queryParams = <String, String>{
-      'query': processedQuery,
-    };
+    final queryParams = <String, String>{'query': processedQuery};
     if (fields != null) {
       queryParams['fields'] = fields.map((e) => e.value).join(',');
     }

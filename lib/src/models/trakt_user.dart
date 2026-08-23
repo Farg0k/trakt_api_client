@@ -1,9 +1,8 @@
-﻿import 'trakt_ids.dart';
+import 'trakt_ids.dart';
 import 'trakt_user_images.dart';
 
 /// Represents a user profile on Trakt.tv.
 class TraktUser {
-
   /// Creates a new [TraktUser] instance.
   const TraktUser({
     required this.username,
@@ -43,28 +42,40 @@ class TraktUser {
           : null,
     );
   }
+
   /// Username of the user.
   final String username;
+
   /// Whether the user has a private profile.
   final bool? private;
+
   /// Display name of the user.
   final String? name;
+
   /// Whether the user is a VIP member.
   final bool? vip;
+
   /// Whether the user is a VIP EP member.
   final bool? vipEp;
+
   /// IDs for the user (Trakt, etc.).
   final TraktIds? ids;
+
   /// When the user joined Trakt.
   final DateTime? joinedAt;
+
   /// Location of the user.
   final String? location;
+
   /// About text of the user.
   final String? about;
+
   /// Gender of the user.
   final String? gender;
+
   /// Age of the user.
   final int? age;
+
   /// Images for the user (avatars).
   final TraktUserImages? images;
 

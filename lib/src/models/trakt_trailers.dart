@@ -86,7 +86,7 @@ class TraktMovieTrailers {
       if (iphone != null) 'iphone': iphone,
       if (ipad != null) 'ipad': ipad,
       if (android != null) 'android': android,
-      if (additional != null) ...additional!,
+      ...?additional,
     };
     return map;
   }

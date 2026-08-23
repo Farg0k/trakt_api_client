@@ -1,12 +1,7 @@
-﻿/// Represents social sharing settings.
+/// Represents social sharing settings.
 class TraktSharing {
-
   /// Creates a new [TraktSharing] instance.
-  const TraktSharing({
-    this.twitter,
-    this.mastodon,
-    this.tumblr,
-  });
+  const TraktSharing({this.twitter, this.mastodon, this.tumblr});
 
   /// Creates a [TraktSharing] from a JSON map.
   factory TraktSharing.fromJson(Map<String, dynamic> json) {
@@ -16,10 +11,13 @@ class TraktSharing {
       tumblr: json['tumblr'] as bool?,
     );
   }
+
   /// Share to Twitter.
   final bool? twitter;
+
   /// Share to Mastodon.
   final bool? mastodon;
+
   /// Share to Tumblr.
   final bool? tumblr;
 

@@ -4,7 +4,6 @@ import '../core/trakt_date_utils.dart';
 
 /// Represents a TV show.
 class TraktShow {
-
   /// Creates a [TraktShow] from a JSON map.
   factory TraktShow.fromJson(Map<String, dynamic> json) {
     return TraktShow(
@@ -37,6 +36,7 @@ class TraktShow {
       airedEpisodes: json['aired_episodes'] as int?,
     );
   }
+
   /// Creates a new [TraktShow] instance.
   const TraktShow({
     required this.title,

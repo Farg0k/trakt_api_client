@@ -1,4 +1,4 @@
-﻿import 'trakt_episode.dart';
+import 'trakt_episode.dart';
 import 'trakt_list.dart';
 import 'trakt_movie.dart';
 import 'trakt_person.dart';
@@ -6,7 +6,6 @@ import 'trakt_show.dart';
 
 /// Represents a result from a Trakt search.
 class TraktSearchResult {
-
   /// Creates a new [TraktSearchResult] instance.
   const TraktSearchResult({
     required this.type,
@@ -40,18 +39,25 @@ class TraktSearchResult {
           : null,
     );
   }
+
   /// The type of the search result.
   final String type;
+
   /// Relevance score.
   final double? score;
+
   /// Movie object, if [type] is 'movie'.
   final TraktMovie? movie;
+
   /// Show object, if [type] is 'show'.
   final TraktShow? show;
+
   /// Episode object, if [type] is 'episode'.
   final TraktEpisode? episode;
+
   /// Person object, if [type] is 'person'.
   final TraktPerson? person;
+
   /// List object, if [type] is 'list'.
   final TraktList? list;
 

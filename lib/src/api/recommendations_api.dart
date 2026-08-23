@@ -11,7 +11,7 @@ class RecommendationsApi extends TraktApiBase {
   /// Creates a new [RecommendationsApi] instance.
   RecommendationsApi(super.client);
 
-  /// [🔒 OAuth Required] Get movie recommendations.
+  /// 🔒 OAuth Required Get movie recommendations.
   Future<TraktListResponse<TraktMovie>> getMovies({
     TraktPaginationParams? pagination,
     bool ignoreCollected = false,
@@ -28,7 +28,7 @@ class RecommendationsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Hide a movie from recommendations.
+  /// 🔒 OAuth Required Hide a movie from recommendations.
   Future<void> hideMovie(String id) async {
     await client.delete(
       '/recommendations/movies/$id',
@@ -37,7 +37,7 @@ class RecommendationsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Get show recommendations.
+  /// 🔒 OAuth Required Get show recommendations.
   Future<TraktListResponse<TraktShow>> getShows({
     TraktPaginationParams? pagination,
     bool ignoreCollected = false,
@@ -54,7 +54,7 @@ class RecommendationsApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Hide a show from recommendations.
+  /// 🔒 OAuth Required Hide a show from recommendations.
   Future<void> hideShow(String id) async {
     await client.delete(
       '/recommendations/shows/$id',
@@ -78,9 +78,8 @@ class RecommendationsApi extends TraktApiBase {
       pagination: pagination,
       extended: extended,
       filters: filters,
-      queryParams: {
-        'ignore_collected': ignoreCollected.toString(),
-      },
+      authenticated: true,
+      queryParams: {'ignore_collected': ignoreCollected.toString()},
       mapper: mapper,
     );
   }

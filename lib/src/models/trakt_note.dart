@@ -1,9 +1,8 @@
-﻿import '../core/trakt_date_utils.dart';
+import '../core/trakt_date_utils.dart';
 import 'trakt_user.dart';
 
 /// Represents a user note.
 class TraktNote {
-
   /// Creates a new [TraktNote] instance.
   const TraktNote({
     required this.id,
@@ -27,16 +26,22 @@ class TraktNote {
           : null,
     );
   }
+
   /// Unique ID of the note.
   final int id;
+
   /// Content of the note.
   final String note;
+
   /// Privacy setting of the note.
   final String privacy;
+
   /// When the note was created.
   final DateTime? createdAt;
+
   /// When the note was last updated.
   final DateTime? updatedAt;
+
   /// The user who wrote the note.
   final TraktUser? user;
 

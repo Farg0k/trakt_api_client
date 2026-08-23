@@ -18,8 +18,10 @@ class NotesApi {
   final TraktApiClient _client;
 
   /// Get a single note by its ID.
-  Future<TraktNote> get(int id,
-      {TraktExtendedInfo extended = TraktExtendedInfo.min}) async {
+  Future<TraktNote> get(
+    int id, {
+    TraktExtendedInfo extended = TraktExtendedInfo.min,
+  }) async {
     return _client.get(
       '/notes/$id',
       queryParams: {'extended': extended.value},
@@ -28,7 +30,7 @@ class NotesApi {
     );
   }
 
-  /// [🔒 OAuth Required] Create a new note.
+  /// 🔒 OAuth Required Create a new note.
   ///
   /// You can attach the note to a [movie], [show], [season], [episode], or [person].
   Future<TraktNote> create({
@@ -57,7 +59,7 @@ class NotesApi {
     );
   }
 
-  /// [🔒 OAuth Required] Update an existing note.
+  /// 🔒 OAuth Required Update an existing note.
   Future<TraktNote> update(
     int id, {
     required String note,
@@ -65,17 +67,14 @@ class NotesApi {
   }) async {
     return _client.put(
       '/notes/$id',
-      body: {
-        'note': note,
-        'privacy': privacy.value,
-      },
+      body: {'note': note, 'privacy': privacy.value},
       authenticated: true,
       mapper: (body, headers) =>
           TraktNote.fromJson(body as Map<String, dynamic>),
     );
   }
 
-  /// [🔒 OAuth Required] Delete a note.
+  /// 🔒 OAuth Required Delete a note.
   Future<void> delete(int id) async {
     await _client.delete(
       '/notes/$id',
@@ -89,7 +88,9 @@ class NotesApi {
     return _client.get(
       '/notes/$id/items',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktMediaEntity.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }

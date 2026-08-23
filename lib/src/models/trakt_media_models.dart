@@ -1,11 +1,10 @@
-﻿import 'trakt_ids.dart';
+import 'trakt_ids.dart';
 import 'trakt_person.dart';
 import 'trakt_movie.dart';
 import '../core/trakt_date_utils.dart';
 
 /// Rating information for any object.
 class TraktRating {
-
   /// Creates a [TraktRating] from a JSON map.
   factory TraktRating.fromJson(Map<String, dynamic> json) {
     return TraktRating(
@@ -14,6 +13,7 @@ class TraktRating {
       distribution: Map<String, int>.from(json['distribution'] as Map? ?? {}),
     );
   }
+
   /// Creates a new [TraktRating] instance.
   const TraktRating({
     required this.rating,
@@ -27,7 +27,7 @@ class TraktRating {
   /// Total number of votes.
   final int votes;
 
-/// Rating distribution (1 to 10).
+  /// Rating distribution (1 to 10).
   final Map<String, int> distribution;
 
   @override
@@ -42,7 +42,6 @@ class TraktRating {
 
 /// Cast and crew information.
 class TraktCredits {
-
   /// Creates a [TraktCredits] from a JSON map.
   factory TraktCredits.fromJson(Map<String, dynamic> json) {
     return TraktCredits(
@@ -59,6 +58,7 @@ class TraktCredits {
       ),
     );
   }
+
   /// Creates a new [TraktCredits] instance.
   const TraktCredits({this.cast, this.crew});
 
@@ -79,15 +79,16 @@ class TraktCredits {
 
 /// Represents a cast member.
 class TraktCast {
-
   /// Creates a [TraktCast] from a JSON map.
   factory TraktCast.fromJson(Map<String, dynamic> json) {
     return TraktCast(
-      characters:
-          (json['characters'] as List?)?.map((e) => e as String).toList(),
+      characters: (json['characters'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
       person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
     );
   }
+
   /// Creates a new [TraktCast] instance.
   const TraktCast({this.characters, required this.person});
 
@@ -108,7 +109,6 @@ class TraktCast {
 
 /// Represents a crew member.
 class TraktCrew {
-
   /// Creates a [TraktCrew] from a JSON map.
   factory TraktCrew.fromJson(Map<String, dynamic> json) {
     return TraktCrew(
@@ -116,6 +116,7 @@ class TraktCrew {
       person: TraktPerson.fromJson(json['person'] as Map<String, dynamic>),
     );
   }
+
   /// Creates a new [TraktCrew] instance.
   const TraktCrew({required this.job, required this.person});
 
@@ -136,7 +137,6 @@ class TraktCrew {
 
 /// Title alias for a media object.
 class TraktMediaAlias {
-
   /// Creates a [TraktMediaAlias] from a JSON map.
   factory TraktMediaAlias.fromJson(Map<String, dynamic> json) {
     return TraktMediaAlias(
@@ -145,6 +145,7 @@ class TraktMediaAlias {
       language: json['language'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktMediaAlias] instance.
   const TraktMediaAlias({
     required this.title,
@@ -163,11 +164,7 @@ class TraktMediaAlias {
 
   /// Converts this media alias to a JSON map.
   Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'country': country,
-      'language': language,
-    };
+    return {'title': title, 'country': country, 'language': language};
   }
 
   @override
@@ -182,7 +179,6 @@ class TraktMediaAlias {
 
 /// Translation for a media object.
 class TraktTranslation {
-
   /// Creates a [TraktTranslation] from a JSON map.
   factory TraktTranslation.fromJson(Map<String, dynamic> json) {
     return TraktTranslation(
@@ -193,6 +189,7 @@ class TraktTranslation {
       country: json['country'] as String?,
     );
   }
+
   /// Creates a new [TraktTranslation] instance.
   const TraktTranslation({
     required this.title,
@@ -231,7 +228,6 @@ class TraktTranslation {
 
 /// Content certification (e.g. PG-13).
 class TraktCertification {
-
   /// Creates a [TraktCertification] from a JSON map.
   factory TraktCertification.fromJson(Map<String, dynamic> json) {
     return TraktCertification(
@@ -240,6 +236,7 @@ class TraktCertification {
       description: json['description'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktCertification] instance.
   const TraktCertification({
     required this.name,
@@ -268,7 +265,6 @@ class TraktCertification {
 
 /// Media-specific certification.
 class TraktMediaCertification {
-
   /// Creates a [TraktMediaCertification] from a JSON map.
   factory TraktMediaCertification.fromJson(Map<String, dynamic> json) {
     return TraktMediaCertification(
@@ -276,6 +272,7 @@ class TraktMediaCertification {
       country: json['country'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktMediaCertification] instance.
   const TraktMediaCertification({
     required this.certification,
@@ -299,7 +296,6 @@ class TraktMediaCertification {
 
 /// Represents a country.
 class TraktCountry {
-
   /// Creates a [TraktCountry] from a JSON map.
   factory TraktCountry.fromJson(Map<String, dynamic> json) {
     return TraktCountry(
@@ -307,6 +303,7 @@ class TraktCountry {
       code: json['code'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktCountry] instance.
   const TraktCountry({required this.name, required this.code});
 
@@ -327,7 +324,6 @@ class TraktCountry {
 
 /// Represents a media genre.
 class TraktGenre {
-
   /// Creates a [TraktGenre] from a JSON map.
   factory TraktGenre.fromJson(Map<String, dynamic> json) {
     return TraktGenre(
@@ -335,6 +331,7 @@ class TraktGenre {
       slug: json['slug'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktGenre] instance.
   const TraktGenre({required this.name, required this.slug});
 
@@ -355,7 +352,6 @@ class TraktGenre {
 
 /// Represents a language.
 class TraktLanguage {
-
   /// Creates a [TraktLanguage] from a JSON map.
   factory TraktLanguage.fromJson(Map<String, dynamic> json) {
     return TraktLanguage(
@@ -363,6 +359,7 @@ class TraktLanguage {
       code: json['code'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktLanguage] instance.
   const TraktLanguage({required this.name, required this.code});
 
@@ -383,11 +380,11 @@ class TraktLanguage {
 
 /// Represents a TV network.
 class TraktNetwork {
-
   /// Creates a [TraktNetwork] from a JSON map.
   factory TraktNetwork.fromJson(Map<String, dynamic> json) {
     return TraktNetwork(name: json['name'] as String? ?? '');
   }
+
   /// Creates a new [TraktNetwork] instance.
   const TraktNetwork({required this.name});
 
@@ -404,7 +401,6 @@ class TraktNetwork {
 
 /// Represents a production studio.
 class TraktStudio {
-
   /// Creates a [TraktStudio] from a JSON map.
   factory TraktStudio.fromJson(Map<String, dynamic> json) {
     return TraktStudio(
@@ -415,12 +411,9 @@ class TraktStudio {
           : null,
     );
   }
+
   /// Creates a new [TraktStudio] instance.
-  const TraktStudio({
-    required this.name,
-    this.country,
-    this.ids,
-  });
+  const TraktStudio({required this.name, this.country, this.ids});
 
   /// Name of the studio.
   final String name;
@@ -443,7 +436,6 @@ class TraktStudio {
 
 /// Release information for a movie.
 class TraktMovieRelease {
-
   /// Creates a [TraktMovieRelease] from a JSON map.
   factory TraktMovieRelease.fromJson(Map<String, dynamic> json) {
     return TraktMovieRelease(
@@ -454,6 +446,7 @@ class TraktMovieRelease {
       certification: json['certification'] as String? ?? '',
     );
   }
+
   /// Creates a new [TraktMovieRelease] instance.
   const TraktMovieRelease({
     required this.country,
@@ -492,7 +485,6 @@ class TraktMovieRelease {
 
 /// Box office revenue information for a movie.
 class TraktBoxOfficeMovie {
-
   /// Creates a [TraktBoxOfficeMovie] from a JSON map.
   factory TraktBoxOfficeMovie.fromJson(Map<String, dynamic> json) {
     return TraktBoxOfficeMovie(
@@ -500,11 +492,9 @@ class TraktBoxOfficeMovie {
       movie: TraktMovie.fromJson(json['movie'] as Map<String, dynamic>),
     );
   }
+
   /// Creates a new [TraktBoxOfficeMovie] instance.
-  const TraktBoxOfficeMovie({
-    required this.revenue,
-    required this.movie,
-  });
+  const TraktBoxOfficeMovie({required this.revenue, required this.movie});
 
   /// Revenue in USD.
   final int revenue;

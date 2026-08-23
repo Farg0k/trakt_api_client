@@ -1,6 +1,5 @@
 /// Configuration for the [TraktApiClient].
 class TraktApiClientConfig {
-
   /// Creates a new Trakt API configuration.
   TraktApiClientConfig({
     required this.clientId,
@@ -11,6 +10,7 @@ class TraktApiClientConfig {
     this.userAgent,
     this.customHeaders,
   });
+
   /// The client ID (API Key) from your Trakt API dashboard.
   final String clientId;
 
@@ -36,6 +36,7 @@ class TraktApiClientConfig {
   String get baseUrl =>
       useStaging ? 'https://api-staging.trakt.tv' : 'https://api.trakt.tv';
 
+  /// Returns the base URL for Trakt authentication.
   String get authBaseUrl =>
       useStaging ? 'https://api-staging.trakt.tv' : 'https://auth.trakt.tv';
 

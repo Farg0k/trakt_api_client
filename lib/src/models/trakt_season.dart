@@ -4,7 +4,6 @@ import '../core/trakt_date_utils.dart';
 
 /// Represents a season of a TV show.
 class TraktSeason {
-
   /// Creates a [TraktSeason] from a JSON map.
   factory TraktSeason.fromJson(Map<String, dynamic> json) {
     return TraktSeason(
@@ -25,6 +24,7 @@ class TraktSeason {
           .toList(),
     );
   }
+
   /// Creates a new [TraktSeason] instance.
   const TraktSeason({
     required this.number,

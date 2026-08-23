@@ -1,9 +1,9 @@
 name: trakt_api_client
 description: A comprehensive, type-safe, and highly optimized Dart/Flutter client for the Trakt.tv API. Supports 100% coverage, OAuth2, and advanced filtering.
 version: 1.0.0
-homepage: https://github.com/yourusername/trakt_api_client
-repository: https://github.com/yourusername/trakt_api_client
-issue_tracker: https://github.com/yourusername/trakt_api_client/issues
+homepage: https://github.com/Farg0k/trakt_api_client
+repository: https://github.com/Farg0k/trakt_api_client
+issue_tracker: https://github.com/Farg0k/trakt_api_client/issues
 
 topics:
   - trakt
@@ -20,4 +20,4 @@ dependencies:
 
 dev_dependencies:
   lints: ^6.1.0
-  test: ^1.31.1
+  test: ^1.31.2

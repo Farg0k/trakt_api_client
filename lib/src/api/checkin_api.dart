@@ -8,12 +8,11 @@ import '../models/trakt_sharing.dart';
 class CheckinApi {
   /// Creates a new [CheckinApi] instance.
   CheckinApi(this._client);
+
   /// Internal client reference.
   final TraktApiClient _client;
 
-
-
-  /// [🔒 OAuth Required] Check into a movie.
+  /// 🔒 OAuth Required Check into a movie.
   Future<TraktCheckinResponse> movie(
     TraktMovie movie, {
     String? message,
@@ -36,7 +35,7 @@ class CheckinApi {
     );
   }
 
-  /// [🔒 OAuth Required] Check into an episode.
+  /// 🔒 OAuth Required Check into an episode.
   Future<TraktCheckinResponse> episode(
     TraktEpisode episode, {
     String? message,
@@ -59,7 +58,7 @@ class CheckinApi {
     );
   }
 
-  /// [🔒 OAuth Required] Delete any active checkins.
+  /// 🔒 OAuth Required Delete any active checkins.
   Future<void> delete() async {
     await _client.delete(
       '/checkin',

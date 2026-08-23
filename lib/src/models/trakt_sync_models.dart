@@ -141,8 +141,10 @@ class TraktSyncSeason {
     this.rating,
     this.ratedAt,
     this.episodes,
-  }) : assert(ids != null || number != null,
-            'Either ids or number must be provided');
+  }) : assert(
+         ids != null || number != null,
+         'Either ids or number must be provided',
+       );
 
   /// IDs for the season (alternative to using number).
   final TraktIds? ids;
@@ -192,8 +194,10 @@ class TraktSyncEpisode {
     this.collectedAt,
     this.rating,
     this.ratedAt,
-  }) : assert(ids != null || number != null,
-            'Either ids or number must be provided');
+  }) : assert(
+         ids != null || number != null,
+         'Either ids or number must be provided',
+       );
 
   /// IDs for the episode (alternative to using number).
   final TraktIds? ids;
@@ -266,7 +270,8 @@ class TraktSyncResponse {
           : TraktSyncCount(),
       notFound: json['not_found'] is Map<String, dynamic>
           ? TraktSyncNotFound.fromJson(
-              json['not_found'] as Map<String, dynamic>)
+              json['not_found'] as Map<String, dynamic>,
+            )
           : TraktSyncNotFound.empty(),
     );
   }

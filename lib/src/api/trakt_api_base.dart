@@ -29,13 +29,10 @@ abstract class TraktApiBase {
 
     return client.getList(
       path,
-      queryParams:
-          effectiveQueryParams.isEmpty ? null : effectiveQueryParams,
+      queryParams: effectiveQueryParams.isEmpty ? null : effectiveQueryParams,
       pagination: pagination,
       authenticated: authenticated,
       mapper: mapper,
     );
   }
 }
-
-

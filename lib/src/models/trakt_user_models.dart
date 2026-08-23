@@ -1,11 +1,10 @@
-﻿import 'trakt_user.dart';
+import 'trakt_user.dart';
 import 'trakt_user_account.dart';
 import 'trakt_user_connections.dart';
 import 'trakt_sharing_text.dart';
 
 /// Social IDs for a user.
 class TraktUserSocialIds {
-
   /// Creates a [TraktUserSocialIds] from a JSON map.
   factory TraktUserSocialIds.fromJson(Map<String, dynamic> json) {
     return TraktUserSocialIds(
@@ -20,6 +19,7 @@ class TraktUserSocialIds {
       website: json['website'] as String?,
     );
   }
+
   /// Creates a new [TraktUserSocialIds] instance.
   const TraktUserSocialIds({
     this.twitter,
@@ -78,7 +78,6 @@ class TraktUserSocialIds {
 
 /// A follow request from another user.
 class TraktFollowRequest {
-
   /// Creates a [TraktFollowRequest] from a JSON map.
   factory TraktFollowRequest.fromJson(Map<String, dynamic> json) {
     final rawRequestedAt = json['requested_at'];
@@ -91,6 +90,7 @@ class TraktFollowRequest {
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
+
   /// Creates a new [TraktFollowRequest] instance.
   const TraktFollowRequest({
     required this.id,
@@ -119,7 +119,6 @@ class TraktFollowRequest {
 
 /// A connection between two users (follower/friend).
 class TraktUserConnection {
-
   /// Creates a [TraktUserConnection] from a JSON map.
   factory TraktUserConnection.fromJson(Map<String, dynamic> json) {
     final rawFollowedAt = json['followed_at'];
@@ -131,11 +130,9 @@ class TraktUserConnection {
       user: TraktUser.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
+
   /// Creates a new [TraktUserConnection] instance.
-  const TraktUserConnection({
-    required this.followedAt,
-    required this.user,
-  });
+  const TraktUserConnection({required this.followedAt, required this.user});
 
   /// When the connection was established.
   final DateTime followedAt;
@@ -154,21 +151,25 @@ class TraktUserConnection {
 
 /// Comprehensive statistics for a user profile.
 class TraktUserStats {
-
   /// Creates a [TraktUserStats] from a JSON map.
   factory TraktUserStats.fromJson(Map<String, dynamic> json) {
     return TraktUserStats(
-      movies:
-          TraktUserMovieStats.fromJson(json['movies'] as Map<String, dynamic>),
+      movies: TraktUserMovieStats.fromJson(
+        json['movies'] as Map<String, dynamic>,
+      ),
       shows: TraktUserShowStats.fromJson(json['shows'] as Map<String, dynamic>),
       episodes: TraktUserEpisodeStats.fromJson(
-          json['episodes'] as Map<String, dynamic>),
+        json['episodes'] as Map<String, dynamic>,
+      ),
       network: TraktUserNetworkStats.fromJson(
-          json['network'] as Map<String, dynamic>),
+        json['network'] as Map<String, dynamic>,
+      ),
       ratings: TraktUserRatingStats.fromJson(
-          json['ratings'] as Map<String, dynamic>),
+        json['ratings'] as Map<String, dynamic>,
+      ),
     );
   }
+
   /// Creates a new [TraktUserStats] instance.
   const TraktUserStats({
     required this.movies,
@@ -207,7 +208,6 @@ class TraktUserStats {
 
 /// User movie statistics.
 class TraktUserMovieStats {
-
   /// Creates a [TraktUserMovieStats] from a JSON map.
   factory TraktUserMovieStats.fromJson(Map<String, dynamic> json) {
     return TraktUserMovieStats(
@@ -218,6 +218,7 @@ class TraktUserMovieStats {
       comments: json['comments'] as int? ?? 0,
     );
   }
+
   /// Creates a new [TraktUserMovieStats] instance.
   const TraktUserMovieStats({
     required this.plays,
@@ -256,7 +257,6 @@ class TraktUserMovieStats {
 
 /// User show statistics.
 class TraktUserShowStats {
-
   /// Creates a [TraktUserShowStats] from a JSON map.
   factory TraktUserShowStats.fromJson(Map<String, dynamic> json) {
     return TraktUserShowStats(
@@ -266,6 +266,7 @@ class TraktUserShowStats {
       comments: json['comments'] as int? ?? 0,
     );
   }
+
   /// Creates a new [TraktUserShowStats] instance.
   const TraktUserShowStats({
     required this.watched,
@@ -299,7 +300,6 @@ class TraktUserShowStats {
 
 /// User episode statistics.
 class TraktUserEpisodeStats {
-
   /// Creates a [TraktUserEpisodeStats] from a JSON map.
   factory TraktUserEpisodeStats.fromJson(Map<String, dynamic> json) {
     return TraktUserEpisodeStats(
@@ -310,6 +310,7 @@ class TraktUserEpisodeStats {
       comments: json['comments'] as int? ?? 0,
     );
   }
+
   /// Creates a new [TraktUserEpisodeStats] instance.
   const TraktUserEpisodeStats({
     required this.plays,
@@ -348,7 +349,6 @@ class TraktUserEpisodeStats {
 
 /// User network statistics (friends, followers).
 class TraktUserNetworkStats {
-
   /// Creates a [TraktUserNetworkStats] from a JSON map.
   factory TraktUserNetworkStats.fromJson(Map<String, dynamic> json) {
     return TraktUserNetworkStats(
@@ -357,6 +357,7 @@ class TraktUserNetworkStats {
       following: json['following'] as int? ?? 0,
     );
   }
+
   /// Creates a new [TraktUserNetworkStats] instance.
   const TraktUserNetworkStats({
     required this.friends,
@@ -385,7 +386,6 @@ class TraktUserNetworkStats {
 
 /// User rating statistics.
 class TraktUserRatingStats {
-
   /// Creates a [TraktUserRatingStats] from a JSON map.
   factory TraktUserRatingStats.fromJson(Map<String, dynamic> json) {
     return TraktUserRatingStats(
@@ -393,11 +393,9 @@ class TraktUserRatingStats {
       distribution: Map<String, int>.from(json['distribution'] as Map? ?? {}),
     );
   }
+
   /// Creates a new [TraktUserRatingStats] instance.
-  const TraktUserRatingStats({
-    required this.total,
-    required this.distribution,
-  });
+  const TraktUserRatingStats({required this.total, required this.distribution});
 
   /// Total number of ratings.
   final int total;
@@ -416,7 +414,6 @@ class TraktUserRatingStats {
 
 /// User account settings.
 class TraktUserSettings {
-
   /// Creates a [TraktUserSettings] from a JSON map.
   factory TraktUserSettings.fromJson(Map<String, dynamic> json) {
     return TraktUserSettings(
@@ -426,14 +423,17 @@ class TraktUserSettings {
           : null,
       connections: json['connections'] != null
           ? TraktUserConnections.fromJson(
-              json['connections'] as Map<String, dynamic>)
+              json['connections'] as Map<String, dynamic>,
+            )
           : null,
       sharingText: json['sharing_text'] != null
           ? TraktSharingText.fromJson(
-              json['sharing_text'] as Map<String, dynamic>)
+              json['sharing_text'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
+
   /// Creates a new [TraktUserSettings] instance.
   const TraktUserSettings({
     required this.user,

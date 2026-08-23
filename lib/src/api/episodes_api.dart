@@ -41,7 +41,10 @@ class EpisodesApi extends TraktApiBase {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktMediaAlias>> getAliases(
-      String showId, int seasonNumber, int episodeNumber) async {
+    String showId,
+    int seasonNumber,
+    int episodeNumber,
+  ) async {
     return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/aliases',
       mapper: (body, headers) => (body as List)
@@ -54,12 +57,17 @@ class EpisodesApi extends TraktApiBase {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktTranslation>> getTranslations(
-      String showId, int seasonNumber, int episodeNumber,
-      {String? language}) async {
+    String showId,
+    int seasonNumber,
+    int episodeNumber, {
+    String? language,
+  }) async {
     return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/translations${language != null ? '/$language' : ''}',
       mapper: (body, headers) => (body as List)
-          .map((item) => TraktTranslation.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => TraktTranslation.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
@@ -105,7 +113,10 @@ class EpisodesApi extends TraktApiBase {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktRating> getRatings(
-      String showId, int seasonNumber, int episodeNumber) async {
+    String showId,
+    int seasonNumber,
+    int episodeNumber,
+  ) async {
     return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/ratings',
       mapper: (body, headers) =>
@@ -117,7 +128,10 @@ class EpisodesApi extends TraktApiBase {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<TraktStats> getStats(
-      String showId, int seasonNumber, int episodeNumber) async {
+    String showId,
+    int seasonNumber,
+    int episodeNumber,
+  ) async {
     return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/stats',
       mapper: (body, headers) =>
@@ -147,7 +161,10 @@ class EpisodesApi extends TraktApiBase {
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
   Future<List<TraktVideo>> getVideos(
-      String showId, int seasonNumber, int episodeNumber) async {
+    String showId,
+    int seasonNumber,
+    int episodeNumber,
+  ) async {
     return client.get(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/videos',
       mapper: (body, headers) => (body as List)
@@ -201,17 +218,20 @@ class EpisodesApi extends TraktApiBase {
     );
   }
 
-  /// [🔒 OAuth Required] Report an episode for inappropriate content.
+  /// 🔒 OAuth Required Report an episode for inappropriate content.
   ///
   /// [showId] can be a Trakt ID, Trakt slug, or IMDB ID.
-  Future<void> report(String showId, int seasonNumber, int episodeNumber,
-      {required TraktReportReason reason, String? notes}) async {
+  Future<void> report(
+    String showId,
+    int seasonNumber,
+    int episodeNumber, {
+    required TraktReportReason reason,
+    String? notes,
+  }) async {
     await client.post(
       '/shows/$showId/seasons/$seasonNumber/episodes/$episodeNumber/report',
-      body: {
-        'reason': reason.value,
-        'notes': notes,
-      }..removeWhere((key, value) => value == null),
+      body: {'reason': reason.value, 'notes': notes}
+        ..removeWhere((key, value) => value == null),
       authenticated: true,
       mapper: (body, headers) => null,
     );

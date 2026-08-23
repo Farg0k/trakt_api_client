@@ -1,7 +1,5 @@
-
 /// Representation of when a show airs.
 class TraktAirs {
-
   /// Creates a [TraktAirs] from a JSON map.
   factory TraktAirs.fromJson(Map<String, dynamic> json) {
     return TraktAirs(
@@ -10,6 +8,7 @@ class TraktAirs {
       timezone: json['timezone'] as String?,
     );
   }
+
   /// Creates a new [TraktAirs] instance.
   const TraktAirs({this.day, this.time, this.timezone});
 
@@ -24,11 +23,7 @@ class TraktAirs {
 
   /// Converts this airs info to a JSON map.
   Map<String, dynamic> toJson() {
-    return {
-      'day': day,
-      'time': time,
-      'timezone': timezone,
-    };
+    return {'day': day, 'time': time, 'timezone': timezone};
   }
 
   @override

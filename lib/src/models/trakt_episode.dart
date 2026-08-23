@@ -2,7 +2,6 @@ import 'trakt_ids.dart';
 
 /// Represents a media episode (TV show).
 class TraktEpisode {
-
   /// Creates a [TraktEpisode] from a JSON map.
   factory TraktEpisode.fromJson(Map<String, dynamic> json) {
     return TraktEpisode(
@@ -29,6 +28,7 @@ class TraktEpisode {
       overview: json['overview'] as String?,
     );
   }
+
   /// Creates a new [TraktEpisode] instance.
   const TraktEpisode({
     required this.title,

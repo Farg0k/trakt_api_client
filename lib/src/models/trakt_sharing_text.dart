@@ -1,29 +1,28 @@
-﻿/// Sharing text templates for different media types.
+/// Sharing text templates for different media types.
 class TraktSharingText {
   /// Creates a [TraktSharingText] from a JSON map.
   factory TraktSharingText.fromJson(Map<String, dynamic> json) {
     return TraktSharingText(
       movie: json['movie'] != null
           ? TraktSharingTextTemplate.fromJson(
-              json['movie'] as Map<String, dynamic>)
+              json['movie'] as Map<String, dynamic>,
+            )
           : null,
       show: json['show'] != null
           ? TraktSharingTextTemplate.fromJson(
-              json['show'] as Map<String, dynamic>)
+              json['show'] as Map<String, dynamic>,
+            )
           : null,
       episode: json['episode'] != null
           ? TraktSharingTextTemplate.fromJson(
-              json['episode'] as Map<String, dynamic>)
+              json['episode'] as Map<String, dynamic>,
+            )
           : null,
     );
   }
 
   /// Creates a new [TraktSharingText] instance.
-  const TraktSharingText({
-    this.movie,
-    this.show,
-    this.episode,
-  });
+  const TraktSharingText({this.movie, this.show, this.episode});
 
   /// Movie sharing templates.
   final TraktSharingTextTemplate? movie;
@@ -115,7 +114,7 @@ class TraktSharingTextTemplate {
       if (addToWatchlist != null) 'add_to_watchlist': addToWatchlist,
       if (addedToWatchlist != null) 'added_to_watchlist': addedToWatchlist,
       if (collected != null) 'collected': collected,
-if (watchlist != null) 'watchlist': watchlist,
+      if (watchlist != null) 'watchlist': watchlist,
     };
   }
 

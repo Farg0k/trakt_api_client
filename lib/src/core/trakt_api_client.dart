@@ -164,7 +164,7 @@ class TraktApiClient {
             requestParams: pagination,
           );
         }
-        
+
         final List<dynamic> list;
         if (body is List) {
           list = body;
@@ -174,7 +174,7 @@ class TraktApiClient {
           // Unexpected type, return empty list
           list = [];
         }
-        
+
         final data = list
             .where((item) => item != null && item is Map<String, dynamic>)
             .map((item) => item as Map<String, dynamic>)
@@ -198,8 +198,9 @@ class TraktApiClient {
   }) async {
     return _performRequest(
       (headers) => _client.get(
-        Uri.parse('${config.baseUrl}$path')
-            .replace(queryParameters: queryParams),
+        Uri.parse(
+          '${config.baseUrl}$path',
+        ).replace(queryParameters: queryParams),
         headers: headers,
       ),
       mapper,
@@ -209,14 +210,14 @@ class TraktApiClient {
 
   /// Performs a POST request.
   Future<T> post<T>(
-      String path, {
-        dynamic body,
-        bool authenticated = false,
-        String? baseUrlOverride,
-        required T Function(dynamic body, Map<String, String> headers) mapper,
-      }) async {
+    String path, {
+    dynamic body,
+    bool authenticated = false,
+    String? baseUrlOverride,
+    required T Function(dynamic body, Map<String, String> headers) mapper,
+  }) async {
     return _performRequest(
-          (headers) => _client.post(
+      (headers) => _client.post(
         Uri.parse('${baseUrlOverride ?? config.baseUrl}$path'),
         headers: headers,
         body: body != null ? jsonEncode(body) : null,
@@ -251,10 +252,8 @@ class TraktApiClient {
     required T Function(dynamic body, Map<String, String> headers) mapper,
   }) async {
     return _performRequest(
-      (headers) => _client.delete(
-        Uri.parse('${config.baseUrl}$path'),
-        headers: headers,
-      ),
+      (headers) =>
+          _client.delete(Uri.parse('${config.baseUrl}$path'), headers: headers),
       mapper,
       authenticated: authenticated,
     );
@@ -272,7 +271,9 @@ class TraktApiClient {
       );
     }
 
-    var response = await request(config.getHeaders(authenticated: authenticated));
+    var response = await request(
+      config.getHeaders(authenticated: authenticated),
+    );
 
     try {
       _updateRateLimit(response.headers);
@@ -282,10 +283,12 @@ class TraktApiClient {
           config.refreshToken != null) {
         _refreshTask ??= _doRefresh();
         await _refreshTask;
-        response = await request(config.getHeaders(authenticated: authenticated));
+        response = await request(
+          config.getHeaders(authenticated: authenticated),
+        );
       }
 
-      return _handleResponse(response, mapper);
+      return await _handleResponse(response, mapper);
     } catch (e) {
       if (e is TraktApiException) rethrow;
       throw TraktApiException('Request failed: $e');

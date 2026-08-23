@@ -1,6 +1,5 @@
 /// Common filters that can be applied to many Trakt API endpoints.
 class TraktFilters {
-
   /// Creates a new [TraktFilters] instance.
   TraktFilters({
     this.query,
@@ -13,6 +12,7 @@ class TraktFilters {
     this.runtimes,
     this.ratings,
   });
+
   /// Search query to filter by title or description.
   final String? query;
 
